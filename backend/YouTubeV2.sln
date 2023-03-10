@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33110.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YouTubeV2.Api", "YouTubeV2\YouTubeV2.Api.csproj", "{31456C69-A5A9-495E-B5E1-AAC3C2F70679}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubeV2.Application", "YouTubeV2.Application\YouTubeV2.Application.csproj", "{F07A2A82-A79E-4698-B46E-5D419278F76A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{31456C69-A5A9-495E-B5E1-AAC3C2F70679}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31456C69-A5A9-495E-B5E1-AAC3C2F70679}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31456C69-A5A9-495E-B5E1-AAC3C2F70679}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31456C69-A5A9-495E-B5E1-AAC3C2F70679}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F07A2A82-A79E-4698-B46E-5D419278F76A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F07A2A82-A79E-4698-B46E-5D419278F76A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F07A2A82-A79E-4698-B46E-5D419278F76A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F07A2A82-A79E-4698-B46E-5D419278F76A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3484E1F2-48DA-4A0C-B800-3A6A43BE175F}
+	EndGlobalSection
+EndGlobal
