@@ -1,6 +1,7 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using YouTubeV2.Application;
+using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services;
 using YouTubeV2.Application.Validator;
 
@@ -20,6 +21,9 @@ builder.Services.AddDbContext<YTContext>(
 builder.Services.AddTransient<UserService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
+
+builder.Services.AddIdentity<User, Role>()
+    .AddEntityFrameworkStores<YTContext>();
 
 var app = builder.Build();
 

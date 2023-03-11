@@ -9,13 +9,17 @@ namespace YouTubeV2.Application.EntityConfiguration
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
-            
-            builder.Property(x => x.Email);
-            builder.Property(x => x.Nickname);
+
+            builder.HasIndex(x => x.NormalizedEmail).IsUnique();
+            builder.HasIndex(x => x.NormalizedUserName).IsUnique();
+
             builder.Property(x => x.Name);
             builder.Property(x => x.Surname);
-            builder.Property(x => x.Password);
+
+            builder.HasMany(x => x.UserRoles)
+                .WithOne(x => x.User)
+                .HasForeignKey(userRole => userRole.UserId)
+                .IsRequired();
         }
     }
 }
