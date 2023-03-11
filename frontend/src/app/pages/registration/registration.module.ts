@@ -31,7 +31,7 @@ import { AutoFocusModule } from 'primeng/autofocus';
     HttpClientModule,
     InputNumberModule,
     ProgressSpinnerModule,
-    AutoFocusModule
+    AutoFocusModule,
   ]
 })
-export class RegistrationPageModule { }
+export class RegistrationModule { }

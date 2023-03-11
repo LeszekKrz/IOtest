@@ -25,6 +25,17 @@ builder.Services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
 builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<YTContext>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "Allow ALL",
+        policyBuilder => policyBuilder
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowAnyOrigin()
+            .WithExposedHeaders("Content-Disposition"));
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -33,6 +44,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("Allow ALL");
 
 app.UseHttpsRedirection();
 

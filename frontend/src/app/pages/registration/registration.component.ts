@@ -4,12 +4,13 @@ import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { finalize, Observable, of, Subscription, switchMap, tap } from 'rxjs';
 import { UserForRegistrationDTO } from '../../authentication/models/user-for-registration-dto';
-import { AuthenticationService } from '../../core/services/authentication.service';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
-  styleUrls: ['./registration.component.scss']
+  styleUrls: ['./registration.component.scss'],
+  providers: [MessageService]
 })
 export class RegistrationComponent implements OnInit, OnDestroy {
   registerForm!: FormGroup;
@@ -28,7 +29,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   confirmPasswordEyeIcon = "pi-eye";
 
   constructor(private formBuilder: FormBuilder,
-    private authenticationService: AuthenticationService,
+    private userService: UserService,
     private messageService: MessageService,
     private router: Router) { }
 
@@ -87,7 +88,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       password: this.registerForm.get('password')!.value,
     };
 
-    const register$ = this.authenticationService.registerUser(userForRegistration).pipe(
+    const register$ = this.userService.registerUser(userForRegistration).pipe(
       tap(() => {
         this.messageService.add({
           severity: 'success',

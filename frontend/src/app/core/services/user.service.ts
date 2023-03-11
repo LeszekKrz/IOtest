@@ -8,17 +8,11 @@ import { UserForRegistrationDTO } from "../../authentication/models/user-for-reg
 @Injectable({
   providedIn: 'root'
 })
-export class AuthenticationService {
+export class UserService {
   private authenticationStateChangeSubject = new Subject<boolean>();
   public authenticationStateChanged = this.authenticationStateChangeSubject.asObservable();
-  private readonly bankEmployeeRoleName = 'BankEmployee';
-  private readonly roleUrl = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
 
-  private readonly registrationPageWebAPIUrl: string = `${environment.webApiUrl}/registration-page`;
-
-  sendAuthenticationStateChangedNotification = (isAuthenticated: boolean): void => {
-    this.authenticationStateChangeSubject.next(isAuthenticated);
-  }
+  private readonly registrationPageWebAPIUrl: string = `${environment.webApiUrl}/user`;
 
   constructor(private httpClient: HttpClient) {}
 

@@ -19,7 +19,7 @@
           [ngClass]="{
             'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('name')
           }"
-          placeholder="First name" />
+          placeholder="Name" />
         <small class="p-error" *ngIf="isInputInvalidAndTouchedOrDirty('name')">
           This field is required
         </small>
@@ -36,8 +36,25 @@
           [ngClass]="{
             'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('surname')
           }"
-          placeholder="Last name" />
+          placeholder="Surname" />
         <small class="p-error" *ngIf="isInputInvalidAndTouchedOrDirty('surname')">
+          This field is required
+        </small>
+      </div>
+      <div class="p-fluid">
+        <label for="nickname-input" class="field-label">
+          <p class="required">Nickname</p>
+        </label>
+        <input
+          id="nickname-input"
+          type="text"
+          formControlName="nickname"
+          pInputText
+          [ngClass]="{
+            'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('nickname')
+          }"
+          placeholder="Nickname" />
+        <small class="p-error" *ngIf="isInputInvalidAndTouchedOrDirty('nickname')">
           This field is required
         </small>
       </div>

@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { RegistrationPageModule } from './pages/registration/registration.module';
+import { RegistrationModule } from './pages/registration/registration.module';
 import {ToastModule} from 'primeng/toast';
 
 @NgModule({
@@ -15,7 +15,7 @@ import {ToastModule} from 'primeng/toast';
     imports: [
         BrowserModule,
         AppRoutingModule,
-        RegistrationPageModule,
+        RegistrationModule,
         ToastModule,
     ]
 })
