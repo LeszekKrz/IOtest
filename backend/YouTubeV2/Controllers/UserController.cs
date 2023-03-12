@@ -19,7 +19,7 @@ namespace YouTubeV2.Api.Controllers
         {
             await _userService.RegisterAsync(registerDto, cancellationToken);
 
-            return StatusCode(200);
+            return Ok();
         }
     }
 }

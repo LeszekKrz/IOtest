@@ -25,10 +25,10 @@ namespace YouTubeV2.Api.Tests
             var respawner = await Respawner.CreateAsync(connection, new RespawnerOptions
             {
                 TablesToIgnore = new Table[]
-                    {
-                        "__EFMigrationsHistory",
-                        "AspNetRoles",
-                    }
+                {
+                    "__EFMigrationsHistory",
+                    "AspNetRoles",
+                }
             });
 
             await respawner.ResetAsync(connection);
