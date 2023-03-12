@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using YouTubeV2.Application.Model;
+using YouTubeV2.Application.Constants;
 
 namespace YouTubeV2.Application.EntityConfiguration
 {
@@ -8,18 +9,10 @@ namespace YouTubeV2.Application.EntityConfiguration
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasKey(x => x.Id);
-
-            builder.HasIndex(x => x.NormalizedEmail).IsUnique();
-            builder.HasIndex(x => x.NormalizedUserName).IsUnique();
-
-            builder.Property(x => x.Name);
-            builder.Property(x => x.Surname);
-
-            builder.HasMany(x => x.UserRoles)
-                .WithOne(x => x.User)
-                .HasForeignKey(userRole => userRole.UserId)
-                .IsRequired();
+            builder.Property(x => x.Name).HasMaxLength(UserConstants.MaxUserNameLength);
+            builder.Property(x => x.Surname).HasMaxLength(UserConstants.MaxUserSurnameLength);
+            builder.Property(x => x.Email).HasMaxLength(UserConstants.MaxUserEmailLength);
+            builder.Property(x => x.UserName).HasMaxLength(UserConstants.MaxUserNicknameLength);
         }
     }
 }

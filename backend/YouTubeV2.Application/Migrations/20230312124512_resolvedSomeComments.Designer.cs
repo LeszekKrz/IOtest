@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YouTubeV2.Application;
 
@@ -11,9 +12,11 @@ using YouTubeV2.Application;
 namespace YouTubeV2.Application.Migrations
 {
     [DbContext(typeof(YTContext))]
-    partial class YTContextModelSnapshot : ModelSnapshot
+    [Migration("20230312124512_resolvedSomeComments")]
+    partial class resolvedSomeComments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,21 +160,18 @@ namespace YouTubeV2.Application.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f70f713f-6b7f-4940-8545-43a65671a8c3",
-                            Name = "USER",
-                            NormalizedName = "USER"
+                            Id = "8a21a17b-e8e6-4ee9-a951-6e8d1b8c073f",
+                            Name = "USER"
                         },
                         new
                         {
-                            Id = "a9fa4c99-8b0b-4163-96a8-a427888d9ab5",
-                            Name = "CREATOR",
-                            NormalizedName = "CREATOR"
+                            Id = "468a3f2a-a631-4afe-88bf-e8010494e937",
+                            Name = "CREATOR"
                         },
                         new
                         {
-                            Id = "f6a4d4f8-d3ea-4cc2-8fb1-48d4e81465b5",
-                            Name = "ADMIN",
-                            NormalizedName = "ADMIN"
+                            Id = "9ba17fb3-7b1b-4033-bf09-1be3b4950e6a",
+                            Name = "ADMIN"
                         });
                 });
 

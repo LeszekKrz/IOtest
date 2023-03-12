@@ -1,6 +1,6 @@
-﻿namespace YouTubeV2.Application
+﻿namespace YouTubeV2.Application.Constants
 {
-    public static class Constants
+    public static class UserConstants
     {
         public static int MaxUserNameLength = 20;
         public static int MaxUserSurnameLength = 20;

@@ -5,10 +5,8 @@ namespace YouTubeV2.Application.Model
 {
     public class User : IdentityUser
     {
-        public string Name;
-        public string Surname;
-
-        public ICollection<UserRole> UserRoles;
+        public string Name { get; init; }
+        public string Surname { get; init; }
 
         public User() { }
 

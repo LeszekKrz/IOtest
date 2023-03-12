@@ -1,31 +1,25 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Services;
-using YouTubeV2.Application.Validator;
 
 namespace YouTubeV2.Api.Controllers
 {
     [ApiController]
-    [Route("user")]
-    public class UserController
+    public class UserController : ControllerBase
     {
         private readonly UserService _userService;
 
-        private readonly RegisterDtoValidator _registerDtoValidator;
-
-        public UserController(UserService userService, RegisterDtoValidator registerValidator)
+        public UserController(UserService userService)
         {
             _userService = userService;
-            _registerDtoValidator = registerValidator;
         }
 
         [HttpPost("register")]
-        public async Task Register([FromBody] RegisterDto registerDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> RegisterAsync([FromBody] RegisterDto registerDto, CancellationToken cancellationToken)
         {
-            await _registerDtoValidator.ValidateAndThrowAsync(registerDto, cancellationToken);
-
             await _userService.RegisterAsync(registerDto, cancellationToken);
+
+            return StatusCode(200);
         }
     }
 }

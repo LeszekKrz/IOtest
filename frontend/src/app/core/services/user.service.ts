@@ -12,11 +12,11 @@ export class UserService {
   private authenticationStateChangeSubject = new Subject<boolean>();
   public authenticationStateChanged = this.authenticationStateChangeSubject.asObservable();
 
-  private readonly registrationPageWebAPIUrl: string = `${environment.webApiUrl}/user`;
+  private readonly registrationPageWebAPIUrl: string = `${environment.webApiUrl}`;
 
   constructor(private httpClient: HttpClient) {}
 
-  registerUser(userForRegistration: UserForRegistrationDTO): Observable<ErrorResponseDTO[]> {
-    return this.httpClient.post<ErrorResponseDTO[]>(`${this.registrationPageWebAPIUrl}/register`, userForRegistration);
+  registerUser(userForRegistration: UserForRegistrationDTO): Observable<void> {
+    return this.httpClient.post<void>(`${this.registrationPageWebAPIUrl}/register`, userForRegistration);
   }
 }

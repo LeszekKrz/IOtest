@@ -11,7 +11,7 @@ namespace YouTubeV2.Application
         Role,
         string,
         IdentityUserClaim<string>,
-        UserRole,
+        IdentityUserRole<string>,
         IdentityUserLogin<string>,
         IdentityRoleClaim<string>,
         IdentityUserToken<string>>

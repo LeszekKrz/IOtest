@@ -9,8 +9,7 @@ import { UserService } from '../../core/services/user.service';
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
-  styleUrls: ['./registration.component.scss'],
-  providers: [MessageService]
+  styleUrls: ['./registration.component.scss']
 })
 export class RegistrationComponent implements OnInit, OnDestroy {
   registerForm!: FormGroup;
@@ -93,14 +92,14 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Registration successful. Email confirmation has been sent'
+          detail: 'Registration successful.'
         })
       })
     );
     this.subscriptions.push(this.doWithLoading(register$).subscribe({
-      complete: () => {
-        this.router.navigate(['login']);
-      }
+      // complete: () => {
+      //   this.router.navigate(['login']);
+      // }
     }));
   }
 

@@ -8,13 +8,9 @@ namespace YouTubeV2.Application.EntityConfiguration
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
-            builder.HasMany(x => x.UsersRoles)
-                .WithOne(x => x.Role)
-                .HasForeignKey(userRole => userRole.RoleId)
-                .IsRequired();
-
             builder.HasData(
                 new Role(Role.User),
+                new Role(Role.Creator),
                 new Role(Role.Admin));
         }
     }
