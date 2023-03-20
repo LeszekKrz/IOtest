@@ -12,6 +12,7 @@ namespace YouTubeV2.Application.Validator
         {
             RuleFor(x => x.name).NotNull().Length(1, UserConstants.MaxUserNameLength);
             RuleFor(x => x.surname).NotNull().Length(1, UserConstants.MaxUserSurnameLength);
+            RuleFor(x => x.userType).Must(userType => userType.ToUpper() == Role.Simple.ToUpper() || userType.ToUpper() == Role.Creator.ToUpper());
 
             RuleFor(x => x.nickname)
                 .NotNull()

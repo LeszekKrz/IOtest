@@ -46,7 +46,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         Validators.pattern(this.containsNumberRegex),
         Validators.pattern(this.constainsSpecialCharacterRegex)
       ]),
-      confirmPassword: new FormControl('', [Validators.required])
+      confirmPassword: new FormControl('', [Validators.required]),
+      userType: new FormControl<boolean>(false),
     }, {
       validators: [
         this.passwordsNotMatching,
@@ -85,6 +86,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       nickname: this.registerForm.get('nickname')!.value,
       email: this.registerForm.get('email')!.value,
       password: this.registerForm.get('password')!.value,
+      userType: this.registerForm.get('userType')!.value ? 'Creator' : 'Simple'
     };
 
     const register$ = this.userService.registerUser(userForRegistration).pipe(
