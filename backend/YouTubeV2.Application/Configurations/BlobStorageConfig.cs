@@ -2,7 +2,7 @@
 {
     public class BlobStorageConfig
     {
-        public string UserAvatarsContainerName { get; } = null!;
-        public string VideoThumbnailsContainerName { get; } = null!;
+        public string UserAvatarsContainerName { get; init; } = null!;
+        public string VideoThumbnailsContainerName { get; init; } = null!;
     }
 }
