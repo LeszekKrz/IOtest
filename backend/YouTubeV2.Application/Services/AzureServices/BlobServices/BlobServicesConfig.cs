@@ -2,7 +2,7 @@
 {
     public static class BlobServicesConfig
     {
-        public const string _userAvatarsContainerName = "useravatars";
-        public const string _videoThumbnailsContainerName = "videothumbnails";
+        public const string userAvatarsContainerName = "useravatars";
+        public const string videoThumbnailsContainerName = "videothumbnails";
     }
 }

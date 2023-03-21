@@ -1,5 +1,4 @@
-﻿using Azure;
-using Azure.Storage.Blobs;
+﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
 namespace YouTubeV2.Application.Services.AzureServices.BlobServices
@@ -19,9 +18,13 @@ namespace YouTubeV2.Application.Services.AzureServices.BlobServices
             return blobContainerClient.GetBlobClient(fileName).Uri;
         }
 
-        public Task UploadImageAsync(byte[] bytes, string fileName, string blobContainerName)
+        public async Task UploadImageAsync(byte[] bytes, string fileName, string blobContainerName)
         {
-            throw new NotImplementedException();
+            BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(blobContainerName);
+            BlobClient blobClient =  blobContainerClient.GetBlobClient(fileName);
+            await blobClient.UploadAsync(
+                new BinaryData(bytes),
+                new BlobUploadOptions { HttpHeaders = new BlobHttpHeaders { ContentType = "image/png" } });
         }
     }
 }
