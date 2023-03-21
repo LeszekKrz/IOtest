@@ -22,7 +22,7 @@ builder.Services.AddDbContext<YTContext>(
     options => options.UseSqlServer(connectionString));
 
 builder.Services.AddTransient<UserService>();
-builder.Services.AddSingleton(x => new BlobServiceClient(Environment.GetEnvironmentVariable("AZURE_IMAGES_BLOB_STORACE_CONNECTION_STRING")));
+builder.Services.AddSingleton(x => new BlobServiceClient(Environment.GetEnvironmentVariable("AZURE_IMAGES_BLOB_STORAGE_CONNECTION_STRING")));
 builder.Services.AddSingleton<IBlobImageService, BlobImageService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
