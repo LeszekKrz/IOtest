@@ -2,7 +2,7 @@
 {
     public interface IBlobImageService
     {
-        public Task UploadImageAsync(byte[] fileContent, string fileName, string blobContainerName);
-        public Uri GetImageUrl(string fileName, string blobContainerName);
+        Task UploadImageAsync(byte[] fileContent, string fileName, string blobContainerName, CancellationToken cancellationToken = default);
+        Uri GetImageUrl(string fileName, string blobContainerName);
     }
 }

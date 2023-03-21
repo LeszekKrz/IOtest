@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using YouTubeV2.Api.Middleware;
 using YouTubeV2.Application;
+using YouTubeV2.Application.Configurations;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services;
 using YouTubeV2.Application.Services.AzureServices.BlobServices;
@@ -17,7 +18,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-string connectionString = builder.Configuration.GetConnectionString("Db");
+builder.Services.AddOptions<BlobStorageConfig>().Bind(builder.Configuration.GetSection("BlobStorage"));
+
+string connectionString = builder.Configuration.GetConnectionString("Db")!;
 builder.Services.AddDbContext<YTContext>(
     options => options.UseSqlServer(connectionString));
 
