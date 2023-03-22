@@ -16,14 +16,19 @@ namespace YouTubeV2.Application.Services.AzureServices.BlobServices
             _blobStorageConfig = blobStorageConfig.Value;
         }
 
-        public Uri GetImageUrl(string fileName, string blobContainerName)
+        public Uri GetProfilePicture(string fileName) => GetImageUrl(fileName, _blobStorageConfig.UserAvatarsContainerName);
+
+        public async Task UploadProfilePictureAsync(byte[] bytes, string fileName, CancellationToken cancellationToken = default) =>
+            await UploadImageAsync(bytes, fileName, _blobStorageConfig.UserAvatarsContainerName, cancellationToken);
+
+        private Uri GetImageUrl(string fileName, string blobContainerName)
         {
             BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(blobContainerName);
 
             return blobContainerClient.GetBlobClient(fileName).Uri;
         }
 
-        public async Task UploadImageAsync(byte[] bytes, string fileName, string blobContainerName, CancellationToken cancellationToken = default)
+        private async Task UploadImageAsync(byte[] bytes, string fileName, string blobContainerName, CancellationToken cancellationToken = default)
         {
             BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(blobContainerName);
             BlobClient blobClient =  blobContainerClient.GetBlobClient(fileName);
@@ -32,8 +37,5 @@ namespace YouTubeV2.Application.Services.AzureServices.BlobServices
                 new BlobUploadOptions { HttpHeaders = new BlobHttpHeaders { ContentType = "image/png" } },
                 cancellationToken);
         }
-
-        public async Task UploadProfilePictureAsync(byte[] bytes, string fileName, CancellationToken cancellationToken = default) =>
-            UploadImageAsync(bytes, fileName, _blobStorageConfig.UserAvatarsContainerName, cancellationToken);
     }
 }

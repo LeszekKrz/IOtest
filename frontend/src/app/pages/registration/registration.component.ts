@@ -195,7 +195,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     return control.touched || control.dirty;
   }
 
-  handleOnRemove(event: any){
+  handleOnRemove(){
     this.image = "";
   }
 

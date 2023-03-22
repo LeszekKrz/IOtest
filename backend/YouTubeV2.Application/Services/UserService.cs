@@ -32,8 +32,17 @@ namespace YouTubeV2.Application.Services
             if (!result.Succeeded)
                 throw new BadRequestException(result.Errors.Select(error => new ErrorResponseDTO(error.Description)));
 
-            if (registerDto.userType.ToUpper() == Role.Simple.ToUpper()) result = await _userManager.AddToRoleAsync(user, Role.Simple);
-            else if (registerDto.userType.ToUpper() == Role.Creator.ToUpper()) result = await _userManager.AddToRoleAsync(user, Role.Creator);
+            if (registerDto.userType.Equals(Role.Simple, StringComparison.InvariantCultureIgnoreCase)) result = await _userManager.AddToRoleAsync(user, Role.Simple);
+            else if (registerDto.userType.Equals(Role.Creator, StringComparison.InvariantCultureIgnoreCase))
+            {
+                result = await _userManager.AddToRoleAsync(user, Role.Simple);
+
+                if (!result.Succeeded)
+                    throw new BadRequestException(result.Errors.Select(error => new ErrorResponseDTO(error.Description)));
+
+                result = await _userManager.AddToRoleAsync(user, Role.Creator);
+            }
+
 
             if (!result.Succeeded)
                 throw new BadRequestException(result.Errors.Select(error => new ErrorResponseDTO(error.Description)));
