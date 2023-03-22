@@ -26,6 +26,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   passwordEyeIcon = "pi-eye";
   confirmPasswordInputType = "password";
   confirmPasswordEyeIcon = "pi-eye";
+  image: string = "";
 
   constructor(private formBuilder: FormBuilder,
     private userService: UserService,
@@ -46,7 +47,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         Validators.pattern(this.containsNumberRegex),
         Validators.pattern(this.constainsSpecialCharacterRegex)
       ]),
-      confirmPassword: new FormControl('', [Validators.required])
+      confirmPassword: new FormControl('', [Validators.required]),
+      userType: new FormControl<boolean>(false),
     }, {
       validators: [
         this.passwordsNotMatching,
@@ -85,6 +87,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       nickname: this.registerForm.get('nickname')!.value,
       email: this.registerForm.get('email')!.value,
       password: this.registerForm.get('password')!.value,
+      userType: this.registerForm.get('userType')!.value ? 'Creator' : 'Simple',
+      avatarImage: this.image,
     };
 
     const register$ = this.userService.registerUser(userForRegistration).pipe(
@@ -189,5 +193,28 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   private isInputTouchedOrDirty(control: AbstractControl): boolean {
     return control.touched || control.dirty;
+  }
+
+  handleOnRemove(){
+    this.image = "";
+  }
+
+  handleFileSelect(event: any){
+    var files = event.files;
+    var file = files[0];
+
+  if (files && file) {
+    var reader = new FileReader();
+
+    reader.onload = this._handleReaderLoaded.bind(this);
+
+    reader.readAsBinaryString(file);
+    }
+  }
+
+  _handleReaderLoaded(event: any) {
+    var binaryString = event.target.result;
+    this.image = btoa(binaryString);
+    console.log(btoa(binaryString));
   }
 }

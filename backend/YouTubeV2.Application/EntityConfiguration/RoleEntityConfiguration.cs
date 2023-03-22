@@ -9,9 +9,9 @@ namespace YouTubeV2.Application.EntityConfiguration
         public void Configure(EntityTypeBuilder<Role> builder)
         {
             builder.HasData(
-                new Role(Role.User),
+                new Role(Role.Simple),
                 new Role(Role.Creator),
-                new Role(Role.Admin));
+                new Role(Role.Administrator));
         }
     }
 }

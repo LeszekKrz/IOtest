@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RegistrationModule } from './pages/registration/registration.module';
-import {ToastModule} from 'primeng/toast';
+import { ToastModule } from 'primeng/toast';
 import { MenuModule } from './menu/menu.module';
 import { MessageService } from 'primeng/api';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -29,7 +29,7 @@ import { HttpErrorInterceptor } from './core/interceptors/http-error-interceptor
         RegistrationModule,
         ToastModule,
         MenuModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
     ]
 })
 export class AppModule { }

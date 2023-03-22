@@ -4,4 +4,6 @@ export interface UserForRegistrationDTO {
   name: string;
   surname: string;
   password: string;
+  userType: string;
+  avatarImage: string;
 }
