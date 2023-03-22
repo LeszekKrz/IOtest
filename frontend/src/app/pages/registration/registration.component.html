@@ -155,9 +155,27 @@
       </div>
       <div class="p-fluid">
         <label for="userType-input" class="field-label">
-          <p class="required">Creator</p>
+          <p>Creator</p>
         </label>
         <p-inputSwitch id="userType-input" formControlName="userType"/>
+      </div>
+      <div class="p-fluid">
+        <label for="avatarImage-input" class="field-label">
+          <p>Avatar Image</p>
+        </label>
+        <p-fileUpload
+          #fileUpload
+          name="signedContract[]"
+          accept="image/png, image/gif, image/jpeg"
+          [fileLimit]="1"
+          invalidFileTypeMessageSummary="Allowed file type is .png/.jpeg"
+          invalidFileTypeMessageDetail=""
+          [showUploadButton]="false"
+          [showCancelButton]="false"
+          (onSelect)="handleFileSelect($event)"
+          (onRemove)="handleOnRemove($event)"
+          styleClass="p-fileupload-style">
+        </p-fileUpload>
       </div>
       <p-button type="submit" styleClass="p-button-style" label="Register"></p-button>
     </form>

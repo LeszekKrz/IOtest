@@ -1,15 +1,19 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Microsoft.Extensions.Options;
+using YouTubeV2.Application.Configurations;
 
 namespace YouTubeV2.Application.Services.AzureServices.BlobServices
 {
     public class BlobImageService : IBlobImageService
     {
         private readonly BlobServiceClient _blobServiceClient;
+        private readonly BlobStorageConfig _blobStorageConfig;
 
-        public BlobImageService(BlobServiceClient blobServiceClient)
+        public BlobImageService(BlobServiceClient blobServiceClient, IOptions<BlobStorageConfig> blobStorageConfig)
         {
             _blobServiceClient = blobServiceClient;
+            _blobStorageConfig = blobStorageConfig.Value;
         }
 
         public Uri GetImageUrl(string fileName, string blobContainerName)
@@ -28,5 +32,8 @@ namespace YouTubeV2.Application.Services.AzureServices.BlobServices
                 new BlobUploadOptions { HttpHeaders = new BlobHttpHeaders { ContentType = "image/png" } },
                 cancellationToken);
         }
+
+        public async Task UploadProfilePictureAsync(byte[] bytes, string fileName, CancellationToken cancellationToken = default) =>
+            UploadImageAsync(bytes, fileName, _blobStorageConfig.UserAvatarsContainerName, cancellationToken);
     }
 }
