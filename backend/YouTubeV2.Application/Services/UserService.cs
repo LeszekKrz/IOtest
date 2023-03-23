@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -6,6 +7,7 @@ using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Exceptions;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services.AzureServices.BlobServices;
+using YouTubeV2.Application.Services.JwtFeatures;
 using YouTubeV2.Application.Validator;
 
 namespace YouTubeV2.Application.Services
@@ -15,12 +17,33 @@ namespace YouTubeV2.Application.Services
         private readonly UserManager<User> _userManager;
         private readonly IBlobImageService _blobImageService;
         private readonly RegisterDtoValidator _registerDtoValidator;
+        private readonly LoginDtoValidator _loginDtoValidator;
+        //private readonly JwtHandler _jwtHandler;
 
-        public UserService(UserManager<User> userManager, IBlobImageService blobImageService, RegisterDtoValidator registerDtoValidator)
+        public UserService(UserManager<User> userManager, IBlobImageService blobImageService,
+            RegisterDtoValidator registerDtoValidator, LoginDtoValidator loginDtoValidator/*, JwtHandler jwtHandler*/)
         {
             _userManager = userManager;
             _blobImageService = blobImageService;
             _registerDtoValidator = registerDtoValidator;
+            _loginDtoValidator = loginDtoValidator;
+            //_jwtHandler = jwtHandler;
+        }
+
+        public async Task<LoginResponseDto> LoginAsync(LoginDto loginDto, CancellationToken cancellationToken)
+        {
+            await _loginDtoValidator.ValidateAndThrowAsync(loginDto, cancellationToken);
+
+            User user = await GetUserByEmailAsync(loginDto.email);
+
+            if (!await _userManager.IsEmailConfirmedAsync(user))
+                throw new BadRequestException(new ErrorResponseDTO[1] { new ErrorResponseDTO("Email is not confirmed") });
+
+            if (!await _userManager.CheckPasswordAsync(user, loginDto.password))
+                throw new BadRequestException(new ErrorResponseDTO[1] { new ErrorResponseDTO("Provided password is invalid") });
+
+            //return new LoginResponseDto(await _jwtHandler.GenerateTokenAsync(user));
+            return new LoginResponseDto("dupa");
         }
 
         public async Task RegisterAsync(RegisterDto registerDto, CancellationToken cancellationToken)
@@ -52,6 +75,13 @@ namespace YouTubeV2.Application.Services
             var newUser = await _userManager.FindByEmailAsync(registerDto.email);
             byte[] image = Convert.FromBase64String(registerDto.avatarImage);
             await _blobImageService.UploadProfilePictureAsync(image, user.Id, cancellationToken);
+        }
+        private async Task<User> GetUserByEmailAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                throw new BadRequestException(new ErrorResponseDTO[] { new("There is no registered user with email provided") });
+            return user;
         }
     }
 }

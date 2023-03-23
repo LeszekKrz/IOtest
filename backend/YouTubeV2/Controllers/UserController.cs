@@ -21,5 +21,11 @@ namespace YouTubeV2.Api.Controllers
 
             return Ok();
         }
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginAsync(LoginDto loginDto, CancellationToken cancellationToken)
+        {
+            LoginResponseDto loginResponseDto = await _userService.LoginAsync(loginDto, cancellationToken);
+            return Ok(loginResponseDto);
+        }
     }
 }

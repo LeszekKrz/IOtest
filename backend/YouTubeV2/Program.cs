@@ -29,6 +29,7 @@ builder.Services.AddSingleton(x => new BlobServiceClient(Environment.GetEnvironm
 builder.Services.AddSingleton<IBlobImageService, BlobImageService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
 
 builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<YTContext>();
