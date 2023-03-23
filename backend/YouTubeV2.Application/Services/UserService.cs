@@ -41,20 +41,5 @@ namespace YouTubeV2.Application.Services
             if (!result.Succeeded)
                 throw new BadRequestException(result.Errors.Select(error => new ErrorResponseDTO(error.Description)));
         }
-
-        public async Task<AuthenticationResponseDTO> LoginUserAsync(UserForAuthenticationDTO userForAuthentication, CancellationToken cancellationToken)
-        {
-            await _serviceProvider.GetService<IValidator<UserForAuthenticationDTO>>().ValidateAndThrowAsync(userForAuthentication, cancellationToken);
-
-            User user = await _authenticationManager.(userForAuthentication.Email);
-
-            if (!await _userManager.IsEmailConfirmedAsync(user))
-                throw new BadRequestException(new ErrorResponseDTO[1] { new ErrorResponseDTO("Email is not confirmed") });
-
-            if (!await _userManager.CheckPasswordAsync(user, userForAuthentication.Password))
-                throw new BadRequestException(new ErrorResponseDTO[1] { new ErrorResponseDTO("Provided password is invalid") });
-
-            return new AuthenticationResponseDTO(await _jwtHandler.GenerateTokenAsync(user));
-        }
     }
 }
