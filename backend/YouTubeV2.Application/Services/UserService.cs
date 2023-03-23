@@ -18,16 +18,16 @@ namespace YouTubeV2.Application.Services
         private readonly IBlobImageService _blobImageService;
         private readonly RegisterDtoValidator _registerDtoValidator;
         private readonly LoginDtoValidator _loginDtoValidator;
-        //private readonly JwtHandler _jwtHandler;
+        private readonly JwtHandler _jwtHandler;
 
         public UserService(UserManager<User> userManager, IBlobImageService blobImageService,
-            RegisterDtoValidator registerDtoValidator, LoginDtoValidator loginDtoValidator/*, JwtHandler jwtHandler*/)
+            RegisterDtoValidator registerDtoValidator, LoginDtoValidator loginDtoValidator, JwtHandler jwtHandler)
         {
             _userManager = userManager;
             _blobImageService = blobImageService;
             _registerDtoValidator = registerDtoValidator;
             _loginDtoValidator = loginDtoValidator;
-            //_jwtHandler = jwtHandler;
+            _jwtHandler = jwtHandler;
         }
 
         public async Task<LoginResponseDto> LoginAsync(LoginDto loginDto, CancellationToken cancellationToken)
@@ -42,8 +42,8 @@ namespace YouTubeV2.Application.Services
             if (!await _userManager.CheckPasswordAsync(user, loginDto.password))
                 throw new BadRequestException(new ErrorResponseDTO[1] { new ErrorResponseDTO("Provided password is invalid") });
 
-            //return new LoginResponseDto(await _jwtHandler.GenerateTokenAsync(user));
-            return new LoginResponseDto("dupa");
+            return new LoginResponseDto(await _jwtHandler.GenerateTokenAsync(user));
+            //return new LoginResponseDto("dupa");
         }
 
         public async Task RegisterAsync(RegisterDto registerDto, CancellationToken cancellationToken)
