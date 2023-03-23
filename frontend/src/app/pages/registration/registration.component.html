@@ -153,6 +153,45 @@
           </small>
         </ng-template>
       </div>
+      <div class="p-fluid">
+        <label for="userType-input" class="field-label">
+          <p>Creator</p>
+        </label>
+        <p-inputSwitch id="userType-input" formControlName="userType"/>
+      </div>
+      <div class="p-fluid">
+        <label for="avatarImage-input" class="field-label">
+          <p>Avatar Image</p>
+        </label>
+        <p-fileUpload
+          #fileUpload
+          name="signedContract[]"
+          accept="image/png, image/jpeg"
+          [fileLimit]="1"
+          invalidFileTypeMessageSummary="Allowed file type is .png/.jpeg"
+          invalidFileTypeMessageDetail=""
+          [showUploadButton]="false"
+          [showCancelButton]="false"
+          (onSelect)="handleFileSelect($event)"
+          (onRemove)="handleOnRemove()"
+          styleClass="p-fileupload-style">
+
+          <ng-template pTemplate="content" let-files>
+            <div *ngIf="image == ''">
+              <div class="flex flex-column justify-content-center">
+                <i class="flex justify-content-center pi pi-download download-icon"></i>
+                <div class="flex justify-content-center">
+                  Drop or&nbsp;
+                  <span class="browse-button" (click)="fileUpload.choose()">
+                    browse
+                  </span>
+                  &nbsp;uploaded image
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-fileUpload>
+      </div>
       <p-button type="submit" styleClass="p-button-style" label="Register"></p-button>
     </form>
   </p-card>

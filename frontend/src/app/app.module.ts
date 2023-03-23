@@ -31,7 +31,7 @@ import { LoginModule } from './pages/login/login.module';
         LoginModule,
         ToastModule,
         MenuModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
     ]
 })
 export class AppModule { }

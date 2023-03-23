@@ -33,7 +33,7 @@ namespace YouTubeV2.Api.Tests
             // Arrange
             var httpClient = _webApplicationFactory.CreateClient();
 
-            var registerDto = new RegisterDto("mail@mail.com", "Senior", "Generator", "Frajdy", "asdf1243@#$GJH");
+            var registerDto = new RegisterDto("mail@mail.com", "Senior", "Generator", "Frajdy", "asdf1243@#$GJH", Role.Simple, "");
 
             var stringContent = new StringContent(JsonConvert.SerializeObject(registerDto), Encoding.UTF8, "application/json");
 
@@ -58,8 +58,7 @@ namespace YouTubeV2.Api.Tests
                     userManager.PasswordHasher.VerifyHashedPassword(userResult, userResult.PasswordHash, registerDto.password);
 
                     var roles = await userManager.GetRolesAsync(userResult);
-                    roles.Should().Contain(Role.User);
-                    roles.Should().Contain(Role.Creator);
+                    roles.Should().Contain(Role.Simple);
                 });
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);

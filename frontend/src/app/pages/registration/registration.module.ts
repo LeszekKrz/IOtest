@@ -10,8 +10,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { AutoFocusModule } from 'primeng/autofocus';
-
-
+import {InputSwitchModule} from 'primeng/inputswitch';
+import { FileUploadModule } from 'primeng/fileupload';
 
 @NgModule({
   declarations: [
@@ -32,6 +32,8 @@ import { AutoFocusModule } from 'primeng/autofocus';
     InputNumberModule,
     ProgressSpinnerModule,
     AutoFocusModule,
+    InputSwitchModule,
+    FileUploadModule
   ]
 })
 export class RegistrationModule { }
