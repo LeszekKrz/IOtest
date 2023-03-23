@@ -3,12 +3,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RegistrationModule } from './pages/registration/registration.module';
-import {ToastModule} from 'primeng/toast';
+import { ToastModule } from 'primeng/toast';
 import { MenuModule } from './menu/menu.module';
 import { MessageService } from 'primeng/api';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './core/interceptors/http-error-interceptor';
+import { LoginModule } from './pages/login/login.module';
 
 @NgModule({
     declarations: [
@@ -27,6 +28,7 @@ import { HttpErrorInterceptor } from './core/interceptors/http-error-interceptor
         BrowserModule,
         AppRoutingModule,
         RegistrationModule,
+        LoginModule,
         ToastModule,
         MenuModule,
         BrowserAnimationsModule

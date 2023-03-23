@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Server.HttpSys;
 using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Exceptions;
 using YouTubeV2.Application.Model;
@@ -11,11 +12,16 @@ namespace YouTubeV2.Application.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly RegisterDtoValidator _registerDtoValidator;
+        private readonly AuthenticationManager _authenticationManager;
 
-        public UserService(UserManager<User> userManager, RegisterDtoValidator registerDtoValidator)
+        public UserService(
+            UserManager<User> userManager,
+            RegisterDtoValidator registerDtoValidator,
+            AuthenticationManager authenticationManager)
         {
             _userManager = userManager;
             _registerDtoValidator = registerDtoValidator;
+            _authenticationManager = authenticationManager;
         }
 
         public async Task RegisterAsync(RegisterDto registerDto, CancellationToken cancellationToken)
@@ -34,6 +40,21 @@ namespace YouTubeV2.Application.Services
             result = await _userManager.AddToRoleAsync(user, Role.Creator);
             if (!result.Succeeded)
                 throw new BadRequestException(result.Errors.Select(error => new ErrorResponseDTO(error.Description)));
+        }
+
+        public async Task<AuthenticationResponseDTO> LoginUserAsync(UserForAuthenticationDTO userForAuthentication, CancellationToken cancellationToken)
+        {
+            await _serviceProvider.GetService<IValidator<UserForAuthenticationDTO>>().ValidateAndThrowAsync(userForAuthentication, cancellationToken);
+
+            User user = await _authenticationManager.(userForAuthentication.Email);
+
+            if (!await _userManager.IsEmailConfirmedAsync(user))
+                throw new BadRequestException(new ErrorResponseDTO[1] { new ErrorResponseDTO("Email is not confirmed") });
+
+            if (!await _userManager.CheckPasswordAsync(user, userForAuthentication.Password))
+                throw new BadRequestException(new ErrorResponseDTO[1] { new ErrorResponseDTO("Provided password is invalid") });
+
+            return new AuthenticationResponseDTO(await _jwtHandler.GenerateTokenAsync(user));
         }
     }
 }
