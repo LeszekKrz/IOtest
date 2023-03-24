@@ -51,7 +51,7 @@ jobs:
         npm run build --if-present
 #        npm run test --if-present
     - name: get path
-      run: ls
+      run: pwd
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v3
