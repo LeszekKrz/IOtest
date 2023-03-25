@@ -20,6 +20,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Instal Sql server
+      uses: potatoqualitee/mssqlsuite@v1.7
+      with:
+        install: sqlengine, sqlpackage
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
@@ -28,7 +33,8 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: find Json
-      run: ls
+      
+    - name: Migrate
+      run: ../scripts/Database-Update.ps1
     - name: Test
       run: dotnet test --no-build --verbosity normal
