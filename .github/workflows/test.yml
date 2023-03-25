@@ -31,6 +31,8 @@ jobs:
         dotnet-version: 7.0.x
     - name: Restore dependencies
       run: dotnet restore
+    - name: Check
+      run: ls ../scripts/Database-Update.ps1
     - name: Migrate
       run:  ../scripts/Database-Update.ps1
     - name: Build
