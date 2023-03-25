@@ -44,6 +44,9 @@ jobs:
       run:  ../scripts/Database-Update.ps1
       shell: powershell
       
+    - name: Run sqlclient
+      run: sqlcmd -S localhost -U sa -P dbatools.I0 -d tempdb -Q "SELECT @@version;"
+      
     - name: Build
       run: dotnet build --no-restore
       
