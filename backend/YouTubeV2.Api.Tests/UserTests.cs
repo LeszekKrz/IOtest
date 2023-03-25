@@ -21,8 +21,6 @@ namespace YouTubeV2.Api.Tests
         [TestInitialize]
         public async Task Initialize()
         {
-            var dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            Directory.SetCurrentDirectory(dirName);
             _webApplicationFactory = Setup.GetWebApplicationFactory();
             var config = _webApplicationFactory.Services.GetService<IConfiguration>();
             var connection = config.GetConnectionString("Db");
