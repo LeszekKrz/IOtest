@@ -35,6 +35,8 @@ jobs:
       run: ls ../scripts/Database-Update.ps1
     - name: Migrate
       run:  ../scripts/Database-Update.ps1
+      shell: powershell
+      
     - name: Build
       run: dotnet build --no-restore
     - name: Test
