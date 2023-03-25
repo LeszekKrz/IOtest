@@ -34,7 +34,7 @@ jobs:
     - name: Check
       run: ls ../scripts/Database-Update.ps1
     - name: Migrate
-      run:  ../scripts/Database-Update.ps1
+      run:  ../scripts/Database-Update.ps12
       shell: powershell
       
     - name: Build
