@@ -9,6 +9,10 @@ on:
       - 'sprint*'
       - 'main'
 
+defaults:
+ run:
+  working-directory: backend
+
 jobs:
   build:
 
