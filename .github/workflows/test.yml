@@ -25,9 +25,7 @@ jobs:
       with:
         install: sqlengine, sqlpackage
     - name: Migrate
-      run:  ls ../
-    - name: check
-      run: ls ../scripts
+      run:  ../scripts/Database-Update.ps1
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
