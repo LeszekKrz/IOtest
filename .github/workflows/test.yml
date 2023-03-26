@@ -37,11 +37,8 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
       
-    - name: Check
-      run: ls ../scripts/Database-Update.ps1
-      
     - name: Migrate
-      run:  ../scripts/Database-Update.ps1
+      run:  ../scripts/Github-Database-Update.ps1
       shell: powershell
       
     - name: Run sqlclient
