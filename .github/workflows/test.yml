@@ -12,6 +12,9 @@ on:
 defaults:
  run:
   working-directory: backend
+  
+env:
+  AZURE_IMAGES_BLOB_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_IMAGES_BLOB_STORAGE_CONNECTION_STRING }}
 
 jobs:
   build:
