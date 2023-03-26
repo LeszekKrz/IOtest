@@ -44,6 +44,9 @@ jobs:
     - name: Run sqlclient
       run: sqlcmd -S localhost -U sa -P dbatools.I0 -d YouTubeV2Test -Q "SELECT * FROM information_schema.tables;"
       
+    - name: Remove old appsettings
+      run: rmv YouTubeV2.Api.Tests/appsettings.test.json
+      
     - name: Swap appsetings
       run: mv YouTubeV2.Api.Tests/github.appsettings.test.json YouTubeV2.Api.Tests/appsettings.test.json
       
