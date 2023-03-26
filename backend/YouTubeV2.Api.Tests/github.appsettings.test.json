@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "Db": "Server=localhost;Database=YouTubeV2Test;User Id=sa;Password=dbatools.I0;TrustServerCertificate=True"
+  }
+}

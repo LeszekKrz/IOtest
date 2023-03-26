@@ -37,7 +37,7 @@ namespace YouTubeV2.Api.Tests
         internal static WebApplicationFactory<Program> GetWebApplicationFactory()
         {
             var projectDir = Directory.GetCurrentDirectory();
-            var configPath = Path.Combine(projectDir, @"..\..\..\appsettings.test.json");
+            var configPath = Path.Combine(projectDir, @"appsettings.test.json");
 
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.test.json")
