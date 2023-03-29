@@ -5,7 +5,7 @@
 export const environment = {
     production: false,
     webApiUrl: 'https://localhost:7133',
-    webUrl: 'https://localhost:7133',
+    webUrl: 'https://wetubefront.azurewebsites.net',
   };
   
   /*
