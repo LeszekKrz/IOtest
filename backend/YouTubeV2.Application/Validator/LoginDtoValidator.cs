@@ -11,7 +11,11 @@ namespace YouTubeV2.Application.Validator
         public LoginDtoValidator(UserManager<User> userManager)
         {
             RuleFor(x => x.email)
-               .NotNull();
+              .NotNull()
+              .Length(1, UserConstants.MaxUserEmailLength)
+              .EmailAddress()
+              .MustAsync(async (email, cancellationToken) => await userManager.FindByEmailAsync(email) != null)
+              .WithMessage(x => $"User with email {x.email} does not exist");
 
             RuleFor(x => x.password)
                 .NotNull();

@@ -36,14 +36,10 @@ namespace YouTubeV2.Application.Services
 
             User user = await GetUserByEmailAsync(loginDto.email);
 
-            if (!await _userManager.IsEmailConfirmedAsync(user))
-                throw new BadRequestException(new ErrorResponseDTO[1] { new ErrorResponseDTO("Email is not confirmed") });
-
             if (!await _userManager.CheckPasswordAsync(user, loginDto.password))
-                throw new BadRequestException(new ErrorResponseDTO[1] { new ErrorResponseDTO("Provided password is invalid") });
+                throw new BadRequestException(new ErrorResponseDTO[] { new ErrorResponseDTO("Provided password is invalid") });
 
             return new LoginResponseDto(await _jwtHandler.GenerateTokenAsync(user));
-            //return new LoginResponseDto("dupa");
         }
 
         public async Task RegisterAsync(RegisterDto registerDto, CancellationToken cancellationToken)
@@ -79,8 +75,7 @@ namespace YouTubeV2.Application.Services
         private async Task<User> GetUserByEmailAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
-                throw new BadRequestException(new ErrorResponseDTO[] { new("There is no registered user with email provided") });
+
             return user;
         }
     }
