@@ -41,7 +41,6 @@ public partial class Program {
         app.MapControllers();
 
         app.Run();
-
     }
     private static void AddServices(WebApplicationBuilder builder)
     {

@@ -92,7 +92,6 @@ namespace YouTubeV2.Api.Tests
             loginResponseDto.token.Should().NotBeNullOrEmpty();
             response.Content.Should().NotBeNull();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-
         }
     }
 }
