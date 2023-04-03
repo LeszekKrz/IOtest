@@ -73,8 +73,14 @@ namespace YouTubeV2.Api.Tests
 
             var registerDto = new RegisterDto("mail@mail.com", "Senior", "Generator", "Frajdy", "asdf1243@#$GJH", Role.Simple, "");
 
-            _ = await httpClient.PostAsync("register", new StringContent(JsonConvert.SerializeObject(registerDto), Encoding.UTF8, "application/json"));
-
+            string userID = string.Empty;
+            await _webApplicationFactory.DoWithinScope<UserManager<User>>(
+              async userManager =>
+              {
+                  User user = new User(registerDto);
+                  await userManager.CreateAsync(user);
+                  await userManager.AddPasswordAsync(user, "asdf1243@#$GJH");
+              });
             var loginDto = new LoginDto("mail@mail.com", "asdf1243@#$GJH");
 
             // Act
@@ -87,6 +93,7 @@ namespace YouTubeV2.Api.Tests
             loginResponseDto.token.Should().NotBeNullOrEmpty();
             response.Content.Should().NotBeNull();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
+
         }
     }
 }
