@@ -1,5 +1,6 @@
 using Azure.Storage.Blobs;
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -56,8 +57,10 @@ public partial class Program {
             options => options.UseSqlServer(connectionString));
 
         builder.Services.AddTransient<UserService>();
+        builder.Services.AddTransient<SubscriptionsService>();
         builder.Services.AddSingleton(x => new BlobServiceClient(Environment.GetEnvironmentVariable("AZURE_IMAGES_BLOB_STORAGE_CONNECTION_STRING")));
         builder.Services.AddSingleton<IBlobImageService, BlobImageService>();
+
 
         builder.Services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
 

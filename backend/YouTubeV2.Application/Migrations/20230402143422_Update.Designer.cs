@@ -12,15 +12,15 @@ using YouTubeV2.Application;
 namespace YouTubeV2.Application.Migrations
 {
     [DbContext(typeof(YTContext))]
-    [Migration("20230312125418_addedNormalizedROleName")]
-    partial class addedNormalizedROleName
+    [Migration("20230402143422_Update")]
+    partial class Update
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.3")
+                .HasAnnotation("ProductVersion", "7.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -160,22 +160,37 @@ namespace YouTubeV2.Application.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f70f713f-6b7f-4940-8545-43a65671a8c3",
-                            Name = "USER",
-                            NormalizedName = "USER"
+                            Id = "37f0c423-8d1c-4817-a1af-e1bf60c9a0eb",
+                            Name = "Simple",
+                            NormalizedName = "SIMPLE"
                         },
                         new
                         {
-                            Id = "a9fa4c99-8b0b-4163-96a8-a427888d9ab5",
-                            Name = "CREATOR",
+                            Id = "87978f1a-4281-4a59-8ee8-52b1ed4b3d56",
+                            Name = "Creator",
                             NormalizedName = "CREATOR"
                         },
                         new
                         {
-                            Id = "f6a4d4f8-d3ea-4cc2-8fb1-48d4e81465b5",
-                            Name = "ADMIN",
-                            NormalizedName = "ADMIN"
+                            Id = "24de6e76-9a75-490b-bddc-a66e91e20fa4",
+                            Name = "Administrator",
+                            NormalizedName = "ADMINISTRATOR"
                         });
+                });
+
+            modelBuilder.Entity("YouTubeV2.Application.Model.Subscription", b =>
+                {
+                    b.Property<string>("SubscriberId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SubscribeeId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("SubscriberId", "SubscribeeId");
+
+                    b.HasIndex("SubscribeeId");
+
+                    b.ToTable("Subscriptions");
                 });
 
             modelBuilder.Entity("YouTubeV2.Application.Model.User", b =>
@@ -302,6 +317,30 @@ namespace YouTubeV2.Application.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("YouTubeV2.Application.Model.Subscription", b =>
+                {
+                    b.HasOne("YouTubeV2.Application.Model.User", "Subscribee")
+                        .WithMany("Subscriptions")
+                        .HasForeignKey("SubscribeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YouTubeV2.Application.Model.User", "Subscriber")
+                        .WithMany()
+                        .HasForeignKey("SubscriberId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Subscribee");
+
+                    b.Navigation("Subscriber");
+                });
+
+            modelBuilder.Entity("YouTubeV2.Application.Model.User", b =>
+                {
+                    b.Navigation("Subscriptions");
                 });
 #pragma warning restore 612, 618
         }

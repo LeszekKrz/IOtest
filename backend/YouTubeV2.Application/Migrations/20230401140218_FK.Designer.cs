@@ -12,15 +12,15 @@ using YouTubeV2.Application;
 namespace YouTubeV2.Application.Migrations
 {
     [DbContext(typeof(YTContext))]
-    [Migration("20230311193222_init")]
-    partial class init
+    [Migration("20230401140218_FK")]
+    partial class FK
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.3")
+                .HasAnnotation("ProductVersion", "7.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -97,6 +97,21 @@ namespace YouTubeV2.Application.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
@@ -145,16 +160,37 @@ namespace YouTubeV2.Application.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a57987a1-8a84-4bf5-8766-757b8fed016c",
-                            Name = "USER",
-                            NormalizedName = "USER"
+                            Id = "3b2b45fb-8321-40d6-9487-c5b593698fa9",
+                            Name = "Simple",
+                            NormalizedName = "SIMPLE"
                         },
                         new
                         {
-                            Id = "690af15e-6e0c-4a68-b68c-d8ed4461eda7",
-                            Name = "ADMIN",
-                            NormalizedName = "ADMIN"
+                            Id = "fa381995-8e47-4b1f-83f1-b534e6f41aa4",
+                            Name = "Creator",
+                            NormalizedName = "CREATOR"
+                        },
+                        new
+                        {
+                            Id = "7aa01131-19ba-4154-b9a2-439c7031ba3b",
+                            Name = "Administrator",
+                            NormalizedName = "ADMINISTRATOR"
                         });
+                });
+
+            modelBuilder.Entity("YouTubeV2.Application.Model.Subscription", b =>
+                {
+                    b.Property<string>("SubscriberId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SubscribeeId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("SubscriberId", "SubscribeeId");
+
+                    b.HasIndex("SubscribeeId");
+
+                    b.ToTable("Subscriptions");
                 });
 
             modelBuilder.Entity("YouTubeV2.Application.Model.User", b =>
@@ -170,8 +206,8 @@ namespace YouTubeV2.Application.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
@@ -184,7 +220,8 @@ namespace YouTubeV2.Application.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -208,21 +245,20 @@ namespace YouTubeV2.Application.Migrations
 
                     b.Property<string>("Surname")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
-                        .IsUnique()
-                        .HasDatabaseName("EmailIndex")
-                        .HasFilter("[NormalizedEmail] IS NOT NULL");
+                        .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
@@ -230,21 +266,6 @@ namespace YouTubeV2.Application.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("YouTubeV2.Application.Model.UserRole", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -274,6 +295,21 @@ namespace YouTubeV2.Application.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("YouTubeV2.Application.Model.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YouTubeV2.Application.Model.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.HasOne("YouTubeV2.Application.Model.User", null)
@@ -283,33 +319,28 @@ namespace YouTubeV2.Application.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("YouTubeV2.Application.Model.UserRole", b =>
+            modelBuilder.Entity("YouTubeV2.Application.Model.Subscription", b =>
                 {
-                    b.HasOne("YouTubeV2.Application.Model.Role", "Role")
-                        .WithMany("UsersRoles")
-                        .HasForeignKey("RoleId")
+                    b.HasOne("YouTubeV2.Application.Model.User", "Subscribee")
+                        .WithMany("Subscriptions")
+                        .HasForeignKey("SubscribeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("YouTubeV2.Application.Model.User", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("YouTubeV2.Application.Model.User", "Subscriber")
+                        .WithMany()
+                        .HasForeignKey("SubscriberId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Role");
+                    b.Navigation("Subscribee");
 
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("YouTubeV2.Application.Model.Role", b =>
-                {
-                    b.Navigation("UsersRoles");
+                    b.Navigation("Subscriber");
                 });
 
             modelBuilder.Entity("YouTubeV2.Application.Model.User", b =>
                 {
-                    b.Navigation("UserRoles");
+                    b.Navigation("Subscriptions");
                 });
 #pragma warning restore 612, 618
         }
