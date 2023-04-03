@@ -17,7 +17,7 @@ namespace YouTubeV2.Application.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.3")
+                .HasAnnotation("ProductVersion", "7.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -157,22 +157,37 @@ namespace YouTubeV2.Application.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "44b04ab7-e63c-4979-99eb-c8bef14630d0",
+                            Id = "37f0c423-8d1c-4817-a1af-e1bf60c9a0eb",
                             Name = "Simple",
                             NormalizedName = "SIMPLE"
                         },
                         new
                         {
-                            Id = "f70541fd-4c68-4490-a6b8-7c616c1cd368",
+                            Id = "87978f1a-4281-4a59-8ee8-52b1ed4b3d56",
                             Name = "Creator",
                             NormalizedName = "CREATOR"
                         },
                         new
                         {
-                            Id = "51b0c472-5583-49e2-882e-f21e9234381e",
+                            Id = "24de6e76-9a75-490b-bddc-a66e91e20fa4",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
+                });
+
+            modelBuilder.Entity("YouTubeV2.Application.Model.Subscription", b =>
+                {
+                    b.Property<string>("SubscriberId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SubscribeeId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("SubscriberId", "SubscribeeId");
+
+                    b.HasIndex("SubscribeeId");
+
+                    b.ToTable("Subscriptions");
                 });
 
             modelBuilder.Entity("YouTubeV2.Application.Model.User", b =>
@@ -299,6 +314,30 @@ namespace YouTubeV2.Application.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("YouTubeV2.Application.Model.Subscription", b =>
+                {
+                    b.HasOne("YouTubeV2.Application.Model.User", "Subscribee")
+                        .WithMany("Subscriptions")
+                        .HasForeignKey("SubscribeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YouTubeV2.Application.Model.User", "Subscriber")
+                        .WithMany()
+                        .HasForeignKey("SubscriberId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Subscribee");
+
+                    b.Navigation("Subscriber");
+                });
+
+            modelBuilder.Entity("YouTubeV2.Application.Model.User", b =>
+                {
+                    b.Navigation("Subscriptions");
                 });
 #pragma warning restore 612, 618
         }

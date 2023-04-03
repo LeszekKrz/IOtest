@@ -9,13 +9,10 @@ namespace YouTubeV2.Application
     public class YTContext : IdentityDbContext<
         User,
         Role,
-        string,
-        IdentityUserClaim<string>,
-        IdentityUserRole<string>,
-        IdentityUserLogin<string>,
-        IdentityRoleClaim<string>,
-        IdentityUserToken<string>>
+        string>
     {
+        public DbSet<Subscription> Subscriptions { get; set; }
+
         public YTContext(DbContextOptions<YTContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

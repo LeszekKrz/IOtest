@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -7,7 +8,7 @@
 namespace YouTubeV2.Application.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class FK : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,11 +32,11 @@ namespace YouTubeV2.Application.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Surname = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Surname = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -159,13 +160,38 @@ namespace YouTubeV2.Application.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Subscriptions",
+                columns: table => new
+                {
+                    SubscriberId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    SubscribeeId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subscriptions", x => new { x.SubscriberId, x.SubscribeeId });
+                    table.ForeignKey(
+                        name: "FK_Subscriptions_AspNetUsers_SubscribeeId",
+                        column: x => x.SubscribeeId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Subscriptions_AspNetUsers_SubscriberId",
+                        column: x => x.SubscriberId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "690af15e-6e0c-4a68-b68c-d8ed4461eda7", null, "ADMIN", "ADMIN" },
-                    { "a57987a1-8a84-4bf5-8766-757b8fed016c", null, "USER", "USER" }
+                    { "3b2b45fb-8321-40d6-9487-c5b593698fa9", null, "Simple", "SIMPLE" },
+                    { "7aa01131-19ba-4154-b9a2-439c7031ba3b", null, "Administrator", "ADMINISTRATOR" },
+                    { "fa381995-8e47-4b1f-83f1-b534e6f41aa4", null, "Creator", "CREATOR" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -198,9 +224,7 @@ namespace YouTubeV2.Application.Migrations
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "AspNetUsers",
-                column: "NormalizedEmail",
-                unique: true,
-                filter: "[NormalizedEmail] IS NOT NULL");
+                column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
@@ -208,6 +232,11 @@ namespace YouTubeV2.Application.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subscriptions_SubscribeeId",
+                table: "Subscriptions",
+                column: "SubscribeeId");
         }
 
         /// <inheritdoc />
@@ -227,6 +256,9 @@ namespace YouTubeV2.Application.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Subscriptions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
