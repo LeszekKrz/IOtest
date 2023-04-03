@@ -9,6 +9,7 @@ import { MessageService } from 'primeng/api';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './core/interceptors/http-error-interceptor';
+import { VideoModule } from './pages/video/video.module';
 import { LoginModule } from './pages/login/login.module';
 
 @NgModule({
@@ -32,6 +33,7 @@ import { LoginModule } from './pages/login/login.module';
         ToastModule,
         MenuModule,
         BrowserAnimationsModule,
+        VideoModule,
     ]
 })
 export class AppModule { }
