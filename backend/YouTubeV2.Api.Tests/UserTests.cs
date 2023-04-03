@@ -6,7 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using Respawn;
 using System.Net;
+using System.Net.Http.Json;
 using System.Text;
 using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Model;
@@ -61,6 +63,34 @@ namespace YouTubeV2.Api.Tests
                     roles.Should().Contain(Role.Simple);
                 });
 
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+        [TestMethod]
+        public async Task LoginUserShouldReturnOk()
+        {
+            // ARRANGE
+            var httpClient = _webApplicationFactory.CreateClient();
+
+            var registerDto = new RegisterDto("mail@mail.com", "Senior", "Generator", "Frajdy", "asdf1243@#$GJH", Role.Simple, "");
+
+            await _webApplicationFactory.DoWithinScope<UserManager<User>>(
+              async userManager =>
+              {
+                  User user = new User(registerDto);
+                  await userManager.CreateAsync(user);
+                  await userManager.AddPasswordAsync(user, "asdf1243@#$GJH");
+              });
+            var loginDto = new LoginDto("mail@mail.com", "asdf1243@#$GJH");
+
+            // Act
+
+            var response = await httpClient.PostAsync("login", new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, "application/json"));
+
+            var content = await response.Content.ReadAsStringAsync();
+            LoginResponseDto loginResponseDto = JsonConvert.DeserializeObject<LoginResponseDto>(content);
+            // ASSERT
+            loginResponseDto.token.Should().NotBeNullOrEmpty();
+            response.Content.Should().NotBeNull();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }

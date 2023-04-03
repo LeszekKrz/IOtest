@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Services;
 
@@ -20,6 +21,13 @@ namespace YouTubeV2.Api.Controllers
             await _userService.RegisterAsync(registerDto, cancellationToken);
 
             return Ok();
+        }
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginAsync(LoginDto loginDto, CancellationToken cancellationToken)
+        {
+            LoginResponseDto loginResponseDto = await _userService.LoginAsync(loginDto, cancellationToken);
+
+            return Ok(loginResponseDto);
         }
     }
 }
