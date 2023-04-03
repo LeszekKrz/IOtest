@@ -73,7 +73,6 @@ namespace YouTubeV2.Api.Tests
 
             var registerDto = new RegisterDto("mail@mail.com", "Senior", "Generator", "Frajdy", "asdf1243@#$GJH", Role.Simple, "");
 
-            string userID = string.Empty;
             await _webApplicationFactory.DoWithinScope<UserManager<User>>(
               async userManager =>
               {
