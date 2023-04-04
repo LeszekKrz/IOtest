@@ -18,7 +18,7 @@ namespace YouTubeV2.Application.Services
         public async Task<UserSubscriptionListDTO> GetSubscriptionsAsync(Guid Id, CancellationToken cancellationToken)
         {
             return new UserSubscriptionListDTO( await _context.Subscriptions.
-                Where(s => new Guid(s.SubscriberId) == Id).
+                Where(s => s.SubscriberId == Id.ToString()).
                 Select(s => new SubscriptionDTO(new Guid(s.SubscribeeId), _blobImageService.GetProfilePicture(s.Subscribee.Id), s.Subscribee.UserName)).
                 ToListAsync(cancellationToken));
         }
