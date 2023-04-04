@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './core/interceptors/http-error-interceptor';
 import { VideoModule } from './pages/video/video.module';
+import { CreatorModule } from './pages/creator/creator.module';
 import { LoginModule } from './pages/login/login.module';
 
 @NgModule({
@@ -34,6 +35,7 @@ import { LoginModule } from './pages/login/login.module';
         MenuModule,
         BrowserAnimationsModule,
         VideoModule,
+        CreatorModule
     ]
 })
 export class AppModule { }

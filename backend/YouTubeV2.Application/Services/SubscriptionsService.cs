@@ -1,13 +1,7 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using YouTubeV2.Application.DTO;
-using YouTubeV2.Application.Exceptions;
-using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services.AzureServices.BlobServices;
-using YouTubeV2.Application.Validator;
 
 namespace YouTubeV2.Application.Services
 {
@@ -27,6 +21,13 @@ namespace YouTubeV2.Application.Services
                 Where(s => new Guid(s.SubscriberId) == Id).
                 Select(s => new SubscriptionDTO(new Guid(s.SubscribeeId), _blobImageService.GetProfilePicture(s.Subscribee.Id), s.Subscribee.UserName)).
                 ToListAsync(cancellationToken));
+        }
+
+        public async Task<int> GetSubscriptionCount(Guid id, CancellationToken cancellationToken)
+        {
+            var userId = id.ToString();
+
+            return await _context.Subscriptions.CountAsync(s => s.SubscribeeId == userId, cancellationToken);
         }
     }
 }
