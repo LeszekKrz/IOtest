@@ -1,0 +1,66 @@
+.avatarImage {
+    max-width: 200px;
+    max-height: 200px;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    padding: 10px 10px 10px 10px;
+}
+
+.avatar {
+    width: 20%;
+    padding: 10px;
+}
+
+
+.name {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.row {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+  
+.column {
+    width: 30%;
+    padding: 10px;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+.noPadding {
+    padding: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.subscriptionList {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.subscription {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+}
+
+.nickname {
+    text-align: left;
+}

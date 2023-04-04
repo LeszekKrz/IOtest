@@ -1,0 +1,16 @@
+<p-panel>  
+    <div class="subscriptionList">
+        <ul *ngIf="subscriptions">
+            <div class="subscription" *ngFor="let subscription of subscriptions">
+                    <div class="grid-item" >
+                        <div class="image-container">
+                            <img [src] = "subscription.avatarImage" class="avatarImage">
+                        </div>
+                    </div>
+                    <div class="grid-item">
+                        <h1 class="nickname" (click)="goToUserProfile(subscription.id)">{{ subscription.nickname }}</h1>
+                    </div>
+            </div>
+        </ul>
+    </div>
+</p-panel>
