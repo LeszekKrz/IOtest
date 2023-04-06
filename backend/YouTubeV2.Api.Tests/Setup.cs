@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Respawn;
 using Respawn.Graph;
@@ -67,6 +68,45 @@ namespace YouTubeV2.Api.Tests
 
                     services.AddDbContext<YTContext>(
                         options => options.UseSqlServer(config.GetConnectionString("Db")));
+                });
+            });
+        }
+
+        internal static WebApplicationFactory<Program> GetWebApplicationFactory<T>(T service) where T : class
+        {
+            var projectDir = Directory.GetCurrentDirectory();
+            var configPath = Path.Combine(projectDir, @"..\..\..\appsettings.test.json");
+
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.test.json")
+                .AddEnvironmentVariables()
+                .Build();
+
+            return new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+            {
+                builder.UseEnvironment("Test");
+                builder.ConfigureAppConfiguration((_, conf) =>
+                {
+                    conf.AddJsonFile(configPath);
+                });
+                builder.ConfigureServices(services =>
+                {
+                    var context = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(YTContext));
+                    if (context != null)
+                    {
+                        services.Remove(context);
+                        var options = services.Where(r => (r.ServiceType == typeof(DbContextOptions))
+                          || (r.ServiceType.IsGenericType && r.ServiceType.GetGenericTypeDefinition() == typeof(DbContextOptions<>))).ToArray();
+                        foreach (var option in options)
+                        {
+                            services.Remove(option);
+                        }
+                    }
+
+                    services.AddDbContext<YTContext>(
+                        options => options.UseSqlServer(config.GetConnectionString("Db")));
+
+                    services.Replace(new ServiceDescriptor(typeof(T), service));
                 });
             });
         }

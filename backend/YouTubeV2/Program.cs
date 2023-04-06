@@ -1,12 +1,16 @@
 using Azure.Storage.Blobs;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using YouTubeV2.Api.Middleware;
 using YouTubeV2.Application;
-using YouTubeV2.Application.Configurations;
+using YouTubeV2.Application.Configurations.BlobStorage;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services;
 using YouTubeV2.Application.Services.AzureServices.BlobServices;
+using YouTubeV2.Application.Services.JwtFeatures;
 using YouTubeV2.Application.Validator;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +22,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddOptions<BlobStorageConfig>().Bind(builder.Configuration.GetSection("BlobStorage"));
+builder.Services.AddOptions<BlobStorageImagesConfig>().Bind(builder.Configuration.GetSection("BlobStorageImagesConfig"));
+builder.Services.AddOptions<BlobStorageVideosConfig>().Bind(builder.Configuration.GetSection("BlobStorageVideosConfig"));
 
 string connectionString = builder.Configuration.GetConnectionString("Db")!;
 builder.Services.AddDbContext<YTContext>(
@@ -26,7 +31,9 @@ builder.Services.AddDbContext<YTContext>(
 
 builder.Services.AddTransient<UserService>();
 builder.Services.AddSingleton(x => new BlobServiceClient(Environment.GetEnvironmentVariable("AZURE_BLOB_STORAGE_CONNECTION_STRING")));
+builder.Services.AddTransient<SubscriptionsService>();
 builder.Services.AddSingleton<IBlobImageService, BlobImageService>();
+builder.Services.AddSingleton<IBlobVideoService, BlobVideoService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
 
@@ -43,6 +50,30 @@ builder.Services.AddCors(options =>
             .AllowAnyOrigin()
             .WithExposedHeaders("Content-Disposition"));
 });
+
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+       options.TokenLifespan = TimeSpan.FromHours(2));
+
+var jwtSettings = new JwtSettings(builder.Configuration.GetSection("JWTSettings"));
+builder.Services.AddSingleton(jwtSettings);
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings.ValidIssuer,
+        ValidAudience = jwtSettings.ValidAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(jwtSettings.SecurityKey)
+    };
+});
+builder.Services.AddScoped<JwtHandler>();
 
 var app = builder.Build();
 
@@ -62,7 +93,11 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+if (app.Environment.IsEnvironment("Test"))
+    app.MapControllers().AllowAnonymous();
+else
+    app.MapControllers();
 
 app.Run();
+
 public partial class Program { }
