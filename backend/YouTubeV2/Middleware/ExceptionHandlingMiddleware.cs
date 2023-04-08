@@ -35,9 +35,9 @@ namespace YouTubeV2.Api.Middleware
             {
                 await HandleArgumentExceptionAsync(httpContext, argumentException);
             }
-            catch (FileNotFoundException fileNotFoundException)
+            catch (Exception notFoundException) when (notFoundException is FileNotFoundException || notFoundException is NotFoundException)
             {
-                await HandleFileNotFoundExceptionAsync(httpContext, fileNotFoundException);
+                await HandleNotFoundExceptionAsync(httpContext, notFoundException);
             }
             catch (Exception exception)
             {
@@ -45,30 +45,30 @@ namespace YouTubeV2.Api.Middleware
             }
         }
 
-        private async Task HandleValidationExceptionAsync(HttpContext httpContext, ValidationException validationException)
+        private static async Task HandleValidationExceptionAsync(HttpContext httpContext, ValidationException validationException)
         {
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             var mappedErrors = validationException.Errors.Select(error => new ErrorResponseDTO(error.ErrorMessage));
             await httpContext.Response.WriteAsJsonAsync(mappedErrors);
         }
 
-        private async Task HandleBadRequestException(HttpContext httpContext, BadRequestException badRequestException)
+        private static async Task HandleBadRequestException(HttpContext httpContext, BadRequestException badRequestException)
         {
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             var mappedErrors = badRequestException.Errors;
             await httpContext.Response.WriteAsJsonAsync(mappedErrors);
         }
 
-        private async Task HandleArgumentExceptionAsync(HttpContext httpContext, ArgumentException argumentException)
+        private static async Task HandleArgumentExceptionAsync(HttpContext httpContext, ArgumentException argumentException)
         {
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             await httpContext.Response.WriteAsJsonAsync(new ErrorResponseDTO(argumentException.Message));
         }
 
-        private async Task HandleFileNotFoundExceptionAsync(HttpContext httpContext, FileNotFoundException fileNotFoundException)
+        private static async Task HandleNotFoundExceptionAsync(HttpContext httpContext, Exception notFoundException)
         {
             httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-            await httpContext.Response.WriteAsJsonAsync(new ErrorResponseDTO(fileNotFoundException.Message));
+            await httpContext.Response.WriteAsJsonAsync(new ErrorResponseDTO(notFoundException.Message));
         }
 
         private void HandleException(HttpContext httpContext, Exception exception)
@@ -81,9 +81,9 @@ namespace YouTubeV2.Api.Middleware
                 httpContext.Request.Method,
                 httpContext.Request.Path.Value,
                 httpContext.Response.StatusCode);
-                _logger.LogInformation("Exception message: " + exception.Message);
-                _logger.LogInformation("Exception source: " + exception.Source);
-                _logger.LogInformation("Exception stack trace: " + exception.StackTrace);
+                _logger.LogInformation("Exception message: {ExceptionMessage}", exception.Message);
+                _logger.LogInformation("Exception source: {ExceptionSource}", exception.Source);
+                _logger.LogInformation("Exception stack trace: {ExceptionStackTrace}", exception.StackTrace);
             }
         }
     }

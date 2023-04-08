@@ -5,10 +5,10 @@ namespace YouTubeV2.Application.Model
 {
     public class User : IdentityUser
     {
-        public string Name { get; init; }
-        public string Surname { get; init; }
-
-        public virtual ICollection<Subscription> Subscriptions { get; init; }
+        public string Name { get; init; } = null!;
+        public string Surname { get; init; } = null!;
+        public virtual ICollection<Subscription> Subscriptions { get; init; } = null!;
+        public virtual IReadOnlyCollection<Video> Videos { get; init; } = null!;
 
         public User() { }
 

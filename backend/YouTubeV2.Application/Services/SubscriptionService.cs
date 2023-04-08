@@ -5,11 +5,12 @@ using YouTubeV2.Application.Services.AzureServices.BlobServices;
 
 namespace YouTubeV2.Application.Services
 {
-    public class SubscriptionsService
+    public class SubscriptionService : ISubscriptionService
     {
         private readonly IBlobImageService _blobImageService;
         private readonly YTContext _context;
-        public SubscriptionsService(IBlobImageService blobImageService, YTContext context)
+
+        public SubscriptionService(IBlobImageService blobImageService, YTContext context)
         {
             _blobImageService = blobImageService;
             _context = context;

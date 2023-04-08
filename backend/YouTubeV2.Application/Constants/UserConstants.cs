@@ -2,11 +2,11 @@
 {
     public static class UserConstants
     {
-        public static int MaxUserNameLength = 20;
-        public static int MaxUserSurnameLength = 20;
-        public static int MaxUserEmailLength = 30;
-        public static int MaxUserNicknameLength = 20;
-        public static int MaxUserPasswordLength = 50;
-        public static int MinUserPasswordLength = 8;
+        public const int MaxUserNameLength = 20;
+        public const int MaxUserSurnameLength = 20;
+        public const int MaxUserEmailLength = 30;
+        public const int MaxUserNicknameLength = 20;
+        public const int MaxUserPasswordLength = 50;
+        public const int MinUserPasswordLength = 8;
     }
 }

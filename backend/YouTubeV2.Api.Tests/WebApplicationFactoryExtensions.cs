@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using YouTubeV2.Api.Tests.Handlers;
+using YouTubeV2.Api.Tests.Providers;
 
 namespace YouTubeV2.Api.Tests
 {
@@ -24,5 +27,22 @@ namespace YouTubeV2.Api.Tests
             var uService = serviceScope.ServiceProvider.GetRequiredService<UService>();
             await action(tService, uService);
         }
+
+        internal static WebApplicationFactory<T> WithAuthentication<T>(
+            this WebApplicationFactory<T> webApplicationFactory,
+            ClaimsProvider claimsProvider)
+            where T : class =>
+            webApplicationFactory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureServices(services =>
+                {
+                    services.AddAuthentication(options =>
+                    {
+                        options.DefaultAuthenticateScheme = TestAuthenticationHandler.schemeName;
+                        options.DefaultChallengeScheme = TestAuthenticationHandler.schemeName;
+                    }).AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(TestAuthenticationHandler.schemeName, options => { });
+                    services.AddScoped(_ => claimsProvider);
+                });
+            });
     }
 }

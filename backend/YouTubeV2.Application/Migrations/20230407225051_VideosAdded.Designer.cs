@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YouTubeV2.Application;
 
@@ -11,9 +12,11 @@ using YouTubeV2.Application;
 namespace YouTubeV2.Application.Migrations
 {
     [DbContext(typeof(YTContext))]
-    partial class YTContextModelSnapshot : ModelSnapshot
+    [Migration("20230407225051_VideosAdded")]
+    partial class VideosAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,19 +160,19 @@ namespace YouTubeV2.Application.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "04b4fe2b-5085-4b7a-819b-23d0a04550c6",
+                            Id = "4b366327-19d1-4d54-b595-ba02e10b8afa",
                             Name = "Simple",
                             NormalizedName = "SIMPLE"
                         },
                         new
                         {
-                            Id = "8b929466-a7c3-45be-a34d-b500623b5be0",
+                            Id = "7ca775ff-cffe-42ae-85ad-cf13e9f39975",
                             Name = "Creator",
                             NormalizedName = "CREATOR"
                         },
                         new
                         {
-                            Id = "e5cc3ad4-1565-473c-89da-f6b3f70dac69",
+                            Id = "ed0a3367-f6ee-437d-856e-eecf86267c02",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -297,30 +300,14 @@ namespace YouTubeV2.Application.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<string>("Duration")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset>("EditDate")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int>("ProcessingProgress")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateTimeOffset>("UploadDate")
-                        .HasColumnType("datetimeoffset");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ViewCount")
-                        .HasColumnType("int");
 
                     b.Property<int>("Visibility")
                         .HasColumnType("int");

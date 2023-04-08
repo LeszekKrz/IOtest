@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Constants;
+using YouTubeV2.Application.Utils;
 
 namespace YouTubeV2.Application.Validator
 {
@@ -36,6 +37,10 @@ namespace YouTubeV2.Application.Validator
                 .Matches(@"[a-z]+").WithMessage("Your password must contain at least one lowercase letter.")
                 .Matches(@"[0-9]+").WithMessage("Your password must contain at least one number.")
                 .Matches(@"[!@#$%^&*(),.<>?/]+").WithMessage("Your password must contain at least one special character.");
+
+            RuleFor(x => x.avatarImage)
+                .Must(avatarImage => avatarImage.IsValidBase64ImageOrEmpty())
+                .WithMessage("Avatar must be a valid base64-encoded PNG or JPEG image or empty.");
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using YouTubeV2.Application.DTO;
@@ -11,7 +10,7 @@ using YouTubeV2.Application.Validator;
 
 namespace YouTubeV2.Application.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
         private readonly UserManager<User> _userManager;
         private readonly IBlobImageService _blobImageService;
@@ -33,7 +32,8 @@ namespace YouTubeV2.Application.Services
         {
             await _loginDtoValidator.ValidateAndThrowAsync(loginDto, cancellationToken);
 
-            User user = await GetUserByEmailAsync(loginDto.email);
+            User? user = await _userManager.FindByEmailAsync(loginDto.email)
+                ?? throw new NotFoundException($"User with email {loginDto.email} does not exists");
 
             if (!await _userManager.CheckPasswordAsync(user, loginDto.password))
                 throw new BadRequestException(new ErrorResponseDTO[] { new ErrorResponseDTO("Provided password is invalid") });
@@ -68,14 +68,9 @@ namespace YouTubeV2.Application.Services
             if (registerDto.avatarImage.IsNullOrEmpty()) return;
 
             var newUser = await _userManager.FindByEmailAsync(registerDto.email);
-            byte[] image = Convert.FromBase64String(registerDto.avatarImage);
-            await _blobImageService.UploadProfilePictureAsync(image, user.Id, cancellationToken);
+            await _blobImageService.UploadProfilePictureAsync(registerDto.avatarImage, user.Id, cancellationToken);
         }
-        private async Task<User> GetUserByEmailAsync(string email)
-        {
-            var user = await _userManager.FindByEmailAsync(email);
 
-            return user;
-        }
+        public async Task<User?> GetByIdAsync(string id) => await _userManager.FindByIdAsync(id);
     }
 }

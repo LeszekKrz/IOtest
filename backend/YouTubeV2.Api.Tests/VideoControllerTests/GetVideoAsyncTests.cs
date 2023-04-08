@@ -5,16 +5,17 @@ using Moq;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
+using YouTubeV2.Api.Tests.Providers;
 using YouTubeV2.Application.Services.AzureServices.BlobServices;
 
-namespace YouTubeV2.Api.Tests
+namespace YouTubeV2.Api.Tests.VideoControllerTests
 {
     [TestClass]
-    public class VideoControllerTests
+    public class GetVideoAsyncTests
     {
         private WebApplicationFactory<Program> _webApplicationFactory = null!;
-        private Mock<IBlobVideoService> _blobVideoService = new Mock<IBlobVideoService>();
-        private byte[] _wholeFileStreamContent = Encoding.UTF8.GetBytes("testStreamContent");
+        private readonly Mock<IBlobVideoService> _blobVideoService = new();
+        private readonly byte[] _wholeFileStreamContent = Encoding.UTF8.GetBytes("testStreamContent");
 
         [TestInitialize]
         public void Initialize()
@@ -30,7 +31,7 @@ namespace YouTubeV2.Api.Tests
         {
             // ARRANGE
             int from = 2, to = 6;
-            using HttpClient httpClient = _webApplicationFactory.CreateClient();
+            using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithSimpleAccess()).CreateClient();
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"video/{It.IsAny<Guid>()}");
             requestMessage.Headers.Range = new RangeHeaderValue(from, to);
 
@@ -47,7 +48,7 @@ namespace YouTubeV2.Api.Tests
         public async Task GetVideoAsyncWithoutRangeHeaderShouldReturnTheWholeFile()
         {
             // ARRANGE
-            using HttpClient httpClient = _webApplicationFactory.CreateClient();
+            using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithSimpleAccess()).CreateClient();
 
             // ACT
             HttpResponseMessage httpResponseMessage = await httpClient.GetAsync($"video/{It.IsAny<Guid>()}");
@@ -63,7 +64,7 @@ namespace YouTubeV2.Api.Tests
         {
             // ARRANGE
             int from = 10, to = _wholeFileStreamContent.Length;
-            using HttpClient httpClient = _webApplicationFactory.CreateClient();
+            using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithSimpleAccess()).CreateClient();
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"video/{It.IsAny<Guid>()}");
             requestMessage.Headers.Range = new RangeHeaderValue(from, to);
 
@@ -81,7 +82,7 @@ namespace YouTubeV2.Api.Tests
         {
             // ARRANGE
             int from = _wholeFileStreamContent.Length, to = _wholeFileStreamContent.Length + 1;
-            using HttpClient httpClient = _webApplicationFactory.CreateClient();
+            using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithSimpleAccess()).CreateClient();
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"video/{It.IsAny<Guid>()}");
             requestMessage.Headers.Range = new RangeHeaderValue(from, to);
 

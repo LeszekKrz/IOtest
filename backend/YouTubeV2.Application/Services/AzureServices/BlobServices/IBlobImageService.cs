@@ -2,9 +2,9 @@
 {
     public interface IBlobImageService
     {
-        Task UploadProfilePictureAsync(byte[] bytes, string fileName, CancellationToken cancellationToken = default);
+        Task UploadProfilePictureAsync(string base64Content, string fileName, CancellationToken cancellationToken = default);
         Uri GetProfilePicture(string fileName);
-        Task UploadVideoThumbnailAsync(byte[] bytes, string fileName, CancellationToken cancellationToken = default);
+        Task UploadVideoThumbnailAsync(string base64Content, string fileName, CancellationToken cancellationToken = default);
         Uri GetVideoThumbnail(string fileName);
     }
 }

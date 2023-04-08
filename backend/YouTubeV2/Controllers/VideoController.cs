@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using YouTubeV2.Api.Attributes;
+using YouTubeV2.Application.Constants;
+using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Model;
+using YouTubeV2.Application.Services;
 using YouTubeV2.Application.Services.AzureServices.BlobServices;
 
 namespace YouTubeV2.Api.Controllers
@@ -9,10 +13,14 @@ namespace YouTubeV2.Api.Controllers
     public class VideoController : ControllerBase
     {
         private readonly IBlobVideoService _blobVideoService;
+        private readonly IVideoService _videoService;
+        private readonly IUserService _userService;
 
-        public VideoController(IBlobVideoService blobVideoService)
+        public VideoController(IBlobVideoService blobVideoService, IVideoService videoService, IUserService userService)
         {
             _blobVideoService = blobVideoService;
+            _videoService = videoService;
+            _userService = userService;
         }
 
         [HttpGet("video/{id:guid}")]
@@ -25,5 +33,19 @@ namespace YouTubeV2.Api.Controllers
 
             return File(videoStream, "video/mp4", true);
         }
+
+        [HttpPost("video-metadata")]
+        [Roles(Role.Creator)]
+        public async Task<ActionResult<VideoMetadataPostResponseDTO>> AddVideoMetadataAsync([FromBody] VideoMetadataPostDTO videoMetadata, CancellationToken cancellationToken)
+        {
+            string userId = GetUserId();
+            User? user = await _userService.GetByIdAsync(userId);
+            if (user == null) return NotFound("There is no user identifiable by given token");
+
+            Guid id = await _videoService.AddVideoMetadataAsync(videoMetadata, user, cancellationToken);
+            return Ok(new VideoMetadataPostResponseDTO(id.ToString()));
+        }
+
+        private string GetUserId() => User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
     }
 }

@@ -8,9 +8,9 @@ namespace YouTubeV2.Api.Controllers
 	[ApiController]
 	public class SubscriptionsController : ControllerBase
 	{
-		private readonly SubscriptionsService _subscriptionsService;
+		private readonly ISubscriptionService _subscriptionsService;
 
-		public SubscriptionsController(SubscriptionsService subscriptionsService)
+		public SubscriptionsController(ISubscriptionService subscriptionsService)
 		{
 			_subscriptionsService = subscriptionsService;
 		}

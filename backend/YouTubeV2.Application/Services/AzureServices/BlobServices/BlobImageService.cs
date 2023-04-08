@@ -1,7 +1,9 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Options;
+using System.Net.Http.Headers;
 using YouTubeV2.Application.Configurations.BlobStorage;
+using YouTubeV2.Application.Utils;
 
 namespace YouTubeV2.Application.Services.AzureServices.BlobServices
 {
@@ -18,13 +20,13 @@ namespace YouTubeV2.Application.Services.AzureServices.BlobServices
 
         public Uri GetProfilePicture(string fileName) => GetImageUrl(fileName, _blobStorageConfig.UserAvatarsContainerName);
 
-        public async Task UploadProfilePictureAsync(byte[] bytes, string fileName, CancellationToken cancellationToken = default) =>
-            await UploadImageAsync(bytes, fileName, _blobStorageConfig.UserAvatarsContainerName, cancellationToken);
+        public async Task UploadProfilePictureAsync(string base64Content, string fileName, CancellationToken cancellationToken = default) =>
+            await UploadImageAsync(base64Content, fileName, _blobStorageConfig.UserAvatarsContainerName, cancellationToken);
 
         public Uri GetVideoThumbnail(string fileName) => GetImageUrl(fileName, _blobStorageConfig.VideoThumbnailsContainerName);
 
-        public async Task UploadVideoThumbnailAsync(byte[] bytes, string fileName, CancellationToken cancellationToken = default) =>
-            await UploadImageAsync(bytes, fileName, _blobStorageConfig.VideoThumbnailsContainerName, cancellationToken);
+        public async Task UploadVideoThumbnailAsync(string base64Content, string fileName, CancellationToken cancellationToken = default) =>
+            await UploadImageAsync(base64Content, fileName, _blobStorageConfig.VideoThumbnailsContainerName, cancellationToken);
 
         private Uri GetImageUrl(string fileName, string blobContainerName)
         {
@@ -33,14 +35,16 @@ namespace YouTubeV2.Application.Services.AzureServices.BlobServices
             return blobContainerClient.GetBlobClient(fileName).Uri;
         }
 
-        private async Task UploadImageAsync(byte[] bytes, string fileName, string blobContainerName, CancellationToken cancellationToken = default)
+        private async Task UploadImageAsync(string base64Content, string fileName, string blobContainerName, CancellationToken cancellationToken = default)
         {
             BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(blobContainerName);
             BlobClient blobClient =  blobContainerClient.GetBlobClient(fileName);
-            await blobClient.UploadAsync(
-                new BinaryData(bytes),
-                new BlobUploadOptions { HttpHeaders = new BlobHttpHeaders { ContentType = "image/png" } },
-                cancellationToken);
+
+            string imageFormat = base64Content.GetImageFormat();
+            string imageData = base64Content.GetImageData();
+
+            await using MemoryStream memoryStream = new(Convert.FromBase64String(imageData));
+            await blobClient.UploadAsync(memoryStream, new BlobHttpHeaders { ContentType = imageFormat }, cancellationToken: cancellationToken);
         }
     }
 }
