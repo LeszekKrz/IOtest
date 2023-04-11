@@ -101,9 +101,9 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       })
     );
     this.subscriptions.push(this.doWithLoading(register$).subscribe({
-      // complete: () => {
-      //   this.router.navigate(['login']);
-      // }
+      complete: () => {
+        this.router.navigate(['login']);
+      }
     }));
   }
 

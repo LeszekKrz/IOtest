@@ -12,8 +12,8 @@ using YouTubeV2.Application;
 namespace YouTubeV2.Application.Migrations
 {
     [DbContext(typeof(YTContext))]
-    [Migration("20230408095158_VideoMissingColumns")]
-    partial class VideoMissingColumns
+    [Migration("20230410143300_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -110,6 +110,23 @@ namespace YouTubeV2.Application.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
+                            RoleId = "39cc2fe2-d00d-4f48-a49d-005d8e983c72"
+                        },
+                        new
+                        {
+                            UserId = "6EBD31DD-0321-4FDA-92FA-CD22A1190DC8",
+                            RoleId = "63798117-72aa-4bc5-a1ef-4e771204d561"
+                        },
+                        new
+                        {
+                            UserId = "CB6A6951-E91A-4A13-B6AC-8634883F5B93",
+                            RoleId = "b3a48a48-1a74-45da-a179-03b298bc53bc"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -160,19 +177,19 @@ namespace YouTubeV2.Application.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "04b4fe2b-5085-4b7a-819b-23d0a04550c6",
+                            Id = "39cc2fe2-d00d-4f48-a49d-005d8e983c72",
                             Name = "Simple",
                             NormalizedName = "SIMPLE"
                         },
                         new
                         {
-                            Id = "8b929466-a7c3-45be-a34d-b500623b5be0",
+                            Id = "63798117-72aa-4bc5-a1ef-4e771204d561",
                             Name = "Creator",
                             NormalizedName = "CREATOR"
                         },
                         new
                         {
-                            Id = "e5cc3ad4-1565-473c-89da-f6b3f70dac69",
+                            Id = "b3a48a48-1a74-45da-a179-03b298bc53bc",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -287,6 +304,62 @@ namespace YouTubeV2.Application.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "8b502f63-4717-4180-a782-998d9ccd3c2b",
+                            Email = "simple@test.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            Name = "Simple",
+                            NormalizedEmail = "SIMPLE@TEST.COM",
+                            NormalizedUserName = "TESTSIMPLE",
+                            PasswordHash = "AQAAAAIAAYagAAAAENfL3ShmDUXWqUSJSbnzkc2RMhtdW+b0Hinx/rObc3A43PIOGx6RLGR8MT5IkPPquw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "44d91bb0-39cd-4b82-a77b-67afd2942474",
+                            Surname = "Test",
+                            TwoFactorEnabled = false,
+                            UserName = "TestSimple"
+                        },
+                        new
+                        {
+                            Id = "6EBD31DD-0321-4FDA-92FA-CD22A1190DC8",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "f39285f5-abae-414e-a484-a45cdf66188a",
+                            Email = "creator@test.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            Name = "Creator",
+                            NormalizedEmail = "CREATOR@TEST.COM",
+                            NormalizedUserName = "TESTCREATOR",
+                            PasswordHash = "AQAAAAIAAYagAAAAEA+L9ASrjRPxC4j3nSqjCXv1z7hqVNv+JX5rJJXW5Sm9EVvIrtjsSYPQrD1xBXpbvg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "9bcb5a4b-38f9-4bf6-9730-fe09bccc11f0",
+                            Surname = "Test",
+                            TwoFactorEnabled = false,
+                            UserName = "TestCreator"
+                        },
+                        new
+                        {
+                            Id = "CB6A6951-E91A-4A13-B6AC-8634883F5B93",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "3eed7e77-5dbc-427d-898f-1f4184cebdde",
+                            Email = "admin@test.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            Name = "Admin",
+                            NormalizedEmail = "ADMIN@TEST.COM",
+                            NormalizedUserName = "TESTADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJiZvxw0R8PLyPTaYnIksvBzgxR0hW38Bk/2STl466hk9a1m1i/XhLlOPPP42YNDVA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "ab902e25-0d69-4c46-9ce1-d8d72312ee52",
+                            Surname = "Test",
+                            TwoFactorEnabled = false,
+                            UserName = "TestAdmin"
+                        });
                 });
 
             modelBuilder.Entity("YouTubeV2.Application.Model.Video", b =>

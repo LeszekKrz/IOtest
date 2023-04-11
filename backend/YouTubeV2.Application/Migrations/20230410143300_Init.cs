@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -7,7 +8,7 @@
 namespace YouTubeV2.Application.Migrations
 {
     /// <inheritdoc />
-    public partial class FK : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -183,14 +184,79 @@ namespace YouTubeV2.Application.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Videos",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    Visibility = table.Column<int>(type: "int", nullable: false),
+                    ViewCount = table.Column<int>(type: "int", nullable: false),
+                    ProcessingProgress = table.Column<int>(type: "int", nullable: false),
+                    UploadDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    EditDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    Duration = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Videos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Videos_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tags",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    VideoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tags_Videos_VideoId",
+                        column: x => x.VideoId,
+                        principalTable: "Videos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "3b2b45fb-8321-40d6-9487-c5b593698fa9", null, "Simple", "SIMPLE" },
-                    { "7aa01131-19ba-4154-b9a2-439c7031ba3b", null, "Administrator", "ADMINISTRATOR" },
-                    { "fa381995-8e47-4b1f-83f1-b534e6f41aa4", null, "Creator", "CREATOR" }
+                    { "39cc2fe2-d00d-4f48-a49d-005d8e983c72", null, "Simple", "SIMPLE" },
+                    { "63798117-72aa-4bc5-a1ef-4e771204d561", null, "Creator", "CREATOR" },
+                    { "b3a48a48-1a74-45da-a179-03b298bc53bc", null, "Administrator", "ADMINISTRATOR" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Surname", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { "02174cf0–9412–4cfe-afbf-59f706d72cf6", 0, "8b502f63-4717-4180-a782-998d9ccd3c2b", "simple@test.com", false, false, null, "Simple", "SIMPLE@TEST.COM", "TESTSIMPLE", "AQAAAAIAAYagAAAAENfL3ShmDUXWqUSJSbnzkc2RMhtdW+b0Hinx/rObc3A43PIOGx6RLGR8MT5IkPPquw==", null, false, "44d91bb0-39cd-4b82-a77b-67afd2942474", "Test", false, "TestSimple" },
+                    { "6EBD31DD-0321-4FDA-92FA-CD22A1190DC8", 0, "f39285f5-abae-414e-a484-a45cdf66188a", "creator@test.com", false, false, null, "Creator", "CREATOR@TEST.COM", "TESTCREATOR", "AQAAAAIAAYagAAAAEA+L9ASrjRPxC4j3nSqjCXv1z7hqVNv+JX5rJJXW5Sm9EVvIrtjsSYPQrD1xBXpbvg==", null, false, "9bcb5a4b-38f9-4bf6-9730-fe09bccc11f0", "Test", false, "TestCreator" },
+                    { "CB6A6951-E91A-4A13-B6AC-8634883F5B93", 0, "3eed7e77-5dbc-427d-898f-1f4184cebdde", "admin@test.com", false, false, null, "Admin", "ADMIN@TEST.COM", "TESTADMIN", "AQAAAAIAAYagAAAAEJiZvxw0R8PLyPTaYnIksvBzgxR0hW38Bk/2STl466hk9a1m1i/XhLlOPPP42YNDVA==", null, false, "ab902e25-0d69-4c46-9ce1-d8d72312ee52", "Test", false, "TestAdmin" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[,]
+                {
+                    { "39cc2fe2-d00d-4f48-a49d-005d8e983c72", "02174cf0–9412–4cfe-afbf-59f706d72cf6" },
+                    { "63798117-72aa-4bc5-a1ef-4e771204d561", "6EBD31DD-0321-4FDA-92FA-CD22A1190DC8" },
+                    { "b3a48a48-1a74-45da-a179-03b298bc53bc", "CB6A6951-E91A-4A13-B6AC-8634883F5B93" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -236,6 +302,16 @@ namespace YouTubeV2.Application.Migrations
                 name: "IX_Subscriptions_SubscribeeId",
                 table: "Subscriptions",
                 column: "SubscribeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tags_VideoId",
+                table: "Tags",
+                column: "VideoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Videos_UserId",
+                table: "Videos",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -260,7 +336,13 @@ namespace YouTubeV2.Application.Migrations
                 name: "Subscriptions");
 
             migrationBuilder.DropTable(
+                name: "Tags");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Videos");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
