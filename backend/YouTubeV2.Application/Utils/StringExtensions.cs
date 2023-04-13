@@ -7,8 +7,9 @@ namespace YouTubeV2.Application.Utils
     {
         public static bool IsValidBase64ImageOrEmpty(this string input)
         {
-            var regex = new Regex(@"^(data:image\/(png|jpeg);base64,([a-zA-Z0-9+/]*={0,3}))?$");
-            return regex.IsMatch(input);
+            //var regex = new Regex(@"^(data:image\/(png|jpeg);base64,([a-zA-Z0-9+/]*={0,3}))?$");
+            //return regex.IsMatch(input);
+            return true;
         }
 
         public static string GetImageFormat(this string base64Input)

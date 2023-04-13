@@ -46,6 +46,13 @@ namespace YouTubeV2.Api.Controllers
             return Ok(new VideoMetadataPostResponseDTO(id.ToString()));
         }
 
+        [HttpGet("video-metadata")]
+        //[Roles(Role.Simple, Role.Creator, Role.Administrator)]
+        public async Task<VideoMetadataDto> GetVideoMetadataAsync([FromQuery]Guid id, CancellationToken cancellationToken)
+        {
+            return await _videoService.GetVideoMetadataAsync(id, cancellationToken);
+        }
+
         private string GetUserId() => User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Providers;
@@ -31,6 +32,29 @@ namespace YouTubeV2.Application.Services
             await _context.SaveChangesAsync(cancellationToken);
             await _blobImageService.UploadVideoThumbnailAsync(videoMetadata.thumbnail, video.Id.ToString(), cancellationToken);
             return video.Id;
+        }
+
+        public async Task<VideoMetadataDto> GetVideoMetadataAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var video = await _context.Videos.FindAsync(id, cancellationToken);
+            var user = await _context.Users.SingleAsync(user => user.Videos.Contains(video));
+            var thumbnail = _blobImageService.GetVideoThumbnail(video.Id.ToString());
+
+            return new VideoMetadataDto(
+                video.Id.ToString(), 
+                video.Title, 
+                video.Description,
+                thumbnail.ToString(),
+                user.Id,
+                user.UserName,
+                video.ViewCount,
+                new List<string>() { "tag1", "tag2" },
+                //video.Tags.Select(tag => tag.ToString()).ToList(),
+                video.Visibility.ToString(),
+                video.ProcessingProgress.ToString(),
+                video.UploadDate.DateTime,
+                video.EditDate.DateTime,
+                video.Duration);
         }
     }
 }

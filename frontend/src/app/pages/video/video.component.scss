@@ -1,0 +1,89 @@
+.avatarImage {
+    max-width: 60px;
+    max-height: 60px;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.video {
+    max-width: 200px;
+    max-height: 200px;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.userProfile {
+    display: flex;
+    align-items: flex-start;
+    padding: 5px;
+}
+
+.avatar, .userInfo, .subscription {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 10px;
+  }
+
+.subscription {
+    width: 20%;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.name {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.row {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+  
+.column {
+    width: 30%;
+    padding: 10px;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+.image-label {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    z-index: 1;
+}
+
+.noPadding {
+    padding: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.full-page-video {
+    width: 80%; /* adjust this value if you want some margin */
+    height: 70%; /* adjust this value if you want some margin */
+    object-fit: contain;
+    top: 5;
+    left: 5;
+  }

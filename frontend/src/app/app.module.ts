@@ -14,6 +14,7 @@ import { CreatorModule } from './pages/creator/creator.module';
 import { LoginModule } from './pages/login/login.module';
 import { HomeComponent } from './pages/home/home.component';
 import { HomeModule } from './pages/home/home.module';
+import { TimeAgoPipe } from './pipes/time-ago.pipe';
 
 @NgModule({
     declarations: [
