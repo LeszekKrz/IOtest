@@ -1,6 +1,6 @@
 .avatarImage {
-    max-width: 60px;
-    max-height: 60px;
+    max-width: 80px;
+    max-height: 80px;
     width: auto;
     height: auto;
     display: block;
@@ -28,14 +28,6 @@
     justify-content: center;
     margin-right: 10px;
   }
-
-.subscription {
-    width: 20%;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
 .name {
     font-size: 20px;
@@ -81,9 +73,30 @@
 }
 
 .full-page-video {
-    width: 80%; /* adjust this value if you want some margin */
+    width: 100%; /* adjust this value if you want some margin */
     height: 70%; /* adjust this value if you want some margin */
     object-fit: contain;
     top: 5;
     left: 5;
   }
+
+.custom-width {
+    width: 80% !important;
+}
+
+.videos {
+    width: 20%;
+}
+
+.grid {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}
+
+.thumbnail {
+    width: 99%; /* Set thumbnail image width to 90% of the parent */
+    max-width: 100%; /* Ensure the image doesn't exceed its container */
+    height: auto; /* Maintain aspect ratio */
+  }
+  

@@ -6,6 +6,7 @@ import { UserService } from 'src/app/core/services/user.service';
 import { VideoService } from 'src/app/core/services/video.service';
 import { environment } from 'src/environments/environment';
 import { switchMap } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-video',
@@ -13,10 +14,11 @@ import { switchMap } from 'rxjs/operators';
   styleUrls: ['./video.component.scss']
 })
 export class VideoComponent  {
-  videoUrl: string = `${environment.webApiUrl}/video/54b12988-c373-4746-b687-a1ad1b883ccb`;
   videoId: string = "54b12988-c373-4746-b687-a1ad1b883ccb";
+  videoUrl: string = `${environment.webApiUrl}/video/${this.videoId}`;
   videoMetadata!: VideoMetadataDto;
   author!: UserDTO;
+  videos: VideoMetadataDto[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -31,11 +33,25 @@ export class VideoComponent  {
       .pipe(
         switchMap(videoMetadata => {
           this.videoMetadata = videoMetadata;
-          return this.userService.getUser(this.videoMetadata.authorId);
+
+          // Use forkJoin to make two requests in parallel: one for the user, and one for the user's videos
+          return forkJoin({
+            user: this.userService.getUser(this.videoMetadata.authorId),
+            userVideos: this.videoService.getUserVideos(this.videoMetadata.authorId)
+          });
         })
       )
-      .subscribe(user => {
+      .subscribe(({ user, userVideos }) => {
         this.author = user;
+        this.videos = userVideos.videos;
       });
+  }
+
+  public goToUserProfile(id: string): void {
+    this.router.navigate(['creator/' + id]);
+  }
+
+  public goToVideo(id: string): void {
+    this.router.navigate(['videos/' + id]);
   }
 }
