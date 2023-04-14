@@ -6,9 +6,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Text;
 using YouTubeV2.Application.Configurations.BlobStorage;
-using YouTubeV2.Application.Services.AzureServices.BlobServices;
+using YouTubeV2.Application.Services.BlobServices;
 
-namespace YouTubeV2.Application.Tests.BlobVideoSerivceTests
+namespace YouTubeV2.Application.Tests.BlobVideoServiceTests
 {
     [TestClass]
     public class GetVideoAsyncTests

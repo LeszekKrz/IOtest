@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using FluentAssertions.Common;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Respawn;
 using Respawn.Graph;
 using YouTubeV2.Application;
+using YouTubeV2.Application.Services.VideoServices;
 
 namespace YouTubeV2.Api.Tests
 {
@@ -149,6 +151,49 @@ namespace YouTubeV2.Api.Tests
 
                     services.Replace(new ServiceDescriptor(typeof(T1), service1));
                     services.Replace(new ServiceDescriptor(typeof(T2), service2));
+                });
+            });
+        }
+
+        internal static WebApplicationFactory<Program> GetWebApplicationFactoryWithVideoProcessingServiceMocked(IVideoProcessingService videoProcessingService)
+        {
+            var projectDir = Directory.GetCurrentDirectory();
+            var configPath = Path.Combine(projectDir, @"..\..\..\appsettings.test.json");
+
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.test.json")
+                .AddEnvironmentVariables()
+                .Build();
+
+            return new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+            {
+                builder.UseEnvironment("Test");
+                builder.ConfigureAppConfiguration((_, conf) =>
+                {
+                    conf.AddJsonFile(configPath);
+                });
+                builder.ConfigureServices(services =>
+                {
+                    var context = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(YTContext));
+                    if (context != null)
+                    {
+                        services.Remove(context);
+                        var options = services.Where(r => (r.ServiceType == typeof(DbContextOptions))
+                          || (r.ServiceType.IsGenericType && r.ServiceType.GetGenericTypeDefinition() == typeof(DbContextOptions<>))).ToArray();
+                        foreach (var option in options)
+                        {
+                            services.Remove(option);
+                        }
+                    }
+
+                    services.AddDbContext<YTContext>(
+                        options => options.UseSqlServer(config.GetConnectionString("Db")));
+
+                    services.Replace(new ServiceDescriptor(typeof(IVideoProcessingService), videoProcessingService));
+
+                    var hostedServiceDescriptor = services.SingleOrDefault(d => d.ImplementationFactory?.Method.ReturnType == typeof(VideoProcessingService));
+                    if (hostedServiceDescriptor != null)
+                        services.Remove(hostedServiceDescriptor);
                 });
             });
         }

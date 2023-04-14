@@ -12,6 +12,7 @@ import { HttpErrorInterceptor } from './core/interceptors/http-error-interceptor
 import { VideoModule } from './pages/video/video.module';
 import { CreatorModule } from './pages/creator/creator.module';
 import { LoginModule } from './pages/login/login.module';
+import { AddVideoModule } from './pages/add-video/add-video.module';
 import { HomeComponent } from './pages/home/home.component';
 import { HomeModule } from './pages/home/home.module';
 
@@ -38,7 +39,8 @@ import { HomeModule } from './pages/home/home.module';
         BrowserAnimationsModule,
         VideoModule,
         CreatorModule,
-        HomeModule
+        AddVideoModule,
+        HomeModule,
     ]
 })
 export class AppModule { }

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 
 namespace YouTubeV2.Application.Services.JwtFeatures
 {
@@ -52,6 +51,19 @@ namespace YouTubeV2.Application.Services.JwtFeatures
                 claims: claims,
                 expires: DateTime.Now.AddDays(_jwtSettings.ExpiresInDays),
                 signingCredentials: signingCredentials);
+        }
+
+        public ClaimsPrincipal ValidateToken(string token)
+        {
+            JwtSecurityTokenHandler jwtSecurityTokenHandler = new();
+            TokenValidationParameters tokenValidationParameters = new()
+            {
+                ValidIssuer = _jwtSettings.ValidIssuer,
+                ValidAudience = _jwtSettings.ValidAudience,
+                IssuerSigningKey = new SymmetricSecurityKey(_jwtSettings.SecurityKey),
+            };
+
+            return jwtSecurityTokenHandler.ValidateToken(token, tokenValidationParameters, out var _);
         }
     }
 }

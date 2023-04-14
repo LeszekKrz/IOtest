@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { getToken } from 'src/app/core/functions/get-token';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -7,5 +9,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./video.component.scss']
 })
 export class VideoComponent  {
-  videoUrl: string = `${environment.webApiUrl}/video/54b12988-c373-4746-b687-a1ad1b883ccb`;
+  videoUrl: string = `${environment.webApiUrl}/video/${this.route.snapshot.params['videoId']}?access_token=${getToken()}`;
+
+  constructor(private route: ActivatedRoute) {}
 }

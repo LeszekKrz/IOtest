@@ -5,7 +5,7 @@ using System.Net.Http.Headers;
 using YouTubeV2.Application.Configurations.BlobStorage;
 using YouTubeV2.Application.Utils;
 
-namespace YouTubeV2.Application.Services.AzureServices.BlobServices
+namespace YouTubeV2.Application.Services.BlobServices
 {
     public class BlobImageService : IBlobImageService
     {
@@ -38,7 +38,7 @@ namespace YouTubeV2.Application.Services.AzureServices.BlobServices
         private async Task UploadImageAsync(string base64Content, string fileName, string blobContainerName, CancellationToken cancellationToken = default)
         {
             BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(blobContainerName);
-            BlobClient blobClient =  blobContainerClient.GetBlobClient(fileName);
+            BlobClient blobClient = blobContainerClient.GetBlobClient(fileName);
 
             string imageFormat = base64Content.GetImageFormat();
             string imageData = base64Content.GetImageData();
