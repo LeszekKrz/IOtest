@@ -36,8 +36,8 @@ namespace YouTubeV2.Application.Services
 
         public async Task<VideoMetadataDto> GetVideoMetadataAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var video = await _context.Videos.FindAsync(id, cancellationToken);
-            var user = await _context.Users.SingleAsync(user => user.Videos.Contains(video));
+            var video = await _context.Videos.Include(video => video.Tags).SingleAsync(video => video.Id == id, cancellationToken);
+            var user = await _context.Users.SingleAsync(user => user.Videos.Contains(video), cancellationToken);
             var thumbnail = _blobImageService.GetVideoThumbnail(video.Id.ToString());
 
             return new VideoMetadataDto(
@@ -48,8 +48,7 @@ namespace YouTubeV2.Application.Services
                 user.Id,
                 user.UserName,
                 video.ViewCount,
-                new List<string>() { "tag1", "tag2" },
-                //video.Tags.Select(tag => tag.ToString()).ToList(),
+                video.Tags.Select(tag => tag.ToString()).ToList(),
                 video.Visibility.ToString(),
                 video.ProcessingProgress.ToString(),
                 video.UploadDate.DateTime,

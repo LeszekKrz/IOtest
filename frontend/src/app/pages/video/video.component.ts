@@ -34,7 +34,6 @@ export class VideoComponent  {
         switchMap(videoMetadata => {
           this.videoMetadata = videoMetadata;
 
-          // Use forkJoin to make two requests in parallel: one for the user, and one for the user's videos
           return forkJoin({
             user: this.userService.getUser(this.videoMetadata.authorId),
             userVideos: this.videoService.getUserVideos(this.videoMetadata.authorId)
