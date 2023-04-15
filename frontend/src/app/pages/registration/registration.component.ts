@@ -26,7 +26,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   passwordEyeIcon = "pi-eye";
   confirmPasswordInputType = "password";
   confirmPasswordEyeIcon = "pi-eye";
-  image: string = "";
 
   constructor(private formBuilder: FormBuilder,
     private userService: UserService,
@@ -49,6 +48,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       ]),
       confirmPassword: new FormControl('', [Validators.required]),
       userType: new FormControl<boolean>(false),
+      avatarImage: new FormControl(''),
     }, {
       validators: [
         this.passwordsNotMatching,
@@ -88,7 +88,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       email: this.registerForm.get('email')!.value,
       password: this.registerForm.get('password')!.value,
       userType: this.registerForm.get('userType')!.value ? 'Creator' : 'Simple',
-      avatarImage: this.image,
+      avatarImage: this.registerForm.get('avatarImage')!.value,
     };
 
     const register$ = this.userService.registerUser(userForRegistration).pipe(
@@ -196,25 +196,18 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   handleOnRemove(){
-    this.image = "";
+    this.registerForm.patchValue({avatarImage: ''});
   }
 
-  handleFileSelect(event: any){
-    var files = event.files;
-    var file = files[0];
+  handleFileSelect(event: { originalEvent: Event; files: File[] }): void {
+    const avatarImageFile = event.files[0];
 
-  if (files && file) {
-    var reader = new FileReader();
-
-    reader.onload = this._handleReaderLoaded.bind(this);
-
-    reader.readAsBinaryString(file);
+  if (avatarImageFile.type === 'image/png' || avatarImageFile.type === 'image/jpeg') {
+    const reader = new FileReader();
+      reader.readAsDataURL(avatarImageFile);
+      reader.onload = () => {
+        this.registerForm.patchValue({avatarImage: reader.result as string});
+      };
     }
-  }
-
-  _handleReaderLoaded(event: any) {
-    var binaryString = event.target.result;
-    this.image = btoa(binaryString);
-    console.log(btoa(binaryString));
   }
 }

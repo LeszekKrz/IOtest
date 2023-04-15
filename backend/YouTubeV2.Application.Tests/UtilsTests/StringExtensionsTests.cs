@@ -8,65 +8,78 @@ namespace YouTubeV2.Application.Tests.UtilsTests
     public class StringExtensionsTests
     {
         [TestMethod]
-        public void IsValidBase64ImageOrEmpty_ValidPng_ReturnsTrue()
+        public void IsValidBase64Image_ValidPng_ReturnsTrue()
         {
             // ARRANGE
             string input = "data:image/png;base64,iVBORw0KGg==";
 
             // ACT
-            bool result = input.IsValidBase64ImageOrEmpty();
+            bool result = input.IsValidBase64Image();
 
             // ASSERT
             result.Should().BeTrue();
         }
 
         [TestMethod]
-        public void IsValidBase64ImageOrEmpty_ValidJpeg_ReturnsTrue()
+        public void IsValidBase64Image_ValidJpeg_ReturnsTrue()
         {
             // ARRANGE
             string input = "data:image/jpeg;base64,/9j/4AA==";
 
             // ACT
-            bool result = input.IsValidBase64ImageOrEmpty();
+            bool result = input.IsValidBase64Image();
 
             // ASSERT
             result.Should().BeTrue();
         }
 
         [TestMethod]
-        public void IsValidBase64ImageOrEmpty_InvalidFormat_ReturnsFalse()
+        public void IsValidBase64Image_InvalidFormat_ReturnsFalse()
         {
             // ARRANGE
             string input = "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
 
             // ACT
-            bool result = input.IsValidBase64ImageOrEmpty();
+            bool result = input.IsValidBase64Image();
 
             // ASSERT
             result.Should().BeFalse();
         }
 
         [TestMethod]
-        public void IsValidBase64ImageOrEmpty_MissingDataPrefix_ReturnsFalse()
+        public void IsValidBase64Image_MissingDataPrefix_ReturnsFalse()
         {
             // ARRANGE
             string input = "image/png;base64,iVBORw0KGg==";
 
             // ACT
-            bool result = input.IsValidBase64ImageOrEmpty();
+            bool result = input.IsValidBase64Image();
 
             // ASSERT
             result.Should().BeFalse();
         }
 
         [TestMethod]
-        public void IsValidBase64ImageOrEmpty_IncorrectBase64_ReturnsFalse()
+        public void IsValidBase64Image_IncorrectBase64_ReturnsFalse()
         {
             // ARRANGE
             string input = "data:image/png;base64,iVBORw0K###";
 
             // ACT
-            bool result = input.IsValidBase64ImageOrEmpty();
+            bool result = input.IsValidBase64Image();
+
+            // ASSERT
+            result.Should().BeFalse();
+        }
+
+        [TestMethod]
+        public void IsValidBase64Image_EmptyString_ReturnsFalse()
+        {
+            // ARRANGE
+            string input = string.Empty;
+
+            // ACT
+            bool result = input.IsValidBase64Image();
 
             // ASSERT
             result.Should().BeFalse();

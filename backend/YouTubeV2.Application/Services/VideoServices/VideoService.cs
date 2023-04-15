@@ -1,12 +1,15 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using YouTubeV2.Application.DTO;
+using YouTubeV2.Application.Enums;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Providers;
-using YouTubeV2.Application.Services.AzureServices.BlobServices;
+using YouTubeV2.Application.Services.BlobServices;
 using YouTubeV2.Application.Validator;
 
-namespace YouTubeV2.Application.Services
+namespace YouTubeV2.Application.Services.VideoServices
 {
     public class VideoService : IVideoService
     {
@@ -15,7 +18,7 @@ namespace YouTubeV2.Application.Services
         private readonly IBlobImageService _blobImageService;
         private readonly IDateTimeProvider _dateTimeProvider;
 
-        public VideoService(YTContext context ,VideoMetadataPostValidator videoMetadataDtoValidator, IBlobImageService blobImageService, IDateTimeProvider dateTimeProvider)
+        public VideoService(YTContext context, VideoMetadataPostValidator videoMetadataDtoValidator, IBlobImageService blobImageService, IDateTimeProvider dateTimeProvider)
         {
             _context = context;
             _videoMetadataDtoValidator = videoMetadataDtoValidator;
@@ -32,6 +35,19 @@ namespace YouTubeV2.Application.Services
             await _context.SaveChangesAsync(cancellationToken);
             await _blobImageService.UploadVideoThumbnailAsync(videoMetadata.thumbnail, video.Id.ToString(), cancellationToken);
             return video.Id;
+        }
+
+        public async Task<Video?> GetVideoByIdAsync(Guid id, CancellationToken cancellationToken = default, params Expression<Func<Video, object>>[] includes)
+        {
+            var query = _context.Videos.AsTracking();
+            query = includes.Aggregate(query, (current, includeExpresion) => current.Include(includeExpresion));
+            return await query.FirstOrDefaultAsync(video => video.Id == id, cancellationToken);
+        }
+
+        public async Task SetVideoProcessingProgressAsync(Video video, ProcessingProgress processingProgress, CancellationToken cancellationToken = default)
+        {
+            video.ProcessingProgress = processingProgress;
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<VideoMetadataDto> GetVideoMetadataAsync(Guid id, CancellationToken cancellationToken = default)

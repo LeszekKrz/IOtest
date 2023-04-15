@@ -5,12 +5,13 @@ namespace YouTubeV2.Application.Utils
 {
     public static class StringExtensions
     {
-        public static bool IsValidBase64ImageOrEmpty(this string input)
+        public static bool IsValidBase64Image(this string input)
         {
-            //var regex = new Regex(@"^(data:image\/(png|jpeg);base64,([a-zA-Z0-9+/]*={0,3}))?$");
-            //return regex.IsMatch(input);
-            return true;
+            var regex = new Regex(@"^(data:image\/(png|jpeg);base64,([a-zA-Z0-9+/]*={0,3}))$");
+            return regex.IsMatch(input);
         }
+
+        public static bool IsValidBase64ImageOrEmpty(this string input) => input == string.Empty || IsValidBase64Image(input);
 
         public static string GetImageFormat(this string base64Input)
         {

@@ -11,9 +11,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BD804C5C-393
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B006AA8D-B08A-4F1B-8DCC-1185E128D624}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubeV2.Api.Tests", "YouTubeV2.Api.Tests\YouTubeV2.Api.Tests.csproj", "{9A2DEB92-648E-4D18-A3BB-735A2C6A43EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YouTubeV2.Api.Tests", "YouTubeV2.Api.Tests\YouTubeV2.Api.Tests.csproj", "{9A2DEB92-648E-4D18-A3BB-735A2C6A43EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubeV2.Application.Tests", "YouTubeV2.Application.Tests\YouTubeV2.Application.Tests.csproj", "{BFE2714E-767F-4223-83BA-771749A200A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YouTubeV2.Application.Tests", "YouTubeV2.Application.Tests\YouTubeV2.Application.Tests.csproj", "{BFE2714E-767F-4223-83BA-771749A200A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6CF72BFB-13FC-4CFE-869A-3BCC37E39C3D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

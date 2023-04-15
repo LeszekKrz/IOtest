@@ -36,7 +36,7 @@ export class UserService {
 
   getUser(id: string): Observable<UserDTO> {
     let params = new HttpParams().set('id', id);
-    
+
     return this.httpClient.get<UserDTO>(`${this.registrationPageWebAPIUrl}/user`, { params: params });
   }
 

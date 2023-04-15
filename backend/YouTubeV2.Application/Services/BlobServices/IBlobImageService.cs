@@ -1,4 +1,4 @@
-﻿namespace YouTubeV2.Application.Services.AzureServices.BlobServices
+﻿namespace YouTubeV2.Application.Services.BlobServices
 {
     public interface IBlobImageService
     {

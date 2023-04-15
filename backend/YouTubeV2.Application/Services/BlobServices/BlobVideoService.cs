@@ -3,7 +3,7 @@ using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Options;
 using YouTubeV2.Application.Configurations.BlobStorage;
 
-namespace YouTubeV2.Application.Services.AzureServices.BlobServices
+namespace YouTubeV2.Application.Services.BlobServices
 {
     public class BlobVideoService : IBlobVideoService
     {

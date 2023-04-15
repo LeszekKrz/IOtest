@@ -27,7 +27,7 @@ namespace YouTubeV2.Application.Model
         public int ViewCount { get; init; } = 0;
 
         [Required]
-        public ProcessingProgress ProcessingProgress { get; init; } = ProcessingProgress.MetadataRecordCreater;
+        public ProcessingProgress ProcessingProgress { get; set; } = ProcessingProgress.MetadataRecordCreater;
 
         [Required]
         public DateTimeOffset UploadDate { get; init; }

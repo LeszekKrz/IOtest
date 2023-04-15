@@ -12,8 +12,8 @@ namespace YouTubeV2.Application.Validator
             RuleFor(x => x.title).NotNull().Length(1, VideoConstants.titleMaxLength);
             RuleFor(x => x.description).NotNull().Length(1, VideoConstants.descriptionMaxLength);
             RuleFor(x => x.thumbnail)
-                .Must(thumbnail => thumbnail.IsValidBase64ImageOrEmpty())
-                .WithMessage("Thumbnail must be a valid base64-encoded PNG or JPEG image or empty.");
+                .Must(thumbnail => thumbnail.IsValidBase64Image())
+                .WithMessage("Thumbnail must be a valid base64-encoded PNG or JPEG image.");
             RuleFor(x => x.tags).NotNull();
             RuleForEach(x => x.tags).Length(1, VideoConstants.tagMaxLength);
             RuleFor(x => x.visibility).NotNull().IsInEnum().WithMessage("Visibility must be either Private or Public.");

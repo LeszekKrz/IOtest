@@ -4,7 +4,7 @@ namespace YouTubeV2.Application.Services
 {
     public interface ISubscriptionService
     {
-        public Task<UserSubscriptionListDTO> GetSubscriptionsAsync(Guid Id, CancellationToken cancellationToken);
-        public Task<int> GetSubscriptionCount(Guid id, CancellationToken cancellationToken);
+        Task<UserSubscriptionListDTO> GetSubscriptionsAsync(Guid Id, CancellationToken cancellationToken);
+        Task<int> GetSubscriptionCount(Guid id, CancellationToken cancellationToken);
     }
 }

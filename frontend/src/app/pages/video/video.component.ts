@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { getToken } from 'src/app/core/functions/get-token';
 import { UserDTO } from 'src/app/core/models/user-dto';
 import { VideoMetadataDto } from 'src/app/core/models/video-metadata-dto';
 import { UserService } from 'src/app/core/services/user.service';
@@ -14,8 +15,8 @@ import { forkJoin } from 'rxjs';
   styleUrls: ['./video.component.scss']
 })
 export class VideoComponent  {
-  videoId: string = "54b12988-c373-4746-b687-a1ad1b883ccb";
-  videoUrl: string = `${environment.webApiUrl}/video/${this.videoId}`;
+  videoId: string;
+  videoUrl: string;
   videoMetadata!: VideoMetadataDto;
   author!: UserDTO;
   videos: VideoMetadataDto[] = [];
@@ -26,7 +27,8 @@ export class VideoComponent  {
     private router: Router,
     private videoService: VideoService
   ) {
-    // this.videoUrl = this.route.snapshot.paramMap.get('videoId')!;
+    this.videoId = this.route.snapshot.params['videoId'];
+    this.videoUrl = `${environment.webApiUrl}/video/${this.videoId}?access_token=${getToken()}`;
   
     videoService
       .getVideoMetadata(this.videoId)

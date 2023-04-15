@@ -65,7 +65,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                   userId = await userManager.GetUserIdAsync(_user);
               });
 
-            using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithCreatorAccessAndUserId(userId)).CreateClient();
+            using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, userId)).CreateClient();
 
             // ACT
             var httpResponseMessage = await httpClient.PostAsync("video-metadata", new StringContent(JsonConvert.SerializeObject(videoMetadata), Encoding.UTF8, "application/json"));
@@ -118,7 +118,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                   userId = await userManager.GetUserIdAsync(_user);
               });
 
-            using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithSimpleAccessAndUserId(userId)).CreateClient();
+            using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Simple, userId)).CreateClient();
 
             // ACT
             var httpResponseMessage = await httpClient.PostAsync("video-metadata", new StringContent(JsonConvert.SerializeObject(videoMetadata), Encoding.UTF8, "application/json"));

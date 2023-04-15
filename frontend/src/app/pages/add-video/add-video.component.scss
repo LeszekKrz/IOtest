@@ -31,24 +31,6 @@ small {
   margin-left: 0.375rem;
 }
 
-:host ::ng-deep .p-button-remove {
-  width: 25px;
-  height: 25px !important;
-  padding: 0;
-  line-height: 25px;
-}
-
-:host ::ng-deep .p-button-remove .pi {
-  font-size: 12px;
-  vertical-align: middle;
-}
-
-:host ::ng-deep .p-button-style.p-button {
-  margin-top: 1em;
-  width: 100%;
-  border-radius: 2em;
-}
-
 :host ::ng-deep .p-fileupload-style.p-fileupload {
   margin-top: 1em;
   .p-progressbar {
@@ -67,11 +49,29 @@ small {
 }
 
 .download-icon {
-    margin-bottom: 0.5em;
-    font-size: 1.5em;
+  margin-bottom: 0.5em;
+  font-size: 1.5em;
 }
 
 .browse-button {
-    color: #3366cc;
-    cursor: pointer;
+  color: #3366cc;
+  cursor: pointer;
+}
+
+:host ::ng-deep .p-button-remove {
+  width: 25px;
+  height: 25px !important;
+  padding: 0;
+  line-height: 25px;
+}
+
+:host ::ng-deep .p-button-remove .pi {
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+:host ::ng-deep .p-button-style.p-button {
+  margin-top: 1em;
+  width: 100%;
+  border-radius: 2em;
 }
