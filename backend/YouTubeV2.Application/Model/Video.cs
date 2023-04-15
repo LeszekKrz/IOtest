@@ -47,7 +47,7 @@ namespace YouTubeV2.Application.Model
         public static Video FromDTO(VideoMetadataPostDTO videoMetadata, User user, DateTimeOffset now) =>
             new (videoMetadata.title, videoMetadata.description, videoMetadata.visibility, videoMetadata.tags, user, now);
 
-        private Video(string title, string description, Visibility visibility, IReadOnlyCollection<string> tags, User user, DateTimeOffset now)
+        public Video(string title, string description, Visibility visibility, IReadOnlyCollection<string> tags, User user, DateTimeOffset now)
         {
             Title = title;
             Description = description;

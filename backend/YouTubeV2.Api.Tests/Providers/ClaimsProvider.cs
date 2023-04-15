@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using YouTubeV2.Application.Model;
 
 namespace YouTubeV2.Api.Tests.Providers
 {

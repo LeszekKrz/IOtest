@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using YouTubeV2.Api.Attributes;
 using YouTubeV2.Application.DTO;
@@ -83,7 +82,6 @@ namespace YouTubeV2.Api.Controllers
         }
 
         [HttpGet("video-metadata")]
-        [Roles(Role.Simple, Role.Creator, Role.Administrator)]
         public async Task<VideoMetadataDto> GetVideoMetadataAsync([FromQuery]Guid id, CancellationToken cancellationToken)
         {
             return await _videoService.GetVideoMetadataAsync(id, cancellationToken);

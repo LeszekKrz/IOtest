@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
 using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Enums;
 using YouTubeV2.Application.Model;

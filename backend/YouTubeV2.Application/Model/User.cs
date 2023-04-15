@@ -19,5 +19,13 @@ namespace YouTubeV2.Application.Model
             Name = registerDto.name;
             Surname = registerDto.surname;
         }
+
+        public User(string email, string nickname, string name, string surname)
+        {
+            Email = email;
+            UserName = nickname;
+            Name = name;
+            Surname = surname;
+        }
     }
 }
