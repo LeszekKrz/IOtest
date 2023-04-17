@@ -27,7 +27,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Hmmmm", Version = "1.0" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "YouTubeV2Api", Version = "1.0" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = @"Insert Token provided on successful login",
