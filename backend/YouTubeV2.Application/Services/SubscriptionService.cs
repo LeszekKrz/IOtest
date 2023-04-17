@@ -1,12 +1,15 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Exceptions;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services.BlobServices;
+using YouTubeV2.Application.Validator;
 
 namespace YouTubeV2.Application.Services
 {
@@ -15,7 +18,6 @@ namespace YouTubeV2.Application.Services
         private readonly IBlobImageService _blobImageService;
         private readonly YTContext _context;
         private readonly UserManager<User> _userManager;
-
         public SubscriptionService(IBlobImageService blobImageService, YTContext context, UserManager<User> userManager)
         {
             _blobImageService = blobImageService;
@@ -39,16 +41,8 @@ namespace YouTubeV2.Application.Services
         }
         public async Task PostSubscriptionsAsync(Guid subscribeeGuid, string? subscriberToken, CancellationToken cancellationToken)
         {
-            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-            if (!handler.CanReadToken(subscriberToken))
-            {
-                throw new BadRequestException();
-            }
-            string? subscriberId = handler.ReadJwtToken(subscriberToken).Claims.FirstOrDefault(c => c.Type == "NameIdentifier")?.Value;
-            if (subscriberId.IsNullOrEmpty())
-            {
-                throw new BadRequestException();
-            }
+
+            string subscriberId = ExtractSubscriberIdFromSubscriberToken(subscriberToken);
             var subscribee = await _userManager.FindByIdAsync(subscribeeGuid.ToString());
             var subscriber = await _userManager.FindByIdAsync(subscriberId);
             if (subscribee == null || subscriber == null)
@@ -56,13 +50,7 @@ namespace YouTubeV2.Application.Services
                 throw new BadRequestException();
             }
 
-            Subscription subRequest = new()
-            {
-                SubscribeeId = subscribee.Id,
-                Subscribee = subscribee,
-                SubscriberId = subscriber.Id,
-                Subscriber = subscriber
-            };
+            Subscription subRequest = new(subscribee, subscriber);
 
             var existingCopies = _context.Subscriptions.
                 Where(s => s.SubscriberId == subRequest.SubscriberId && s.SubscribeeId == subRequest.SubscribeeId).
@@ -78,6 +66,26 @@ namespace YouTubeV2.Application.Services
 
         public async Task DeleteSubscriptionsAsync(Guid subscribeeGuid, string? subscriberToken, CancellationToken cancellationToken)
         {
+
+            string subscriberId = ExtractSubscriberIdFromSubscriberToken(subscriberToken);
+
+            var subs = await _context.Subscriptions.Where(s => s.SubscribeeId == subscribeeGuid.ToString() && s.SubscriberId == subscriberId)
+                .ToArrayAsync(cancellationToken);
+            if (subs.Length == 0)
+            {
+                throw new BadRequestException();
+            }
+
+            _context.Subscriptions.Remove(subs[0]);
+            _context.SaveChanges();
+        }
+        private static string ExtractSubscriberIdFromSubscriberToken(string? subscriberToken)
+        {
+            if(subscriberToken == null || !subscriberToken.StartsWith("Bearer "))
+            {
+                throw new BadRequestException();
+            }
+            subscriberToken = subscriberToken["Bearer ".Length..];
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
             if (!handler.CanReadToken(subscriberToken))
             {
@@ -88,15 +96,7 @@ namespace YouTubeV2.Application.Services
             {
                 throw new BadRequestException();
             }
-            var subs = await _context.Subscriptions.Where(s => s.SubscribeeId == subscribeeGuid.ToString() && s.SubscriberId == subscriberId)
-                .ToArrayAsync(cancellationToken);
-            if (subs.Length == 0)
-            {
-                throw new BadRequestException();
-            }
-
-            _context.Subscriptions.Remove(subs[0]);
-            _context.SaveChanges();
+            return subscriberId;
         }
     }
 }
