@@ -41,7 +41,6 @@ namespace YouTubeV2.Application.Services.JwtFeatures
 
             IList<string> roles = await _userManager.GetRolesAsync(user);
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
-            _ = claims;
             return claims;
         }
 
