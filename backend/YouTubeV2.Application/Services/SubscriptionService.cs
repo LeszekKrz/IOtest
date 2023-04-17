@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Text;
 using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Exceptions;
@@ -51,10 +52,12 @@ namespace YouTubeV2.Application.Services
 
             Subscription subRequest = new(subscribee, subscriber);
 
-            var existingCopies = _context.Subscriptions.
-                Where(s => s.SubscriberId == subRequest.SubscriberId && s.SubscribeeId == subRequest.SubscribeeId).
-                ToArray();
-            if (existingCopies.Length > 0)
+            var sub = await _context.Subscriptions.FirstOrDefaultAsync(
+                subscription => subscription.SubscriberId == subRequest.SubscriberId &&
+                subscription.SubscribeeId == subRequest.SubscribeeId, 
+                cancellationToken);
+
+            if (sub != null)
             {
                 throw new BadRequestException();
             }
@@ -65,8 +68,6 @@ namespace YouTubeV2.Application.Services
 
         public async Task DeleteSubscriptionsAsync(Guid subscribeeGuid, Guid subscriberGuid, CancellationToken cancellationToken)
         {
-
-
             var subs = await _context.Subscriptions.Where(s => s.SubscribeeId == subscribeeGuid.ToString() && s.SubscriberId == subscriberGuid.ToString())
                 .ToArrayAsync(cancellationToken);
             if (subs.Length == 0)
