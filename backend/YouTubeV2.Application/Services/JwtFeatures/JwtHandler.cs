@@ -35,11 +35,13 @@ namespace YouTubeV2.Application.Services.JwtFeatures
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Email)
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim("NameIdentifier", user.Id)
             };
 
             IList<string> roles = await _userManager.GetRolesAsync(user);
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+            _ = claims;
             return claims;
         }
 
