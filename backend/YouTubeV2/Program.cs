@@ -42,15 +42,14 @@ builder.Services.AddSwaggerGen(c =>
         {
         new OpenApiSecurityScheme
         {
-        Reference = new OpenApiReference
+            Reference = new OpenApiReference
             {
-            Type = ReferenceType.SecurityScheme,
-            Id = "Bearer"
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
             },
             Scheme = "oauth2",
             Name = "Bearer",
             In = ParameterLocation.Header,
-
         },
         new List<string>()
         }
@@ -102,8 +101,6 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,

@@ -39,12 +39,11 @@ namespace YouTubeV2.Application.Services
 
             return await _context.Subscriptions.CountAsync(s => s.SubscribeeId == userId, cancellationToken);
         }
-        public async Task PostSubscriptionsAsync(Guid subscribeeGuid, string? subscriberToken, CancellationToken cancellationToken)
+        public async Task PostSubscriptionsAsync(Guid subscribeeGuid, Guid subscriberGuid, CancellationToken cancellationToken)
         {
 
-            string subscriberId = ExtractSubscriberIdFromSubscriberToken(subscriberToken);
             var subscribee = await _userManager.FindByIdAsync(subscribeeGuid.ToString());
-            var subscriber = await _userManager.FindByIdAsync(subscriberId);
+            var subscriber = await _userManager.FindByIdAsync(subscriberGuid.ToString());
             if (subscribee == null || subscriber == null)
             {
                 throw new BadRequestException();
@@ -61,15 +60,14 @@ namespace YouTubeV2.Application.Services
             }
             await _context.Subscriptions.AddAsync(subRequest, cancellationToken);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task DeleteSubscriptionsAsync(Guid subscribeeGuid, string? subscriberToken, CancellationToken cancellationToken)
+        public async Task DeleteSubscriptionsAsync(Guid subscribeeGuid, Guid subscriberGuid, CancellationToken cancellationToken)
         {
 
-            string subscriberId = ExtractSubscriberIdFromSubscriberToken(subscriberToken);
 
-            var subs = await _context.Subscriptions.Where(s => s.SubscribeeId == subscribeeGuid.ToString() && s.SubscriberId == subscriberId)
+            var subs = await _context.Subscriptions.Where(s => s.SubscribeeId == subscribeeGuid.ToString() && s.SubscriberId == subscriberGuid.ToString())
                 .ToArrayAsync(cancellationToken);
             if (subs.Length == 0)
             {
@@ -77,26 +75,7 @@ namespace YouTubeV2.Application.Services
             }
 
             _context.Subscriptions.Remove(subs[0]);
-            _context.SaveChanges();
-        }
-        private static string ExtractSubscriberIdFromSubscriberToken(string? subscriberToken)
-        {
-            if(subscriberToken == null || !subscriberToken.StartsWith("Bearer "))
-            {
-                throw new BadRequestException();
-            }
-            subscriberToken = subscriberToken["Bearer ".Length..];
-            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-            if (!handler.CanReadToken(subscriberToken))
-            {
-                throw new BadRequestException();
-            }
-            string? subscriberId = handler.ReadJwtToken(subscriberToken).Claims.FirstOrDefault(c => c.Type == "NameIdentifier")?.Value;
-            if (subscriberId.IsNullOrEmpty())
-            {
-                throw new BadRequestException();
-            }
-            return subscriberId;
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }
