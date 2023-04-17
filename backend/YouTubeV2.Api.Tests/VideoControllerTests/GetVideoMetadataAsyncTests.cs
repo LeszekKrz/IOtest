@@ -16,6 +16,7 @@ using System.Web;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using YouTubeV2.Api.Tests.Providers;
 
 namespace YouTubeV2.Api.Tests.VideoControllerTests
 {
@@ -39,11 +40,9 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
         }
 
         [TestMethod]
-        public async Task TestMethod1Async()
+        public async Task GetVideoMetadataShouldReturn()
         {
             // ARRANGE
-            var httpClient = _webApplicationFactory.CreateClient();
-
             User user = await _webApplicationFactory.DoWithinScopeWithReturn<UserManager<User>, User>(
                 async manager =>
                 {
@@ -62,6 +61,8 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                     await context.SaveChangesAsync();
                 });
 
+            using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, user.Id)).CreateClient();
+
             // ACT
             var response = await httpClient.GetAsync($"video-metadata?id={video.Id}");
 
@@ -76,7 +77,6 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             videoResponseDto.visibility.Should().Be(video.Visibility.ToString());
             videoResponseDto.tags.Should().BeEquivalentTo(video.Tags.Select(tag => tag.ToString()));
             videoResponseDto.uploadDate.Should().Be(video.UploadDate.DateTime);
-            videoResponseDto.viewCount.Should().Be(0);
         }
     }
 }

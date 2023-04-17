@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using Microsoft.AspNetCore.Http;
+using System.Linq.Expressions;
 using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Enums;
 using YouTubeV2.Application.Model;
@@ -14,5 +15,9 @@ namespace YouTubeV2.Application.Services.VideoServices
         Task SetVideoProcessingProgressAsync(Video video, ProcessingProgress processingProgress, CancellationToken cancellationToken = default);
 
         Task<VideoMetadataDto> GetVideoMetadataAsync(Guid id, CancellationToken cancellationToken = default);
+
+        Task AuthorizeVideoAccessAsync(Guid videoId, string userId, CancellationToken cancellationToken = default);
+
+        Task SetVideoLengthAsync(Video video, double length, CancellationToken cancellationToken = default);
     }
 }

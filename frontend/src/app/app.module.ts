@@ -15,7 +15,6 @@ import { LoginModule } from './pages/login/login.module';
 import { AddVideoModule } from './pages/add-video/add-video.module';
 import { HomeComponent } from './pages/home/home.component';
 import { HomeModule } from './pages/home/home.module';
-import { TimeAgoPipe } from './pipes/time-ago.pipe';
 
 @NgModule({
     declarations: [

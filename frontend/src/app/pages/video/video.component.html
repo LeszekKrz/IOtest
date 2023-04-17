@@ -29,7 +29,7 @@
           </div>   
         </div>
         <div class="videoDescription">
-          {{ videoMetadata.viewCount }} views {{ videoMetadata.uploadDate | timeAgo }} ago
+          {{ videoMetadata.viewCount }} views {{ getTimeAgo(videoMetadata.uploadDate) }} ago
           <br>
           {{ videoMetadata.description }}
         </div>

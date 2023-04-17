@@ -41,6 +41,8 @@ namespace YouTubeV2.Api.Controllers
             if (!claimsPrincipal.IsInRole(Role.Simple) && !claimsPrincipal.IsInRole(Role.Creator) && !claimsPrincipal.IsInRole(Role.Administrator))
                 return Forbid();
 
+            await _videoService.AuthorizeVideoAccessAsync(id, GetUserId(), cancellationToken);
+
             Stream videoStream = await _blobVideoService.GetVideoAsync(id.ToString(), cancellationToken);
             Response.Headers.AcceptRanges = "bytes";
 
@@ -82,9 +84,12 @@ namespace YouTubeV2.Api.Controllers
         }
 
         [HttpGet("video-metadata")]
-        public async Task<VideoMetadataDto> GetVideoMetadataAsync([FromQuery]Guid id, CancellationToken cancellationToken)
+        [Roles(Role.Simple, Role.Creator, Role.Administrator)]
+        public async Task<ActionResult<VideoMetadataDto>> GetVideoMetadataAsync([FromQuery]Guid id, CancellationToken cancellationToken)
         {
-            return await _videoService.GetVideoMetadataAsync(id, cancellationToken);
+            await _videoService.AuthorizeVideoAccessAsync(id, GetUserId(), cancellationToken);
+
+            return Ok(await _videoService.GetVideoMetadataAsync(id, cancellationToken));
         }
 
         private string GetUserId() => User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;

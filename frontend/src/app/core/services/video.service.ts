@@ -4,6 +4,7 @@ import { Observable, Subject } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { VideoListDto } from "../models/video-list-dto";
 import { VideoMetadataDto } from "../models/video-metadata-dto";
+import { getHttpOptionsWithAuthenticationHeader } from "../functions/get-http-options-with-authorization-header";
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,11 @@ export class VideoService {
 
   getVideoMetadata(id: string): Observable<VideoMetadataDto> {
     let params = new HttpParams().set('id', id);
+    const httpOptions = {
+      params: params,
+      headers: getHttpOptionsWithAuthenticationHeader().headers
+    };
     
-    return this.httpClient.get<VideoMetadataDto>(`${this.videoPageWebAPIUrl}/video-metadata`, { params: params });
+    return this.httpClient.get<VideoMetadataDto>(`${this.videoPageWebAPIUrl}/video-metadata`, httpOptions);
   }
 }
