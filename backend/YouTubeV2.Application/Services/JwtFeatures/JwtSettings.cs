@@ -14,8 +14,6 @@ namespace YouTubeV2.Application.Services.JwtFeatures
         {
             SecurityKey = Encoding.UTF8.GetBytes(configurationSection["securityKey"]);
             ValidIssuer = configurationSection["validIssuer"];
-            ValidAudience = configurationSection["validAudience"];
-            ExpiresInDays = Convert.ToDouble(configurationSection["expiresInDays"]);
         }
     }
 }
