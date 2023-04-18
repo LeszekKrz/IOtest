@@ -1,7 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Options;
-using System.Net.Http.Headers;
 using YouTubeV2.Application.Configurations.BlobStorage;
 using YouTubeV2.Application.Utils;
 

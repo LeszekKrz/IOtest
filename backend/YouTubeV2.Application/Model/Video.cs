@@ -24,7 +24,7 @@ namespace YouTubeV2.Application.Model
 
         [Required]
         [Range(0, int.MaxValue)]
-        public int ViewCount { get; init; } = 0;
+        public int ViewCount { get; set; } = 0;
 
         [Required]
         public ProcessingProgress ProcessingProgress { get; set; } = ProcessingProgress.MetadataRecordCreater;
@@ -36,7 +36,7 @@ namespace YouTubeV2.Application.Model
         public DateTimeOffset EditDate { get; init; }
 
         [Required]
-        public string Duration { get; init; } = "00:00";
+        public string Duration { get; set; } = "00:00";
 
 
         public virtual User User { get; init; } = null!;
@@ -47,7 +47,7 @@ namespace YouTubeV2.Application.Model
         public static Video FromDTO(VideoMetadataPostDTO videoMetadata, User user, DateTimeOffset now) =>
             new (videoMetadata.title, videoMetadata.description, videoMetadata.visibility, videoMetadata.tags, user, now);
 
-        private Video(string title, string description, Visibility visibility, IReadOnlyCollection<string> tags, User user, DateTimeOffset now)
+        public Video(string title, string description, Visibility visibility, IReadOnlyCollection<string> tags, User user, DateTimeOffset now)
         {
             Title = title;
             Description = description;

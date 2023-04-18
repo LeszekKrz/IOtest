@@ -76,6 +76,9 @@ namespace YouTubeV2.Application.Services.VideoServices
 
                 File.Delete(inputFilePath);
 
+                var mediaInfo = await FFmpeg.GetMediaInfo(outputFilePath);
+                await videoService.SetVideoLengthAsync(video, mediaInfo.Duration.TotalSeconds, cancellationToken);
+
                 await using var outputFileStream = File.OpenRead(outputFilePath);
                 await blobVideoService.UploadVideoAsync(videoProcessJob.VideoId.ToString(), outputFileStream, cancellationToken);
                 outputFileStream.Close();

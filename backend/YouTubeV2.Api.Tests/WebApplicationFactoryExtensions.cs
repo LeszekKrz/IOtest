@@ -28,6 +28,15 @@ namespace YouTubeV2.Api.Tests
             await action(tService, uService);
         }
 
+        internal static async Task<TResult> DoWithinScopeWithReturn<TService, TResult>(
+            this WebApplicationFactory<Program> webApplicationFactory, Func<TService, Task<TResult>> action)
+            where TService : notnull
+        {
+            using var serviceScope = webApplicationFactory.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+            var tService = serviceScope.ServiceProvider.GetRequiredService<TService>();
+            return await action(tService);
+        }
+
         internal static WebApplicationFactory<T> WithAuthentication<T>(
             this WebApplicationFactory<T> webApplicationFactory,
             ClaimsProvider claimsProvider)

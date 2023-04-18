@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using YouTubeV2.Api.Attributes;
 using YouTubeV2.Application.DTO;
@@ -42,6 +41,8 @@ namespace YouTubeV2.Api.Controllers
             if (!claimsPrincipal.IsInRole(Role.Simple) && !claimsPrincipal.IsInRole(Role.Creator) && !claimsPrincipal.IsInRole(Role.Administrator))
                 return Forbid();
 
+            await _videoService.AuthorizeVideoAccessAsync(id, GetUserId(), cancellationToken);
+
             Stream videoStream = await _blobVideoService.GetVideoAsync(id.ToString(), cancellationToken);
             Response.Headers.AcceptRanges = "bytes";
 
@@ -80,6 +81,15 @@ namespace YouTubeV2.Api.Controllers
             await _videoProcessingService.EnqueVideoProcessingJobAsync(new VideoProcessJob(id, videoFileStream, videoExtension));
 ;
             return StatusCode(StatusCodes.Status202Accepted);
+        }
+
+        [HttpGet("video-metadata")]
+        [Roles(Role.Simple, Role.Creator, Role.Administrator)]
+        public async Task<ActionResult<VideoMetadataDto>> GetVideoMetadataAsync([FromQuery]Guid id, CancellationToken cancellationToken)
+        {
+            await _videoService.AuthorizeVideoAccessAsync(id, GetUserId(), cancellationToken);
+
+            return Ok(await _videoService.GetVideoMetadataAsync(id, cancellationToken));
         }
 
         private string GetUserId() => User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;

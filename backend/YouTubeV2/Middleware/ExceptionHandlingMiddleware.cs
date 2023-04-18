@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.Extensions.FileProviders.Physical;
 using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Exceptions;
 
@@ -35,6 +36,10 @@ namespace YouTubeV2.Api.Middleware
             {
                 await HandleArgumentExceptionAsync(httpContext, argumentException);
             }
+            catch (ForbiddenException forbiddenExcaption)
+            {
+                await HandleForbiddenExcaption(httpContext, forbiddenExcaption);
+            }
             catch (Exception notFoundException) when (notFoundException is FileNotFoundException || notFoundException is NotFoundException)
             {
                 await HandleNotFoundExceptionAsync(httpContext, notFoundException);
@@ -63,6 +68,12 @@ namespace YouTubeV2.Api.Middleware
         {
             httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             await httpContext.Response.WriteAsJsonAsync(new ErrorResponseDTO(argumentException.Message));
+        }
+
+        private static async Task HandleForbiddenExcaption(HttpContext httpContext, ForbiddenException forbiddenException)
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+            await httpContext.Response.WriteAsJsonAsync(new ErrorResponseDTO(forbiddenException.Message));
         }
 
         private static async Task HandleNotFoundExceptionAsync(HttpContext httpContext, Exception notFoundException)

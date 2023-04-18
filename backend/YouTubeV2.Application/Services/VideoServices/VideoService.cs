@@ -1,8 +1,12 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Linq.Expressions;
+using YouTubeV2.Api.Enums;
 using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Enums;
+using YouTubeV2.Application.Exceptions;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Providers;
 using YouTubeV2.Application.Services.BlobServices;
@@ -46,6 +50,62 @@ namespace YouTubeV2.Application.Services.VideoServices
         public async Task SetVideoProcessingProgressAsync(Video video, ProcessingProgress processingProgress, CancellationToken cancellationToken = default)
         {
             video.ProcessingProgress = processingProgress;
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<VideoMetadataDto> GetVideoMetadataAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            Video video;
+            Uri thumbnail;
+
+            try
+            {
+                video = await _context.Videos
+                    .Include(video => video.Tags)
+                    .Include(video => video.User)
+                    .SingleAsync(video => video.Id == id, cancellationToken);
+                thumbnail = _blobImageService.GetVideoThumbnail(video.Id.ToString());
+            }
+            catch (Exception ex)
+            {
+                throw new NotFoundException("Video not found");
+            }
+
+            video.ViewCount++;
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return new VideoMetadataDto(
+                video.Id.ToString(),
+                video.Title,
+                video.Description,
+                thumbnail.ToString(),
+                video.User.Id,
+                video.User.UserName,
+                video.ViewCount,
+                video.Tags.Select(tag => tag.ToString()).ToList(),
+                video.Visibility.ToString(),
+                video.ProcessingProgress.ToString(),
+                video.UploadDate.DateTime,
+                video.EditDate.DateTime,
+                video.Duration);
+        }
+
+        public async Task AuthorizeVideoAccessAsync(Guid videoId, string userId, CancellationToken cancellationToken = default)
+        {
+            var video = await _context.Videos
+                    .Include(video => video.User)
+                    .SingleAsync(video => video.Id == videoId, cancellationToken);
+
+            if (video.Visibility == Visibility.Private && video.User.Id != userId)
+                throw new ForbiddenException("Video is private");
+        }
+
+        public async Task SetVideoLengthAsync(Video video, double length, CancellationToken cancellationToken = default)
+        {
+            TimeSpan time = TimeSpan.FromSeconds(length);
+            string formattedTime = time.ToString(@"hh\:mm\:ss");
+            var vid = await _context.Videos.SingleAsync(vid => vid.Id == video.Id, cancellationToken);
+            vid.Duration = formattedTime;
             await _context.SaveChangesAsync(cancellationToken);
         }
     }
