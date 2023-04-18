@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace YouTubeV2.Application.DTO.VideoDTOS
+{
+    public record VideoBaseDto(
+        string id,
+        string title,
+        string duration,
+        string thumbnail,
+        string description,
+        string uploadDate,
+        int viewCount);
+}

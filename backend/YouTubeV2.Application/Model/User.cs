@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using YouTubeV2.Application.DTO;
+using YouTubeV2.Application.DTO.UserDTOS;
 
 namespace YouTubeV2.Application.Model
 {
@@ -18,14 +18,6 @@ namespace YouTubeV2.Application.Model
             UserName = registerDto.nickname;
             Name = registerDto.name;
             Surname = registerDto.surname;
-        }
-
-        public User(string email, string nickname, string name, string surname)
-        {
-            Email = email;
-            UserName = nickname;
-            Name = name;
-            Surname = surname;
         }
     }
 }

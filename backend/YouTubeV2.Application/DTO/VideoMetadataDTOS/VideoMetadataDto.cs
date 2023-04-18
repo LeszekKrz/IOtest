@@ -1,4 +1,4 @@
-﻿namespace YouTubeV2.Application.DTO
+﻿namespace YouTubeV2.Application.DTO.VideoMetadataDTOS
 {
     public record VideoMetadataDto(
         string id,

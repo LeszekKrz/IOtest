@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Linq.Expressions;
 using YouTubeV2.Api.Enums;
-using YouTubeV2.Application.DTO;
+using YouTubeV2.Application.DTO.VideoMetadataDTOS;
 using YouTubeV2.Application.Enums;
 using YouTubeV2.Application.Exceptions;
 using YouTubeV2.Application.Model;
@@ -29,7 +29,7 @@ namespace YouTubeV2.Application.Services.VideoServices
             _dateTimeProvider = dateTimeProvider;
         }
 
-        public async Task<Guid> AddVideoMetadataAsync(VideoMetadataPostDTO videoMetadata, User user, CancellationToken cancellationToken = default)
+        public async Task<Guid> AddVideoMetadataAsync(VideoMetadataPostDto videoMetadata, User user, CancellationToken cancellationToken = default)
         {
             await _videoMetadataDtoValidator.ValidateAndThrowAsync(videoMetadata, cancellationToken);
             var video = Video.FromDTO(videoMetadata, user, _dateTimeProvider.UtcNow);

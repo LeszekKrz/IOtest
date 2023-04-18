@@ -1,8 +1,8 @@
 ﻿using YouTubeV2.Api.Enums;
 
-namespace YouTubeV2.Application.DTO
+namespace YouTubeV2.Application.DTO.VideoMetadataDTOS
 {
-    public record VideoMetadataPostDTO(
+    public record VideoMetadataPostDto(
         string title,
         string description,
         string thumbnail,

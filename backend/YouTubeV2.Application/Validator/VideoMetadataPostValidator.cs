@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 using YouTubeV2.Application.Constants;
-using YouTubeV2.Application.DTO;
+using YouTubeV2.Application.DTO.VideoMetadataDTOS;
 using YouTubeV2.Application.Utils;
 
 namespace YouTubeV2.Application.Validator
 {
-    public class VideoMetadataPostValidator : AbstractValidator<VideoMetadataPostDTO>
+    public class VideoMetadataPostValidator : AbstractValidator<VideoMetadataPostDto>
     {
         public VideoMetadataPostValidator()
         {
