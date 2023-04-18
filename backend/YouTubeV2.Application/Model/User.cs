@@ -11,7 +11,13 @@ namespace YouTubeV2.Application.Model
         public virtual IReadOnlyCollection<Video> Videos { get; init; } = null!;
 
         public User() { }
-
+        public User(string email, string nickname, string name, string surname)
+        {
+            Email = email;
+            UserName = nickname;
+            Name = name;
+            Surname = surname;
+        }
         public User(RegisterDto registerDto)
         {
             Email = registerDto.email; 
