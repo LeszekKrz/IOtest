@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using YouTubeV2.Api.Attributes;
-using YouTubeV2.Application.DTO.SubscribtionDTOS;
+using YouTubeV2.Application.DTO.SubscriptionDTOS;
 using YouTubeV2.Application.Exceptions;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services;
@@ -25,7 +25,7 @@ namespace YouTubeV2.Api.Controllers
 
         [Roles(Role.Simple, Role.Creator, Role.Administrator)]
         [HttpGet]
-		public async Task<ActionResult<UserSubscribtionListDto>> GetSubscriptionsAsync([FromQuery][Required] Guid id, CancellationToken cancellationToken)
+		public async Task<ActionResult<UserSubscriptionListDto>> GetSubscriptionsAsync([FromQuery][Required] Guid id, CancellationToken cancellationToken)
 		{
 			return Ok((await _subscriptionsService.GetSubscriptionsAsync(id, cancellationToken)));
         }
