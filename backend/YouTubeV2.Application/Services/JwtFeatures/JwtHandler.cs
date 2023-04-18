@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using YouTubeV2.Application.Exceptions;
 
 namespace YouTubeV2.Application.Services.JwtFeatures
 {
@@ -66,6 +67,26 @@ namespace YouTubeV2.Application.Services.JwtFeatures
             };
 
             return jwtSecurityTokenHandler.ValidateToken(token, tokenValidationParameters, out var _);
+        }
+
+        public static Guid ExtractUserGuidFromToken(string? subscriberToken)
+        {
+            if (subscriberToken == null || !subscriberToken.StartsWith("Bearer "))
+            {
+                throw new BadRequestException();
+            }
+            subscriberToken = subscriberToken["Bearer ".Length..];
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+            if (!handler.CanReadToken(subscriberToken))
+            {
+                throw new BadRequestException();
+            }
+            string? subscriberId = handler.ReadJwtToken(subscriberToken).Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+            if (subscriberId.IsNullOrEmpty())
+            {
+                throw new BadRequestException();
+            }
+            return new Guid(subscriberId);
         }
     }
 }

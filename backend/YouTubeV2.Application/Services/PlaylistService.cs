@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,14 +9,35 @@ using System.Text;
 using System.Threading.Tasks;
 using YouTubeV2.Application.DTO.PlaylistDTOS;
 using YouTubeV2.Application.DTO.UserDTOS;
+using YouTubeV2.Application.Exceptions;
+using YouTubeV2.Application.Migrations;
+using YouTubeV2.Application.Model;
+using YouTubeV2.Application.Services.BlobServices;
 
 namespace YouTubeV2.Application.Services
 {
     public class PlaylistService : IPlaylistService
     {
-        public async Task<ActionResult<CreatePlaylistResponseDto>> CreatePlaylist(CreatePlaylistRequestDto request, CancellationToken cancellationToken)
+        private readonly IBlobImageService _blobImageService;
+        private readonly YTContext _context;
+        private readonly UserManager<User> _userManager;
+        public PlaylistService(IBlobImageService blobImageService, YTContext context, UserManager<User> userManager)
         {
-            throw new NotImplementedException();
+            _blobImageService = blobImageService;
+            _context = context;
+            _userManager = userManager;
+        }
+        public async Task<CreatePlaylistResponseDto> CreatePlaylist(Guid userGuid, CreatePlaylistRequestDto request, CancellationToken cancellationToken)
+        {
+            var playlist = new Model.Playlist
+            {
+                Visibility = request.visibility,
+                Name = request.name,
+                Creator = await _userManager.FindByIdAsync(userGuid.ToString())
+            };
+            var entity = await _context.Playlists.AddAsync(playlist, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+            return new CreatePlaylistResponseDto(entity.Entity.Id.ToString());
         }
 
         public async Task DeletePlaylist([FromQuery, Required] Guid id, CancellationToken cancellationToken)
@@ -32,22 +55,29 @@ namespace YouTubeV2.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ActionResult<IEnumerable<PlaylistBaseDto>>> GetUserPlaylists([FromQuery, Required] Guid userId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<PlaylistBaseDto>> GetUserPlaylists(Guid userId, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task PlaylistDeleteVideo([FromQuery, Required] Guid playlistId, [FromQuery, Required] Guid videoId, CancellationToken cancellationToken)
+        public async Task PlaylistDeleteVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task PlaylistPostVideo([FromQuery, Required] Guid playlistId, [FromQuery, Required] Guid videoId, CancellationToken cancellationToken)
+        public async Task PlaylistPostVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var playlist = await _context.Playlists.SingleAsync(p => p.Id == playlistId, cancellationToken);
+            var video = await _context.Videos.SingleAsync(v => v.Id == videoId, cancellationToken);
+            if (playlist == null || video == null)
+            {
+                throw new BadRequestException();
+            }
+            playlist.Videos.Add(video);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<ActionResult<UserDto>> UpdatePlaylistDetails([FromQuery, Required] Guid id, PlaylistEditDto request, CancellationToken cancellationToken)
+        public async Task<UserDto> UpdatePlaylistDetails([FromQuery, Required] Guid id, PlaylistEditDto request, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

@@ -65,6 +65,7 @@ builder.Services.AddDbContext<YTContext>(
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddSingleton(x => new BlobServiceClient(Environment.GetEnvironmentVariable("AZURE_BLOB_STORAGE_CONNECTION_STRING")));
 builder.Services.AddTransient<ISubscriptionService, SubscriptionService>();
+builder.Services.AddTransient<IPlaylistService, PlaylistService>();
 builder.Services.AddSingleton<IBlobImageService, BlobImageService>();
 builder.Services.AddSingleton<IBlobVideoService, BlobVideoService>();
 builder.Services.AddTransient<IVideoService, VideoService>();

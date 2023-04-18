@@ -12,12 +12,12 @@ namespace YouTubeV2.Application.Services
 {
     public interface IPlaylistService
     {
-        Task<ActionResult<CreatePlaylistResponseDto>> CreatePlaylist(CreatePlaylistRequestDto request, CancellationToken cancellationToken);
-        Task<ActionResult<UserDto>> UpdatePlaylistDetails([FromQuery][Required] Guid id, PlaylistEditDto request, CancellationToken cancellationToken);
-        Task DeletePlaylist([FromQuery][Required] Guid id, CancellationToken cancellationToken);
-        Task<ActionResult<IEnumerable<PlaylistBaseDto>>> GetUserPlaylists([FromQuery][Required] Guid userId, CancellationToken cancellationToken);
-        Task PlaylistPostVideo([FromQuery][Required] Guid playlistId, [FromQuery][Required] Guid videoId, CancellationToken cancellationToken);
-        Task PlaylistDeleteVideo([FromQuery][Required] Guid playlistId, [FromQuery][Required] Guid videoId, CancellationToken cancellationToken);
+        Task<CreatePlaylistResponseDto> CreatePlaylist(Guid userGuid, CreatePlaylistRequestDto request, CancellationToken cancellationToken);
+        Task<UserDto> UpdatePlaylistDetails(Guid id, PlaylistEditDto request, CancellationToken cancellationToken);
+        Task DeletePlaylist(Guid id, CancellationToken cancellationToken);
+        Task<IEnumerable<PlaylistBaseDto>> GetUserPlaylists(Guid userId, CancellationToken cancellationToken);
+        Task PlaylistPostVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken);
+        Task PlaylistDeleteVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken);
         Task<PlaylistDto> GetPlaylistVideos(Guid playlistId, CancellationToken cancellationToken);
         Task<PlaylistDto> GetRecommendedPlaylist(CancellationToken cancellationToken);
     }

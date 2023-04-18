@@ -8,6 +8,7 @@ using YouTubeV2.Application.DTO.SubscribtionDTOS;
 using YouTubeV2.Application.Exceptions;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services;
+using YouTubeV2.Application.Services.JwtFeatures;
 
 namespace YouTubeV2.Api.Controllers
 {
@@ -35,7 +36,7 @@ namespace YouTubeV2.Api.Controllers
         {
             string jwtToken = HttpContext.Request.Headers["Authorization"].ToString();
 
-            Guid subscriberGuid = ExtractSubscriberIdFromSubscriberToken(jwtToken);
+            Guid subscriberGuid = JwtHandler.ExtractUserGuidFromToken(jwtToken);
 
             await _subscriptionsService.PostSubscriptionsAsync(subscribeeGuid, subscriberGuid, cancellationToken);
 
@@ -48,31 +49,11 @@ namespace YouTubeV2.Api.Controllers
         {
             string jwtToken = HttpContext.Request.Headers["Authorization"].ToString();
 
-            Guid subscriberGuid = ExtractSubscriberIdFromSubscriberToken(jwtToken);
+            Guid subscriberGuid = JwtHandler.ExtractUserGuidFromToken(jwtToken);
 
             await _subscriptionsService.DeleteSubscriptionsAsync(subscribeeGuid, subscriberGuid, cancellationToken);
 
             return Ok();
-        }
-
-        private static Guid ExtractSubscriberIdFromSubscriberToken(string? subscriberToken)
-        {
-            if (subscriberToken == null || !subscriberToken.StartsWith("Bearer "))
-            {
-                throw new BadRequestException();
-            }
-            subscriberToken = subscriberToken["Bearer ".Length..];
-            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-            if (!handler.CanReadToken(subscriberToken))
-            {
-                throw new BadRequestException();
-            }
-            string? subscriberId = handler.ReadJwtToken(subscriberToken).Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
-            if (subscriberId.IsNullOrEmpty())
-            {
-                throw new BadRequestException();
-            }
-            return new Guid(subscriberId);
         }
     }
 }
