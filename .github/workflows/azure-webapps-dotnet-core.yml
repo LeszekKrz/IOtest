@@ -61,7 +61,8 @@ jobs:
         with:
          files: '${{ github.workspace }}/backend/YouTubeV2/appsettings.json'
         env:
-          ConnectionStrings.Db: ${{ secrets.DATABASE_CONNECTION_STRING }}
+          #ConnectionStrings.Db: ${{ secrets.DATABASE_CONNECTION_STRING }}
+          ConnectionStrings.Db: ''
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
