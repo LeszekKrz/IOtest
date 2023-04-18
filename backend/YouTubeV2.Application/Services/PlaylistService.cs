@@ -44,6 +44,7 @@ namespace YouTubeV2.Application.Services
             };
             var entity = await _context.Playlists.AddAsync(playlist, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
+            //check entity somehow???
             return new CreatePlaylistResponseDto(entity.Entity.Id.ToString());
         }
 
@@ -81,7 +82,7 @@ namespace YouTubeV2.Application.Services
                 throw new BadRequestException();
             }
             playlist.Videos.Add(video);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<UserDto> UpdatePlaylistDetails([FromQuery, Required] Guid id, PlaylistEditDto request, CancellationToken cancellationToken)
