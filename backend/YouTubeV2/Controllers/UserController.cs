@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using YouTubeV2.Application.DTO;
+using YouTubeV2.Application.DTO.UserDTOS;
+using YouTubeV2.Application.DTO.VideoDTOS;
+using YouTubeV2.Application.DTO.VideoMetadataDTOS;
 using YouTubeV2.Application.Services;
 
 namespace YouTubeV2.Api.Controllers

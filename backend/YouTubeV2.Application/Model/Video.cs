@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using YouTubeV2.Api.Enums;
 using YouTubeV2.Application.Constants;
-using YouTubeV2.Application.DTO;
+using YouTubeV2.Application.DTO.VideoMetadataDTOS;
 using YouTubeV2.Application.Enums;
 
 namespace YouTubeV2.Application.Model
@@ -44,7 +44,7 @@ namespace YouTubeV2.Application.Model
 
         public Video() { }
 
-        public static Video FromDTO(VideoMetadataPostDTO videoMetadata, User user, DateTimeOffset now) =>
+        public static Video FromDTO(VideoMetadataPostDto videoMetadata, User user, DateTimeOffset now) =>
             new (videoMetadata.title, videoMetadata.description, videoMetadata.visibility, videoMetadata.tags, user, now);
 
         public Video(string title, string description, Visibility visibility, IReadOnlyCollection<string> tags, User user, DateTimeOffset now)

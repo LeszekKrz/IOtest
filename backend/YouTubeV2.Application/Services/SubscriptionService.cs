@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Text;
-using YouTubeV2.Application.DTO;
+using YouTubeV2.Application.DTO.SubscribtionDTOS;
 using YouTubeV2.Application.Exceptions;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services.BlobServices;
@@ -26,11 +26,11 @@ namespace YouTubeV2.Application.Services
             _userManager = userManager;
         }
 
-        public async Task<UserSubscriptionListDTO> GetSubscriptionsAsync(Guid Id, CancellationToken cancellationToken)
+        public async Task<UserSubscribtionListDto> GetSubscriptionsAsync(Guid Id, CancellationToken cancellationToken)
         {
-            return new UserSubscriptionListDTO( await _context.Subscriptions.
+            return new UserSubscribtionListDto( await _context.Subscriptions.
                 Where(s => s.SubscriberId == Id.ToString()).
-                Select(s => new SubscriptionDTO(new Guid(s.SubscribeeId), _blobImageService.GetProfilePicture(s.Subscribee.Id), s.Subscribee.UserName)).
+                Select(s => new SubscribtionDto(new Guid(s.SubscribeeId), _blobImageService.GetProfilePicture(s.Subscribee.Id), s.Subscribee.UserName)).
                 ToListAsync(cancellationToken));
         }
 

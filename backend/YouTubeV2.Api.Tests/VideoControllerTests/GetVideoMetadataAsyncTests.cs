@@ -11,12 +11,12 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Net;
 using System.Text;
-using YouTubeV2.Application.DTO;
 using System.Web;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using YouTubeV2.Api.Tests.Providers;
+using YouTubeV2.Application.DTO.VideoMetadataDTOS;
 
 namespace YouTubeV2.Api.Tests.VideoControllerTests
 {

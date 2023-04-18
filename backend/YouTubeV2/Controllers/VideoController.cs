@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using YouTubeV2.Api.Attributes;
-using YouTubeV2.Application.DTO;
+using YouTubeV2.Application.DTO.VideoMetadataDTOS;
 using YouTubeV2.Application.Enums;
 using YouTubeV2.Application.Jobs;
 using YouTubeV2.Application.Model;
@@ -51,14 +51,14 @@ namespace YouTubeV2.Api.Controllers
 
         [HttpPost("video-metadata")]
         [Roles(Role.Creator)]
-        public async Task<ActionResult<VideoMetadataPostResponseDTO>> AddVideoMetadataAsync([FromBody] VideoMetadataPostDTO videoMetadata, CancellationToken cancellationToken)
+        public async Task<ActionResult<VideoMetadataPostResponseDto>> AddVideoMetadataAsync([FromBody] VideoMetadataPostDto videoMetadata, CancellationToken cancellationToken)
         {
             string userId = GetUserId();
             User? user = await _userService.GetByIdAsync(userId);
             if (user == null) return NotFound("There is no user identifiable by given token");
 
             Guid id = await _videoService.AddVideoMetadataAsync(videoMetadata, user, cancellationToken);
-            return Ok(new VideoMetadataPostResponseDTO(id.ToString()));
+            return Ok(new VideoMetadataPostResponseDto(id.ToString()));
         }
 
         [HttpPost("video/{id:guid}")]

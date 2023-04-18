@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using YouTubeV2.Application.DTO;
+using YouTubeV2.Application.DTO.UserDTOS;
 using YouTubeV2.Application.Model;
 
 namespace YouTubeV2.Application.Services

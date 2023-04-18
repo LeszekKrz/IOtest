@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Identity;
-using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Constants;
 using YouTubeV2.Application.Utils;
+using YouTubeV2.Application.DTO.UserDTOS;
 
 namespace YouTubeV2.Application.Validator
 {
