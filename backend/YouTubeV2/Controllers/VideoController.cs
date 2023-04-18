@@ -77,7 +77,9 @@ namespace YouTubeV2.Api.Controllers
                 return BadRequest($"Trying to upload video which has processing progress {video.ProcessingProgress}");
 
             await _videoService.SetVideoProcessingProgressAsync(video, ProcessingProgress.Uploading, cancellationToken);
-            await using var videoFileStream = videoFile.OpenReadStream();
+            MemoryStream videoFileStream = new();
+            await videoFile.CopyToAsync(videoFileStream, cancellationToken);
+            videoFileStream.Seek(0, SeekOrigin.Begin);
             await _videoProcessingService.EnqueVideoProcessingJobAsync(new VideoProcessJob(id, videoFileStream, videoExtension));
 ;
             return StatusCode(StatusCodes.Status202Accepted);

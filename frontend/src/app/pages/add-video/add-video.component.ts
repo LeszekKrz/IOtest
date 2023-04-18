@@ -61,8 +61,8 @@ export class AddVideoComponent implements OnDestroy {
     };
 
     const uploadVideo$ = this.addVideoService.postVideoMetadata(videoMedatadaDTO).pipe(
-      switchMap(videoId => {
-        return this.addVideoService.uploadVideo(videoId, this.video!).pipe(
+      switchMap(videoMetadataResponse => {
+        return this.addVideoService.uploadVideo(videoMetadataResponse.id, this.video!).pipe(
           tap(() => {
             this.messageService.add({
               severity: 'success',
@@ -116,7 +116,7 @@ export class AddVideoComponent implements OnDestroy {
     const uploadedVideo = event.files[0];
     if (this.supportedVideoTypes.includes(uploadedVideo.type)) {
       this.video = new FormData();
-      this.video.append('videoFile', new Blob([uploadedVideo], {type: uploadedVideo.type}));
+      this.video.append('videoFile', new Blob([uploadedVideo], {type: uploadedVideo.type}), uploadedVideo.name);
     }
   }
 
