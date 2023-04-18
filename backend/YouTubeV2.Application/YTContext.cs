@@ -8,6 +8,7 @@ namespace YouTubeV2.Application
 {
     public class YTContext : IdentityDbContext<User, Role, string>
     {
+        public DbSet<Playlist> Playlists { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<Video> Videos { get; set; }
         public DbSet<Tag> Tags { get; set; }
