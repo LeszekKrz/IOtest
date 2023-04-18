@@ -37,7 +37,7 @@ namespace YouTubeV2.Api.Controllers
         public async Task<UserDto> GetUserAsync([FromQuery] string id, CancellationToken cancellationToken)
         {
             // This endpoint exists only to check if frontend works. It will need to be raplaced
-            int subs = await _subscriptionsService.GetSubscriptionCount(new Guid(id), cancellationToken);
+            int subs = await _subscriptionsService.GetSubscriptionCount(id, cancellationToken);
 
             return new UserDto(id,
               "john.doe@mail.com",
