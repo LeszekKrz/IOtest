@@ -29,18 +29,23 @@ namespace YouTubeV2.Application.Services
         }
         public async Task<CreatePlaylistResponseDto> CreatePlaylist(Guid userGuid, CreatePlaylistRequestDto request, CancellationToken cancellationToken)
         {
+            var creator = await _userManager.FindByIdAsync(userGuid.ToString());
+            if(creator == null)
+            {
+                throw new BadRequestException();
+            }
             var playlist = new Model.Playlist
             {
                 Visibility = request.visibility,
                 Name = request.name,
-                Creator = await _userManager.FindByIdAsync(userGuid.ToString())
+                Creator = creator
             };
             var entity = await _context.Playlists.AddAsync(playlist, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             return new CreatePlaylistResponseDto(entity.Entity.Id.ToString());
         }
 
-        public async Task DeletePlaylist([FromQuery, Required] Guid id, CancellationToken cancellationToken)
+        public async Task DeletePlaylist(Guid id, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
