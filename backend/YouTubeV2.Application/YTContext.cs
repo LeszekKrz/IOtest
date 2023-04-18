@@ -11,6 +11,7 @@ namespace YouTubeV2.Application
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<Video> Videos { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
 
         public YTContext(DbContextOptions<YTContext> options) : base(options) { }
 

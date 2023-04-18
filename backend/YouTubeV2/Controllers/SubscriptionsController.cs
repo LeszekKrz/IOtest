@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +10,7 @@ using YouTubeV2.Application.Services;
 
 namespace YouTubeV2.Api.Controllers
 {
-	[ApiController]
+    [ApiController]
     [Route("subscriptions")]
     public class SubscriptionsController : ControllerBase
 	{
