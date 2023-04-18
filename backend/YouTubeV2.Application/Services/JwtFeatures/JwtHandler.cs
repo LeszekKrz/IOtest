@@ -22,7 +22,8 @@ namespace YouTubeV2.Application.Services.JwtFeatures
             var signingCredentials = GetSigningCredentials();
             var claims = await GetClaimsAsync(user);
             var tokenOptions = GenerateJwtSecurityToken(signingCredentials, claims);
-            return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+            var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+            return "Bearer " + token;
         }
 
         private SigningCredentials GetSigningCredentials()
