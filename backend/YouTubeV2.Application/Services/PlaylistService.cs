@@ -21,12 +21,14 @@ namespace YouTubeV2.Application.Services
         private readonly IBlobImageService _blobImageService;
         private readonly YTContext _context;
         private readonly UserManager<User> _userManager;
+
         public PlaylistService(IBlobImageService blobImageService, YTContext context, UserManager<User> userManager)
         {
             _blobImageService = blobImageService;
             _context = context;
             _userManager = userManager;
         }
+
         public async Task<CreatePlaylistResponseDto> CreatePlaylist(Guid userGuid, CreatePlaylistRequestDto request, CancellationToken cancellationToken)
         {
             var creator = await _userManager.FindByIdAsync(userGuid.ToString());
