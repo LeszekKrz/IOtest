@@ -39,7 +39,7 @@ namespace YouTubeV2.Application.Services
             if (!await _userManager.CheckPasswordAsync(user, loginDto.password))
                 throw new BadRequestException(new ErrorResponseDTO[] { new ErrorResponseDTO("Provided password is invalid") });
 
-            return new LoginResponseDto(await _jwtHandler.GenerateTokenAsync(user));
+            return new LoginResponseDto($"Bearer {await _jwtHandler.GenerateTokenAsync(user)}");
         }
 
         public async Task RegisterAsync(RegisterDto registerDto, CancellationToken cancellationToken)

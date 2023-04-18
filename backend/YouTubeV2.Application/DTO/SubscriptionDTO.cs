@@ -1,4 +1,4 @@
 ﻿namespace YouTubeV2.Application.DTO
 {
-    public record SubscriptionDTO(Guid id, Uri avatarImage, string nickname);
+    public record SubscriptionDTO(string id, Uri avatarImage, string nickname);
 }

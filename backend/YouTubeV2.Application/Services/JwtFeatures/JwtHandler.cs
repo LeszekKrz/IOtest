@@ -22,8 +22,7 @@ namespace YouTubeV2.Application.Services.JwtFeatures
             var signingCredentials = GetSigningCredentials();
             var claims = await GetClaimsAsync(user);
             var tokenOptions = GenerateJwtSecurityToken(signingCredentials, claims);
-            var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-            return "Bearer " + token;
+            return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         }
 
         private SigningCredentials GetSigningCredentials()
@@ -36,7 +35,7 @@ namespace YouTubeV2.Application.Services.JwtFeatures
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Name, user.Email!),
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 

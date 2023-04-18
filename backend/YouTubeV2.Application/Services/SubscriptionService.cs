@@ -1,16 +1,10 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Net;
-using System.Text;
 using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Exceptions;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services.BlobServices;
-using YouTubeV2.Application.Validator;
 
 namespace YouTubeV2.Application.Services
 {
@@ -19,6 +13,7 @@ namespace YouTubeV2.Application.Services
         private readonly IBlobImageService _blobImageService;
         private readonly YTContext _context;
         private readonly UserManager<User> _userManager;
+
         public SubscriptionService(IBlobImageService blobImageService, YTContext context, UserManager<User> userManager)
         {
             _blobImageService = blobImageService;
@@ -26,56 +21,43 @@ namespace YouTubeV2.Application.Services
             _userManager = userManager;
         }
 
-        public async Task<UserSubscriptionListDTO> GetSubscriptionsAsync(Guid Id, CancellationToken cancellationToken)
-        {
-            return new UserSubscriptionListDTO( await _context.Subscriptions.
-                Where(s => s.SubscriberId == Id.ToString()).
-                Select(s => new SubscriptionDTO(new Guid(s.SubscribeeId), _blobImageService.GetProfilePicture(s.Subscribee.Id), s.Subscribee.UserName)).
-                ToListAsync(cancellationToken));
-        }
+        public async Task<UserSubscriptionListDTO> GetSubscriptionsAsync(string id, CancellationToken cancellationToken = default) =>
+            new UserSubscriptionListDTO (await _context
+                .Subscriptions
+                .Include(subscribtion => subscribtion.Subscribee)
+                .Where(s => s.SubscriberId == id)
+                .Select(s => new SubscriptionDTO(s.SubscribeeId, _blobImageService.GetProfilePicture(s.Subscribee.Id), s.Subscribee.UserName!))
+                .ToArrayAsync(cancellationToken));
 
-        public async Task<int> GetSubscriptionCount(Guid id, CancellationToken cancellationToken)
-        {
-            var userId = id.ToString();
+        public async Task<int> GetSubscriptionCount(string id, CancellationToken cancellationToken = default) =>
+            await _context.Subscriptions.CountAsync(s => s.SubscribeeId == id, cancellationToken);
 
-            return await _context.Subscriptions.CountAsync(s => s.SubscribeeId == userId, cancellationToken);
-        }
-        public async Task PostSubscriptionsAsync(Guid subscribeeGuid, Guid subscriberGuid, CancellationToken cancellationToken)
+        public async Task AddSubscriptionAsync(string subscribeeId, string subscriberId, CancellationToken cancellationToken = default)
         {
+            var subscribee = await _userManager.FindByIdAsync(subscribeeId);
+            if (subscribee == null) throw new NotFoundException($"User with id {subscribeeId} you want to subscribe not found");
 
-            var subscribee = await _userManager.FindByIdAsync(subscribeeGuid.ToString());
-            var subscriber = await _userManager.FindByIdAsync(subscriberGuid.ToString());
-            if (subscribee == null || subscriber == null)
-            {
-                throw new BadRequestException();
-            }
+            var subscriber = await _userManager.FindByIdAsync(subscriberId);
+            if (subscriber == null) throw new NotFoundException($"User with id {subscriberId} that is subscribing not found");
+
+
+            if (await _context.Subscriptions.AnyAsync(subscription => subscription.SubscriberId == subscriberId && subscription.SubscribeeId == subscribeeId))
+                throw new BadRequestException($"User with id {subscriberId} is already subscribed to a user with id {subscribeeId}");
 
             Subscription subRequest = new(subscribee, subscriber);
-
-            var sub = await _context.Subscriptions.FirstOrDefaultAsync(
-                subscription => subscription.SubscriberId == subRequest.SubscriberId &&
-                subscription.SubscribeeId == subRequest.SubscribeeId, 
-                cancellationToken);
-
-            if (sub != null)
-            {
-                throw new BadRequestException();
-            }
             await _context.Subscriptions.AddAsync(subRequest, cancellationToken);
-
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task DeleteSubscriptionsAsync(Guid subscribeeGuid, Guid subscriberGuid, CancellationToken cancellationToken)
+        public async Task DeleteSubscriptionAsync(string subscribeeId, string subscriberId, CancellationToken cancellationToken = default)
         {
-            var subs = await _context.Subscriptions.Where(s => s.SubscribeeId == subscribeeGuid.ToString() && s.SubscriberId == subscriberGuid.ToString())
-                .ToArrayAsync(cancellationToken);
-            if (subs.Length == 0)
-            {
-                throw new BadRequestException();
-            }
+            Subscription? subscription = await _context
+                .Subscriptions
+                .FirstOrDefaultAsync(subscription => subscription.SubscribeeId == subscribeeId && subscription.SubscriberId == subscriberId, cancellationToken);
+            if (subscription == null)
+                throw new NotFoundException($"Subscription with subscriber id {subscriberId} and subscribee id {subscribeeId} not found");
 
-            _context.Subscriptions.Remove(subs[0]);
+            _context.Subscriptions.Remove(subscription);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }
