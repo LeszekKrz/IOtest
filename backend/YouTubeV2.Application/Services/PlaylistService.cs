@@ -142,7 +142,7 @@ namespace YouTubeV2.Application.Services
 
         public async Task<UserDto> UpdatePlaylistDetails([FromQuery, Required] Guid playlistId, PlaylistEditDto request, CancellationToken cancellationToken)
         {
-            var playlist = await _context.Playlists.Include(p => p.Creator)
+            var playlist = await _context.Playlists.Include(p => p.Creator).ThenInclude(p => p.Subscriptions)
                 .SingleAsync(p => p.Id == playlistId, cancellationToken);
 
             if(playlist == null)
@@ -153,8 +153,20 @@ namespace YouTubeV2.Application.Services
             playlist.Visibility = request.visibility;
             await _context.SaveChangesAsync(cancellationToken);
 
-            // also why return userDto???
-            throw new NotImplementedException();
+            var creator = await _userManager.FindByIdAsync(playlist.Creator.Id) ?? throw new Exception();
+            var roles = await _userManager.GetRolesAsync(creator);
+
+            var result = new UserDto(
+                playlist.Creator.Id,
+                playlist.Creator.Email,
+                playlist.Creator.UserName,
+                playlist.Creator.Name,
+                playlist.Creator.Surname,
+                0.0,
+                roles[0],
+                _blobImageService.GetProfilePicture(playlist.Creator.Id).ToString(),
+                playlist.Creator.Subscriptions.Count);
+            return result;
         }
     }
 }
