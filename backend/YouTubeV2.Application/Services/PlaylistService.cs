@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using YouTubeV2.Api.Enums;
 using YouTubeV2.Application.DTO.PlaylistDTOS;
 using YouTubeV2.Application.DTO.UserDTOS;
 using YouTubeV2.Application.DTO.VideoDTOS;
@@ -16,11 +17,13 @@ namespace YouTubeV2.Application.Services
         private readonly YTContext _context;
         private readonly UserManager<User> _userManager;
         private readonly IBlobImageService _blobImageService;
-        public PlaylistService(YTContext context, UserManager<User> userManager, IBlobImageService blobImageService)
+        private readonly IBlobVideoService _blobVideoService;
+        public PlaylistService(YTContext context, UserManager<User> userManager, IBlobImageService blobImageService, IBlobVideoService blobVideoService)
         {
             _context = context;
             _userManager = userManager;
             _blobImageService = blobImageService;
+            _blobVideoService = blobVideoService;
         }
 
         public async Task<CreatePlaylistResponseDto> CreatePlaylist(Guid userGuid, CreatePlaylistRequestDto request, CancellationToken cancellationToken)
@@ -73,10 +76,29 @@ namespace YouTubeV2.Application.Services
                 );
         }
 
-        public async Task<PlaylistDto> GetRecommendedPlaylist(CancellationToken cancellationToken)
+        public async Task<PlaylistDto> GetRecommendedPlaylist(Guid userGuid, CancellationToken cancellationToken)
         {
-            //future work
-            throw new NotImplementedException();
+            var user = await _userManager.FindByIdAsync(userGuid.ToString());
+
+            var rndGen = new Random();
+            int random = rndGen.Next(0, _context.Videos.Count() - 1);
+            var videos = _context.Videos.Skip(random).Take(2).ToList();
+
+            var result = new PlaylistDto(
+                user.UserName + "'s Playlist",
+                Visibility.Private,
+                videos.Select(
+                    v => new VideoBaseDto(
+                        v.Id.ToString(),
+                        v.Title,
+                        v.Duration,
+                        _blobImageService.GetVideoThumbnail(v.Id.ToString()).ToString(),
+                        v.Description,
+                        v.UploadDate.ToString(),
+                        v.ViewCount)
+                    )
+                );
+            return result;
         }
 
         public async Task<IEnumerable<PlaylistBaseDto>> GetUserPlaylists(Guid userId, CancellationToken cancellationToken)

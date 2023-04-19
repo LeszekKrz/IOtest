@@ -12,6 +12,6 @@ namespace YouTubeV2.Application.Services
         Task PlaylistPostVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken);
         Task PlaylistDeleteVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken);
         Task<PlaylistDto> GetPlaylistVideos(Guid playlistId, CancellationToken cancellationToken);
-        Task<PlaylistDto> GetRecommendedPlaylist(CancellationToken cancellationToken);
+        Task<PlaylistDto> GetRecommendedPlaylist(Guid userGuid, CancellationToken cancellationToken);
     }
 }

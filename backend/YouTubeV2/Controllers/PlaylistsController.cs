@@ -4,6 +4,7 @@ using System.Security.Claims;
 using YouTubeV2.Api.Attributes;
 using YouTubeV2.Application.DTO.PlaylistDTOS;
 using YouTubeV2.Application.DTO.UserDTOS;
+using YouTubeV2.Application.Migrations;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services;
 
@@ -27,15 +28,15 @@ namespace YouTubeV2.Api.Controllers
         }
 
         [HttpPut("details")]
-        public async Task<ActionResult<UserDto>> UpdatePlaylistDetails([FromQuery][Required] Guid id, PlaylistEditDto request, CancellationToken cancellationToken)
+        public async Task<ActionResult<UserDto>> UpdatePlaylistDetails([FromQuery][Required] Guid playlistId, PlaylistEditDto request, CancellationToken cancellationToken)
         {
-            return Ok(await _playlistsService.UpdatePlaylistDetails(id, request, cancellationToken));
+            return Ok(await _playlistsService.UpdatePlaylistDetails(playlistId, request, cancellationToken));
         }
 
         [HttpDelete("details")]
-        public async Task<IActionResult> DeletePlaylist([FromQuery][Required] Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeletePlaylist([FromQuery][Required] Guid playlistId, CancellationToken cancellationToken)
         {
-            await _playlistsService.DeletePlaylist(id, cancellationToken);
+            await _playlistsService.DeletePlaylist(playlistId, cancellationToken);
 
             return Ok();
         }
@@ -53,17 +54,17 @@ namespace YouTubeV2.Api.Controllers
         }
 
         [HttpPost("{id}/{videoId}")]
-        public async Task<IActionResult> PlaylistPostVideo(Guid id, Guid videoId, CancellationToken cancellationToken)
+        public async Task<IActionResult> PlaylistPostVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken)
         {
-            await _playlistsService.PlaylistPostVideo(id, videoId, cancellationToken);
+            await _playlistsService.PlaylistPostVideo(playlistId, videoId, cancellationToken);
 
             return Ok();
         }
 
         [HttpDelete("{id}/{videoId}")]
-        public async Task<IActionResult> PlaylistDeleteVideo(Guid id, Guid videoId, CancellationToken cancellationToken)
+        public async Task<IActionResult> PlaylistDeleteVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken)
         {
-            await _playlistsService.PlaylistDeleteVideo(id, videoId, cancellationToken);
+            await _playlistsService.PlaylistDeleteVideo(playlistId, videoId, cancellationToken);
 
             return Ok();
         }
@@ -71,7 +72,7 @@ namespace YouTubeV2.Api.Controllers
         [HttpGet("recommended")]
         public async Task<ActionResult<PlaylistDto>> GetRecommendedPlaylist(CancellationToken cancellationToken)
         {
-            return Ok(await _playlistsService.GetRecommendedPlaylist(cancellationToken));
+            return Ok(await _playlistsService.GetRecommendedPlaylist(new Guid(GetUserId()), cancellationToken));
         }
         private string GetUserId() => User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
     }
