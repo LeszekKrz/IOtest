@@ -120,11 +120,6 @@ namespace YouTubeV2.Application.Services
             var video = await _context.Videos.SingleOrDefaultAsync(v => v.Id == videoId, cancellationToken)
                 ?? throw new BadRequestException();
 
-            if (playlist == null || video == null)
-            {
-                throw new BadRequestException();
-            }
-
             if (!playlist.Videos.Contains(video))
             {
                 throw new BadRequestException();
