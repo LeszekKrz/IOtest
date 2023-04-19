@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YouTubeV2.Api.Enums;
 using YouTubeV2.Application.DTO.PlaylistDTOS;
 using YouTubeV2.Application.DTO.UserDTOS;
 using YouTubeV2.Application.DTO.VideoDTOS;
@@ -56,13 +57,32 @@ namespace YouTubeV2.Application.Services
 
         public async Task<PlaylistDto> GetPlaylistVideos(Guid playlistId, CancellationToken cancellationToken)
         {
-            var playlist = await _context.Playlists.FindAsync(playlistId, cancellationToken);
-            if(playlist == null)
+            var playlist = await _context.Playlists.Include(p => p.Creator)
+                .Include(p => p.Videos).SingleAsync(p => p.Id == playlistId, cancellationToken);
+            if (playlist == null)
             {
                 throw new BadRequestException();
             }
             //how to access thumbnails for each video in playlist.Videos???
-            throw new NotImplementedException();
+            var videoDtoList = new List<VideoBaseDto>();
+            foreach (var video in playlist.Videos)
+            {
+                VideoBaseDto videoDto = new(
+                    video.Id.ToString(),
+                    video.Title,
+                    video.Duration,
+                    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=",
+                    video.Description,
+                    video.UploadDate.ToString(),
+                    video.ViewCount);
+                videoDtoList.Add(videoDto);
+            }
+            PlaylistDto result = new(
+                playlist.Name,
+                playlist.Visibility,
+                videoDtoList);
+
+            return result;
         }
 
         public async Task<PlaylistDto> GetRecommendedPlaylist(CancellationToken cancellationToken)
@@ -72,23 +92,49 @@ namespace YouTubeV2.Application.Services
 
         public async Task<IEnumerable<PlaylistBaseDto>> GetUserPlaylists(Guid userId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var userWithPlaylists = await _context.Users.Include(p => p.Playlists)
+                .ThenInclude(p => p.Videos)
+                .SingleAsync(p => p.Id == userId.ToString(), cancellationToken);
+            if(userWithPlaylists == null)
+            {
+                throw new BadRequestException();
+            }
+            var result = new List<PlaylistBaseDto>();
+            foreach(var playlist in userWithPlaylists.Playlists)
+            {
+                PlaylistBaseDto playlistBaseDto = new(playlist.Name, playlist.Videos.Count, playlist.Id.ToString());
+                result.Add(playlistBaseDto);
+            }
+
+            return result;
         }
 
         public async Task PlaylistDeleteVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task PlaylistPostVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken)
-        {
-            var playlist = await _context.Playlists.SingleAsync(p => p.Id == playlistId, cancellationToken);
+            var playlist = await _context.Playlists.Include(p => p.Creator)
+                .Include(p => p.Videos).SingleAsync(p => p.Id == playlistId, cancellationToken);
             var video = await _context.Videos.SingleAsync(v => v.Id == videoId, cancellationToken);
             if (playlist == null || video == null)
             {
                 throw new BadRequestException();
             }
-            // does not work, videos not included
+            if (!playlist.Videos.Contains(video))
+            {
+                throw new BadRequestException();
+            }
+            playlist.Videos.Remove(video);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task PlaylistPostVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken)
+        {
+            var playlist = await _context.Playlists.Include(p => p.Creator)
+                .Include(p => p.Videos).SingleAsync(p => p.Id == playlistId, cancellationToken);
+            var video = await _context.Videos.SingleAsync(v => v.Id == videoId, cancellationToken);
+            if (playlist == null || video == null)
+            {
+                throw new BadRequestException();
+            }
             if (playlist.Videos.Contains(video))
             {
                 throw new BadRequestException();
