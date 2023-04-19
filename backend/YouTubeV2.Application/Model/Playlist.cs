@@ -14,13 +14,8 @@ namespace YouTubeV2.Application.Model
     {
         public Guid Id { get; init; }
         public User Creator { get; init; } = null!;
-        public string Name { get; init; } = null!;
-        public Visibility Visibility { get; init; }
-        public virtual ICollection<Video> Videos { get; init; } = null!;
-
-        public Playlist()
-        { 
-            Videos = new ObservableCollection<Video>();
-        }
+        public string Name { get; set; } = null!;
+        public Visibility Visibility { get; set; }
+        public virtual ICollection<Video> Videos { get; set; } = null!;
     }
 }

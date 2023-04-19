@@ -1,20 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YouTubeV2.Api.Enums;
 using YouTubeV2.Application.DTO.PlaylistDTOS;
 using YouTubeV2.Application.DTO.UserDTOS;
 using YouTubeV2.Application.DTO.VideoDTOS;
 using YouTubeV2.Application.Exceptions;
-using YouTubeV2.Application.Migrations;
 using YouTubeV2.Application.Model;
-using YouTubeV2.Application.Services.BlobServices;
 
 namespace YouTubeV2.Application.Services
 {
@@ -36,7 +28,7 @@ namespace YouTubeV2.Application.Services
             {
                 throw new BadRequestException();
             }
-            var playlist = new Model.Playlist
+            var playlist = new Playlist
             {
                 Visibility = request.visibility,
                 Name = request.name,
@@ -126,6 +118,7 @@ namespace YouTubeV2.Application.Services
 
         public async Task PlaylistDeleteVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken)
         {
+            //500 on videoId is playlistId
             var playlist = await _context.Playlists.Include(p => p.Creator)
                 .Include(p => p.Videos).SingleAsync(p => p.Id == playlistId, cancellationToken);
             var video = await _context.Videos.SingleAsync(v => v.Id == videoId, cancellationToken);
@@ -146,6 +139,7 @@ namespace YouTubeV2.Application.Services
 
         public async Task PlaylistPostVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken)
         {
+            //500 on videoId is playlistId
             var playlist = await _context.Playlists.Include(p => p.Creator)
                 .Include(p => p.Videos).SingleAsync(p => p.Id == playlistId, cancellationToken);
             var video = await _context.Videos.SingleAsync(v => v.Id == videoId, cancellationToken);
@@ -173,7 +167,10 @@ namespace YouTubeV2.Application.Services
             {
                 throw new BadRequestException();
             }
-            // idk how honestly? can't change a value in a record
+            playlist.Name = request.name;
+            playlist.Visibility = request.visibility;
+            await _context.SaveChangesAsync(cancellationToken);
+
             // also why return userDto???
             throw new NotImplementedException();
         }
