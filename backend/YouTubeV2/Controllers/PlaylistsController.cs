@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using YouTubeV2.Api.Attributes;
 using YouTubeV2.Application.DTO.PlaylistDTOS;
 using YouTubeV2.Application.DTO.UserDTOS;
+using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services;
-using YouTubeV2.Application.Services.JwtFeatures;
 
 namespace YouTubeV2.Api.Controllers
 {
+    [Roles(Role.Simple, Role.Creator, Role.Administrator)]
     [ApiController]
     [Route("playlists")]
     public class PlaylistsController : Controller
@@ -17,15 +20,10 @@ namespace YouTubeV2.Api.Controllers
         {
             _playlistsService = playlistsService;
         }
-
         [HttpPost("details")]
         public async Task<ActionResult<CreatePlaylistResponseDto>> CreatePlaylist(CreatePlaylistRequestDto request, CancellationToken cancellationToken)
         {
-            string jwtToken = HttpContext.Request.Headers["Authorization"].ToString();
-
-            Guid userGuid = JwtHandler.ExtractUserGuidFromToken(jwtToken);
-
-            return Ok(await _playlistsService.CreatePlaylist(userGuid, request, cancellationToken));
+            return Ok(await _playlistsService.CreatePlaylist(new Guid(GetUserId()), request, cancellationToken));
         }
 
         [HttpPut("details")]
@@ -75,5 +73,6 @@ namespace YouTubeV2.Api.Controllers
         {
             return Ok(await _playlistsService.GetRecommendedPlaylist(cancellationToken));
         }
+        private string GetUserId() => User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
     }
 }
