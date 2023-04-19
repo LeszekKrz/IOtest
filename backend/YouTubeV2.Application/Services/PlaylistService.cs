@@ -20,13 +20,11 @@ namespace YouTubeV2.Application.Services
 {
     public class PlaylistService : IPlaylistService
     {
-        private readonly IBlobImageService _blobImageService;
         private readonly YTContext _context;
         private readonly UserManager<User> _userManager;
 
-        public PlaylistService(IBlobImageService blobImageService, YTContext context, UserManager<User> userManager)
+        public PlaylistService(YTContext context, UserManager<User> userManager)
         {
-            _blobImageService = blobImageService;
             _context = context;
             _userManager = userManager;
         }
@@ -54,10 +52,12 @@ namespace YouTubeV2.Application.Services
         {
             var playlist = await _context.Playlists.Include(p => p.Creator)
                .Include(p => p.Videos).SingleAsync(p => p.Id == playlistId, cancellationToken);
-            if (playlist == null || video == null)
+
+            if (playlist == null)
             {
                 throw new BadRequestException();
             }
+            //are 2 lines below necessary??
             playlist.Videos.Clear();
             await _context.SaveChangesAsync(cancellationToken);
             _context.Playlists.Remove(playlist);
@@ -68,11 +68,13 @@ namespace YouTubeV2.Application.Services
         {
             var playlist = await _context.Playlists.Include(p => p.Creator)
                 .Include(p => p.Videos).SingleAsync(p => p.Id == playlistId, cancellationToken);
+
             if (playlist == null)
             {
                 throw new BadRequestException();
             }
-            //how to access thumbnails for each video in playlist.Videos???
+
+            //i should probably use some constructor or playlist -> playlistDto transforer
             var videoDtoList = new List<VideoBaseDto>();
             foreach (var video in playlist.Videos)
             {
@@ -80,6 +82,7 @@ namespace YouTubeV2.Application.Services
                     video.Id.ToString(),
                     video.Title,
                     video.Duration,
+                    //how to access thumbnails for each video in playlist.Videos???
                     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=",
                     video.Description,
                     video.UploadDate.ToString(),
@@ -96,6 +99,7 @@ namespace YouTubeV2.Application.Services
 
         public async Task<PlaylistDto> GetRecommendedPlaylist(CancellationToken cancellationToken)
         {
+            //future work
             throw new NotImplementedException();
         }
 
@@ -104,10 +108,12 @@ namespace YouTubeV2.Application.Services
             var userWithPlaylists = await _context.Users.Include(p => p.Playlists)
                 .ThenInclude(p => p.Videos)
                 .SingleAsync(p => p.Id == userId.ToString(), cancellationToken);
+
             if(userWithPlaylists == null)
             {
                 throw new BadRequestException();
             }
+
             var result = new List<PlaylistBaseDto>();
             foreach(var playlist in userWithPlaylists.Playlists)
             {
@@ -123,14 +129,17 @@ namespace YouTubeV2.Application.Services
             var playlist = await _context.Playlists.Include(p => p.Creator)
                 .Include(p => p.Videos).SingleAsync(p => p.Id == playlistId, cancellationToken);
             var video = await _context.Videos.SingleAsync(v => v.Id == videoId, cancellationToken);
+
             if (playlist == null || video == null)
             {
                 throw new BadRequestException();
             }
+
             if (!playlist.Videos.Contains(video))
             {
                 throw new BadRequestException();
             }
+
             playlist.Videos.Remove(video);
             await _context.SaveChangesAsync(cancellationToken);
         }
@@ -140,14 +149,17 @@ namespace YouTubeV2.Application.Services
             var playlist = await _context.Playlists.Include(p => p.Creator)
                 .Include(p => p.Videos).SingleAsync(p => p.Id == playlistId, cancellationToken);
             var video = await _context.Videos.SingleAsync(v => v.Id == videoId, cancellationToken);
+
             if (playlist == null || video == null)
             {
                 throw new BadRequestException();
             }
+
             if (playlist.Videos.Contains(video))
             {
                 throw new BadRequestException();
             }
+
             playlist.Videos.Add(video);
             await _context.SaveChangesAsync(cancellationToken);
         }
@@ -156,10 +168,12 @@ namespace YouTubeV2.Application.Services
         {
             var playlist = await _context.Playlists.Include(p => p.Creator)
                 .SingleAsync(p => p.Id == playlistId, cancellationToken);
+
             if(playlist == null)
             {
                 throw new BadRequestException();
             }
+            // idk how honestly
             throw new NotImplementedException();
         }
     }
