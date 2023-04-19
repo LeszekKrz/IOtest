@@ -173,7 +173,8 @@ namespace YouTubeV2.Application.Services
             {
                 throw new BadRequestException();
             }
-            // idk how honestly
+            // idk how honestly? can't change a value in a record
+            // also why return userDto???
             throw new NotImplementedException();
         }
     }
