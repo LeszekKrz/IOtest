@@ -50,9 +50,18 @@ namespace YouTubeV2.Application.Services
             return new CreatePlaylistResponseDto(entity.Entity.Id.ToString());
         }
 
-        public async Task DeletePlaylist(Guid id, CancellationToken cancellationToken)
+        public async Task DeletePlaylist(Guid playlistId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var playlist = await _context.Playlists.Include(p => p.Creator)
+               .Include(p => p.Videos).SingleAsync(p => p.Id == playlistId, cancellationToken);
+            if (playlist == null || video == null)
+            {
+                throw new BadRequestException();
+            }
+            playlist.Videos.Clear();
+            await _context.SaveChangesAsync(cancellationToken);
+            _context.Playlists.Remove(playlist);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<PlaylistDto> GetPlaylistVideos(Guid playlistId, CancellationToken cancellationToken)
@@ -143,8 +152,14 @@ namespace YouTubeV2.Application.Services
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<UserDto> UpdatePlaylistDetails([FromQuery, Required] Guid id, PlaylistEditDto request, CancellationToken cancellationToken)
+        public async Task<UserDto> UpdatePlaylistDetails([FromQuery, Required] Guid playlistId, PlaylistEditDto request, CancellationToken cancellationToken)
         {
+            var playlist = await _context.Playlists.Include(p => p.Creator)
+                .SingleAsync(p => p.Id == playlistId, cancellationToken);
+            if(playlist == null)
+            {
+                throw new BadRequestException();
+            }
             throw new NotImplementedException();
         }
     }

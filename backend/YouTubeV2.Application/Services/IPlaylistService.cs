@@ -14,7 +14,7 @@ namespace YouTubeV2.Application.Services
     {
         Task<CreatePlaylistResponseDto> CreatePlaylist(Guid userGuid, CreatePlaylistRequestDto request, CancellationToken cancellationToken);
         Task<UserDto> UpdatePlaylistDetails(Guid id, PlaylistEditDto request, CancellationToken cancellationToken);
-        Task DeletePlaylist(Guid id, CancellationToken cancellationToken);
+        Task DeletePlaylist(Guid playlistId, CancellationToken cancellationToken);
         Task<IEnumerable<PlaylistBaseDto>> GetUserPlaylists(Guid userId, CancellationToken cancellationToken);
         Task PlaylistPostVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken);
         Task PlaylistDeleteVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken);
