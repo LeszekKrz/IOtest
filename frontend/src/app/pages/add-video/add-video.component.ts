@@ -5,6 +5,7 @@ import { Observable, Subscription, finalize, of, switchMap, tap } from 'rxjs';
 import { VideoMedatadataDTO } from './models/video-metadata-dto';
 import { AddVideoService } from './services/add-video.service';
 import { MessageService } from 'primeng/api';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-video',
@@ -30,7 +31,10 @@ export class AddVideoComponent implements OnDestroy {
   @ViewChild('thumbnailUpload') thumbnailUpload!: FileUpload;
   @ViewChild('videoUpload') videoUpload!: FileUpload;
 
-  constructor(private addVideoService: AddVideoService, private messageService: MessageService) { }
+  constructor(
+    private addVideoService: AddVideoService,
+    private messageService: MessageService,
+    private router: Router) { }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscription => {
@@ -73,7 +77,11 @@ export class AddVideoComponent implements OnDestroy {
         )
       }),
     );
-    this.subscriptions.push(this.doWithLoading(uploadVideo$).subscribe());
+    this.subscriptions.push(this.doWithLoading(uploadVideo$).subscribe({
+      complete: () => {
+        this.router.navigate(['']);
+      }
+    }));
   }
 
   isInputInvalidAndTouchedOrDirty(inputName: string): boolean {

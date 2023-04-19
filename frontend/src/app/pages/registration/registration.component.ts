@@ -1,10 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { finalize, Observable, of, Subscription, switchMap, tap } from 'rxjs';
 import { UserForRegistrationDTO } from '../../authentication/models/user-for-registration-dto';
 import { UserService } from '../../core/services/user.service';
+import { FileUpload } from 'primeng/fileupload';
 
 @Component({
   selector: 'app-registration',
@@ -26,6 +27,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   passwordEyeIcon = "pi-eye";
   confirmPasswordInputType = "password";
   confirmPasswordEyeIcon = "pi-eye";
+  @ViewChild('avatarImageUpload') avatarImageUpload!: FileUpload;
 
   constructor(private formBuilder: FormBuilder,
     private userService: UserService,
@@ -197,6 +199,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   handleOnRemove(){
     this.registerForm.patchValue({avatarImage: ''});
+    this.avatarImageUpload.clear();
   }
 
   handleFileSelect(event: { originalEvent: Event; files: File[] }): void {

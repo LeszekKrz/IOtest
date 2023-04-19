@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { UserService } from 'src/app/core/services/user.service';
 import { environment } from 'src/environments/environment';
 import { VideoMedatadataDTO } from '../models/video-metadata-dto';
 import { Observable } from 'rxjs';
