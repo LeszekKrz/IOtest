@@ -5,6 +5,7 @@ import { Observable, Subscription, finalize, of, switchMap, tap } from 'rxjs';
 import { VideoMedatadataDTO } from './models/video-metadata-dto';
 import { AddVideoService } from './services/add-video.service';
 import { MessageService } from 'primeng/api';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-video',
@@ -30,7 +31,10 @@ export class AddVideoComponent implements OnDestroy {
   @ViewChild('thumbnailUpload') thumbnailUpload!: FileUpload;
   @ViewChild('videoUpload') videoUpload!: FileUpload;
 
-  constructor(private addVideoService: AddVideoService, private messageService: MessageService) { }
+  constructor(
+    private addVideoService: AddVideoService,
+    private messageService: MessageService,
+    private router: Router) { }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscription => {
@@ -61,8 +65,8 @@ export class AddVideoComponent implements OnDestroy {
     };
 
     const uploadVideo$ = this.addVideoService.postVideoMetadata(videoMedatadaDTO).pipe(
-      switchMap(videoId => {
-        return this.addVideoService.uploadVideo(videoId, this.video!).pipe(
+      switchMap(videoMetadataResponse => {
+        return this.addVideoService.uploadVideo(videoMetadataResponse.id, this.video!).pipe(
           tap(() => {
             this.messageService.add({
               severity: 'success',
@@ -73,7 +77,11 @@ export class AddVideoComponent implements OnDestroy {
         )
       }),
     );
-    this.subscriptions.push(this.doWithLoading(uploadVideo$).subscribe());
+    this.subscriptions.push(this.doWithLoading(uploadVideo$).subscribe({
+      complete: () => {
+        this.router.navigate(['']);
+      }
+    }));
   }
 
   isInputInvalidAndTouchedOrDirty(inputName: string): boolean {
@@ -116,7 +124,7 @@ export class AddVideoComponent implements OnDestroy {
     const uploadedVideo = event.files[0];
     if (this.supportedVideoTypes.includes(uploadedVideo.type)) {
       this.video = new FormData();
-      this.video.append('videoFile', new Blob([uploadedVideo], {type: uploadedVideo.type}));
+      this.video.append('videoFile', new Blob([uploadedVideo], {type: uploadedVideo.type}), uploadedVideo.name);
     }
   }
 

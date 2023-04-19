@@ -76,7 +76,7 @@ namespace YouTubeV2.Application
                 NormalizedUserName = "TestAdmin".ToUpper(),
             };
 
-            PasswordHasher<User> ph = new PasswordHasher<User>();
+            PasswordHasher<User> ph = new();
             simple.PasswordHash = ph.HashPassword(simple, "123!@#asdASD");
             creator.PasswordHash = ph.HashPassword(creator, "123!@#asdASD");
             admin.PasswordHash = ph.HashPassword(admin, "123!@#asdASD");

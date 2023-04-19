@@ -35,13 +35,14 @@ namespace YouTubeV2.Api.Controllers
         [HttpGet("video/{id:guid}")]
         public async Task<IActionResult> GetVideoAsync(Guid id, [FromQuery] string access_token, CancellationToken cancellationToken)
         {
-            ClaimsPrincipal? claimsPrincipal = _userService.ValidateToken(access_token);
+            string token = UserService.GetTokenFromTokenWithBearerPrefix(access_token);
+            ClaimsPrincipal? claimsPrincipal = _userService.ValidateToken(token);
             if (claimsPrincipal == null) return Unauthorized();
 
             if (!claimsPrincipal.IsInRole(Role.Simple) && !claimsPrincipal.IsInRole(Role.Creator) && !claimsPrincipal.IsInRole(Role.Administrator))
                 return Forbid();
 
-            await _videoService.AuthorizeVideoAccessAsync(id, GetUserId(), cancellationToken);
+            await _videoService.AuthorizeVideoAccessAsync(id, claimsPrincipal.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value, cancellationToken);
 
             Stream videoStream = await _blobVideoService.GetVideoAsync(id.ToString(), cancellationToken);
             Response.Headers.AcceptRanges = "bytes";
@@ -77,7 +78,9 @@ namespace YouTubeV2.Api.Controllers
                 return BadRequest($"Trying to upload video which has processing progress {video.ProcessingProgress}");
 
             await _videoService.SetVideoProcessingProgressAsync(video, ProcessingProgress.Uploading, cancellationToken);
-            await using var videoFileStream = videoFile.OpenReadStream();
+            MemoryStream videoFileStream = new();
+            await videoFile.CopyToAsync(videoFileStream, cancellationToken);
+            videoFileStream.Seek(0, SeekOrigin.Begin);
             await _videoProcessingService.EnqueVideoProcessingJobAsync(new VideoProcessJob(id, videoFileStream, videoExtension));
 ;
             return StatusCode(StatusCodes.Status202Accepted);

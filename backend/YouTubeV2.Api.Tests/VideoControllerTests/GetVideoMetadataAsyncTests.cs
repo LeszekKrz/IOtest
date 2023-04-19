@@ -75,7 +75,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             videoResponseDto.title.Should().Be(video.Title);
             videoResponseDto.description.Should().Be(video.Description);
             videoResponseDto.visibility.Should().Be(video.Visibility.ToString());
-            videoResponseDto.tags.Should().BeEquivalentTo(video.Tags.Select(tag => tag.ToString()));
+            videoResponseDto.tags.Should().BeEquivalentTo(video.Tags.Select(tag => tag.Value));
             videoResponseDto.uploadDate.Should().Be(video.UploadDate.DateTime);
         }
     }

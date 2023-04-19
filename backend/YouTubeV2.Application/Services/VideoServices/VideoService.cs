@@ -66,7 +66,7 @@ namespace YouTubeV2.Application.Services.VideoServices
                     .SingleAsync(video => video.Id == id, cancellationToken);
                 thumbnail = _blobImageService.GetVideoThumbnail(video.Id.ToString());
             }
-            catch (Exception ex)
+            catch
             {
                 throw new NotFoundException("Video not found");
             }
@@ -80,9 +80,9 @@ namespace YouTubeV2.Application.Services.VideoServices
                 video.Description,
                 thumbnail.ToString(),
                 video.User.Id,
-                video.User.UserName,
+                video.User.UserName!,
                 video.ViewCount,
-                video.Tags.Select(tag => tag.ToString()).ToList(),
+                video.Tags.Select(tag => tag.Value).ToList(),
                 video.Visibility.ToString(),
                 video.ProcessingProgress.ToString(),
                 video.UploadDate.DateTime,

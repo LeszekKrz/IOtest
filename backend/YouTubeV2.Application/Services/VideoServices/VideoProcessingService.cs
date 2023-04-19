@@ -54,6 +54,7 @@ namespace YouTubeV2.Application.Services.VideoServices
 
                     await blobVideoService.UploadVideoAsync(videoProcessJob.VideoId.ToString(), videoProcessJob.VideoStream, cancellationToken);
                     await videoService.SetVideoProcessingProgressAsync(video, ProcessingProgress.Ready, cancellationToken);
+                    videoProcessJob.VideoStream.Dispose();
                     return;
                 }
 
@@ -66,6 +67,7 @@ namespace YouTubeV2.Application.Services.VideoServices
                 await videoProcessJob.VideoStream.CopyToAsync(inputFileStream, cancellationToken);
                 await inputFileStream.FlushAsync(cancellationToken);
                 inputFileStream.Close();
+                videoProcessJob.VideoStream.Dispose();
 
                 var conversion = FFmpeg.Conversions.New()
                     .AddParameter($"-i \"{inputFilePath}\"")
@@ -76,7 +78,7 @@ namespace YouTubeV2.Application.Services.VideoServices
 
                 File.Delete(inputFilePath);
 
-                var mediaInfo = await FFmpeg.GetMediaInfo(outputFilePath);
+                var mediaInfo = await FFmpeg.GetMediaInfo(outputFilePath, cancellationToken);
                 await videoService.SetVideoLengthAsync(video, mediaInfo.Duration.TotalSeconds, cancellationToken);
 
                 await using var outputFileStream = File.OpenRead(outputFilePath);

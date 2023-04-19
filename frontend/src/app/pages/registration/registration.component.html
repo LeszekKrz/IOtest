@@ -164,7 +164,7 @@
           <p>Avatar Image</p>
         </label>
         <p-fileUpload
-          #fileUpload
+          #avatarImageUpload
           name="avatarImage[]"
           accept="image/png, image/jpeg"
           [fileLimit]="1"
@@ -181,7 +181,7 @@
                 <i class="flex justify-content-center pi pi-download download-icon"></i>
                 <div class="flex justify-content-center">
                   Drop or&nbsp;
-                  <span class="browse-button" (click)="fileUpload.choose()">
+                  <span class="browse-button" (click)="avatarImageUpload.choose()">
                     browse
                   </span>
                   &nbsp;uploaded image
