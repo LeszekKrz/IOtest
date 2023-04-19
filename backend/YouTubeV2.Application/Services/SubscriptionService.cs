@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using YouTubeV2.Application.DTO;
+using YouTubeV2.Application.DTO.SubscriptionDTOS;
 using YouTubeV2.Application.Exceptions;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services.BlobServices;
@@ -21,12 +23,12 @@ namespace YouTubeV2.Application.Services
             _userManager = userManager;
         }
 
-        public async Task<UserSubscriptionListDTO> GetSubscriptionsAsync(string id, CancellationToken cancellationToken = default) =>
-            new UserSubscriptionListDTO (await _context
+        public async Task<UserSubscriptionListDto> GetSubscriptionsAsync(string id, CancellationToken cancellationToken = default) =>
+            new UserSubscriptionListDto (await _context
                 .Subscriptions
                 .Include(subscribtion => subscribtion.Subscribee)
                 .Where(s => s.SubscriberId == id)
-                .Select(s => new SubscriptionDTO(s.SubscribeeId, _blobImageService.GetProfilePicture(s.Subscribee.Id), s.Subscribee.UserName!))
+                .Select(s => new SubscriptionDto(new Guid(s.SubscribeeId), _blobImageService.GetProfilePicture(s.Subscribee.Id), s.Subscribee.UserName!))
                 .ToArrayAsync(cancellationToken));
 
         public async Task<int> GetSubscriptionCount(string id, CancellationToken cancellationToken = default) =>

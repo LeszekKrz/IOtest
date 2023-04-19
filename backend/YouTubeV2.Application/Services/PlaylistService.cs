@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YouTubeV2.Application.DTO.PlaylistDTOS;
 using YouTubeV2.Application.DTO.UserDTOS;
+using YouTubeV2.Application.DTO.VideoDTOS;
 using YouTubeV2.Application.Exceptions;
 using YouTubeV2.Application.Migrations;
 using YouTubeV2.Application.Model;
@@ -55,6 +56,12 @@ namespace YouTubeV2.Application.Services
 
         public async Task<PlaylistDto> GetPlaylistVideos(Guid playlistId, CancellationToken cancellationToken)
         {
+            var playlist = await _context.Playlists.FindAsync(playlistId, cancellationToken);
+            if(playlist == null)
+            {
+                throw new BadRequestException();
+            }
+            //how to access thumbnails for each video in playlist.Videos???
             throw new NotImplementedException();
         }
 
@@ -78,6 +85,11 @@ namespace YouTubeV2.Application.Services
             var playlist = await _context.Playlists.SingleAsync(p => p.Id == playlistId, cancellationToken);
             var video = await _context.Videos.SingleAsync(v => v.Id == videoId, cancellationToken);
             if (playlist == null || video == null)
+            {
+                throw new BadRequestException();
+            }
+            // does not work, videos not included
+            if (playlist.Videos.Contains(video))
             {
                 throw new BadRequestException();
             }

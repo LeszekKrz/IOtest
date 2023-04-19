@@ -18,6 +18,9 @@ namespace YouTubeV2.Application.Model
         public Visibility Visibility { get; init; }
         public virtual ICollection<Video> Videos { get; init; } = null!;
 
-        public Playlist() { }
+        public Playlist()
+        { 
+            Videos = new ObservableCollection<Video>();
+        }
     }
 }
