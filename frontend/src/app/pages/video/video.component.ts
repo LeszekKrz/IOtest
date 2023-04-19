@@ -57,6 +57,7 @@ export class VideoComponent  {
   }
 
   public getTimeAgo(value: Date): string {
+    value = new Date(value);
     const now = new Date();
     const timeDiffInSeconds = Math.floor((now.getTime() - value.getTime()) / 1000);
     const minutes = Math.floor(timeDiffInSeconds / 60);
