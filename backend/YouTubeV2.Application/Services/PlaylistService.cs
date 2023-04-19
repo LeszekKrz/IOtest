@@ -57,26 +57,20 @@ namespace YouTubeV2.Application.Services
                 .Include(p => p.Videos).SingleOrDefaultAsync(p => p.Id == playlistId, cancellationToken)
                 ?? throw new BadRequestException();
 
-            var videoDtoList = new List<VideoBaseDto>();
-            foreach (var video in playlist.Videos)
-            {
-                videoDtoList.Add(
-                    new VideoBaseDto(
-                        video.Id.ToString(),
-                        video.Title,
-                        video.Duration,
-                        _blobImageService.GetVideoThumbnail(video.Id.ToString()).ToString(),
-                        video.Description,
-                        video.UploadDate.ToString(),
-                        video.ViewCount)
-                    );
-            }
-            PlaylistDto result = new(
+            return new PlaylistDto(
                 playlist.Name,
                 playlist.Visibility,
-                videoDtoList);
-
-            return result;
+                playlist.Videos.Select(
+                    v => new VideoBaseDto(
+                        v.Id.ToString(),
+                        v.Title,
+                        v.Duration,
+                        _blobImageService.GetVideoThumbnail(v.Id.ToString()).ToString(),
+                        v.Description,
+                        v.UploadDate.ToString(),
+                        v.ViewCount)
+                    )
+                );
         }
 
         public async Task<PlaylistDto> GetRecommendedPlaylist(CancellationToken cancellationToken)
@@ -92,12 +86,8 @@ namespace YouTubeV2.Application.Services
                 .SingleOrDefaultAsync(p => p.Id == userId.ToString(), cancellationToken)
                 ?? throw new BadRequestException();
 
-            var result = new List<PlaylistBaseDto>();
-            foreach (var playlist in userWithPlaylists.Playlists)
-            {
-                result.Add(new PlaylistBaseDto(playlist.Name, playlist.Videos.Count, playlist.Id.ToString()));
-            }
-            return result;
+            return userWithPlaylists.Playlists
+                .Select(p => new PlaylistBaseDto(p.Name, p.Videos.Count, p.Id.ToString())).ToList();
         }
 
         public async Task PlaylistDeleteVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken)
@@ -143,17 +133,14 @@ namespace YouTubeV2.Application.Services
         public async Task<UserDto> UpdatePlaylistDetails([FromQuery, Required] Guid playlistId, PlaylistEditDto request, CancellationToken cancellationToken)
         {
             var playlist = await _context.Playlists.Include(p => p.Creator).ThenInclude(p => p.Subscriptions)
-                .SingleAsync(p => p.Id == playlistId, cancellationToken);
+                .SingleAsync(p => p.Id == playlistId, cancellationToken)
+                ?? throw new BadRequestException();
 
-            if(playlist == null)
-            {
-                throw new BadRequestException();
-            }
             playlist.Name = request.name;
             playlist.Visibility = request.visibility;
             await _context.SaveChangesAsync(cancellationToken);
 
-            var creator = await _userManager.FindByIdAsync(playlist.Creator.Id) ?? throw new Exception();
+            var creator = await _userManager.FindByIdAsync(playlist.Creator.Id);
             var roles = await _userManager.GetRolesAsync(creator);
 
             var result = new UserDto(
