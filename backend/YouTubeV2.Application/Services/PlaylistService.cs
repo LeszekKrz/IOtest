@@ -26,9 +26,9 @@ namespace YouTubeV2.Application.Services
             _blobVideoService = blobVideoService;
         }
 
-        public async Task<CreatePlaylistResponseDto> CreatePlaylist(Guid userGuid, CreatePlaylistRequestDto request, CancellationToken cancellationToken)
+        public async Task<CreatePlaylistResponseDto> CreatePlaylist(Guid requesterUserGuid, CreatePlaylistRequestDto request, CancellationToken cancellationToken)
         {
-            var creator = await _userManager.FindByIdAsync(userGuid.ToString()) ?? throw new BadRequestException();
+            var creator = await _userManager.FindByIdAsync(requesterUserGuid.ToString()) ?? throw new BadRequestException();
 
             var playlist = new Playlist
             {
@@ -42,11 +42,16 @@ namespace YouTubeV2.Application.Services
             return new CreatePlaylistResponseDto(entity.Entity.Id.ToString());
         }
 
-        public async Task DeletePlaylist(Guid playlistId, CancellationToken cancellationToken)
+        public async Task DeletePlaylist(Guid requesterUserGuid, Guid playlistId, CancellationToken cancellationToken)
         {
             var playlist = await _context.Playlists.Include(p => p.Creator)
                .Include(p => p.Videos).SingleOrDefaultAsync(p => p.Id == playlistId, cancellationToken)
                ?? throw new BadRequestException();
+
+            if(playlist.Creator.Id.ToUpper() != requesterUserGuid.ToString().ToUpper())
+            {
+                throw new ForbiddenException();
+            }
 
             playlist.Videos.Clear();
             await _context.SaveChangesAsync(cancellationToken);
@@ -54,11 +59,17 @@ namespace YouTubeV2.Application.Services
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<PlaylistDto> GetPlaylistVideos(Guid playlistId, CancellationToken cancellationToken)
+        public async Task<PlaylistDto> GetPlaylistVideos(Guid requesterUserGuid, Guid playlistId, CancellationToken cancellationToken)
         {
             var playlist = await _context.Playlists.Include(p => p.Creator)
                 .Include(p => p.Videos).SingleOrDefaultAsync(p => p.Id == playlistId, cancellationToken)
                 ?? throw new BadRequestException();
+
+            if (playlist.Visibility == Visibility.Private && 
+                playlist.Creator.Id.ToUpper() != requesterUserGuid.ToString().ToUpper())
+            {
+                throw new ForbiddenException();
+            }
 
             return new PlaylistDto(
                 playlist.Name,
@@ -80,9 +91,11 @@ namespace YouTubeV2.Application.Services
         {
             var user = await _userManager.FindByIdAsync(userGuid.ToString());
 
-            var rndGen = new Random();
-            int random = rndGen.Next(0, _context.Videos.Count() - 1);
-            var videos = _context.Videos.Skip(random).Take(2).ToList();
+            var videos = _context.Videos
+                .Where(v => v.Visibility == Visibility.Public)
+                .OrderBy(v => Guid.NewGuid())
+                .Take(8)
+                .ToList();
 
             var result = new PlaylistDto(
                 user.UserName + "'s Playlist",
@@ -101,24 +114,38 @@ namespace YouTubeV2.Application.Services
             return result;
         }
 
-        public async Task<IEnumerable<PlaylistBaseDto>> GetUserPlaylists(Guid userId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<PlaylistBaseDto>> GetUserPlaylists(Guid requesterUserGuid, Guid userGuid, CancellationToken cancellationToken)
         {
             var userWithPlaylists = await _context.Users.Include(p => p.Playlists)
                 .ThenInclude(p => p.Videos)
-                .SingleOrDefaultAsync(p => p.Id == userId.ToString(), cancellationToken)
+                .SingleOrDefaultAsync(p => p.Id == userGuid.ToString(), cancellationToken)
                 ?? throw new BadRequestException();
 
-            return userWithPlaylists.Playlists
-                .Select(p => new PlaylistBaseDto(p.Name, p.Videos.Count, p.Id.ToString())).ToList();
+            if(requesterUserGuid == userGuid)
+            {
+                return userWithPlaylists.Playlists
+                    .Select(p => new PlaylistBaseDto(p.Name, p.Videos.Count, p.Id.ToString())).ToList();
+            }
+            else
+            {
+                return userWithPlaylists.Playlists
+                    .Where(p => p.Visibility == Visibility.Public)
+                    .Select(p => new PlaylistBaseDto(p.Name, p.Videos.Count, p.Id.ToString())).ToList();
+            }
         }
 
-        public async Task PlaylistDeleteVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken)
+        public async Task PlaylistDeleteVideo(Guid requesterUserGuid, Guid playlistId, Guid videoId, CancellationToken cancellationToken)
         {
             var playlist = await _context.Playlists.Include(p => p.Creator)
                 .Include(p => p.Videos).SingleOrDefaultAsync(p => p.Id == playlistId, cancellationToken)
                 ?? throw new BadRequestException();
             var video = await _context.Videos.SingleOrDefaultAsync(v => v.Id == videoId, cancellationToken)
                 ?? throw new BadRequestException();
+
+            if (playlist.Creator.Id.ToUpper() != requesterUserGuid.ToString().ToUpper())
+            {
+                throw new ForbiddenException();
+            }
 
             if (!playlist.Videos.Contains(video))
             {
@@ -129,7 +156,7 @@ namespace YouTubeV2.Application.Services
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task PlaylistPostVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken)
+        public async Task PlaylistPostVideo(Guid requesterUserGuid, Guid playlistId, Guid videoId, CancellationToken cancellationToken)
         {
             var playlist = await _context.Playlists.Include(p => p.Creator)
                 .Include(p => p.Videos).SingleOrDefaultAsync(p => p.Id == playlistId, cancellationToken)
@@ -137,6 +164,17 @@ namespace YouTubeV2.Application.Services
 
             var video = await _context.Videos.SingleOrDefaultAsync(v => v.Id == videoId, cancellationToken)
                 ?? throw new BadRequestException();
+
+            if (playlist.Creator.Id.ToUpper() != requesterUserGuid.ToString().ToUpper())
+            {
+                throw new ForbiddenException();
+            }
+
+            if(video.Visibility == Visibility.Private &&
+                video.User.Id.ToUpper() != requesterUserGuid.ToString().ToUpper())
+            {
+                throw new ForbiddenException();
+            }
 
             if (playlist.Videos.Contains(video))
             {
@@ -147,11 +185,16 @@ namespace YouTubeV2.Application.Services
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<UserDto> UpdatePlaylistDetails([FromQuery, Required] Guid playlistId, PlaylistEditDto request, CancellationToken cancellationToken)
+        public async Task<UserDto> UpdatePlaylistDetails(Guid requesterUserGuid, Guid playlistId, PlaylistEditDto request, CancellationToken cancellationToken)
         {
             var playlist = await _context.Playlists.Include(p => p.Creator).ThenInclude(p => p.Subscriptions)
                 .SingleAsync(p => p.Id == playlistId, cancellationToken)
                 ?? throw new BadRequestException();
+
+            if (playlist.Creator.Id.ToUpper() != requesterUserGuid.ToString().ToUpper())
+            {
+                throw new ForbiddenException();
+            }
 
             playlist.Name = request.name;
             playlist.Visibility = request.visibility;

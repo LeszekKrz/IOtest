@@ -30,33 +30,33 @@ namespace YouTubeV2.Api.Controllers
         [HttpPut("details")]
         public async Task<ActionResult<UserDto>> UpdatePlaylistDetails([FromQuery][Required] Guid playlistId, PlaylistEditDto request, CancellationToken cancellationToken)
         {
-            return Ok(await _playlistsService.UpdatePlaylistDetails(playlistId, request, cancellationToken));
+            return Ok(await _playlistsService.UpdatePlaylistDetails(new Guid(GetUserId()), playlistId, request, cancellationToken));
         }
 
         [HttpDelete("details")]
         public async Task<IActionResult> DeletePlaylist([FromQuery][Required] Guid playlistId, CancellationToken cancellationToken)
         {
-            await _playlistsService.DeletePlaylist(playlistId, cancellationToken);
+            await _playlistsService.DeletePlaylist(new Guid(GetUserId()), playlistId, cancellationToken);
 
             return Ok();
         }
 
         [HttpGet("user")]
-        public async Task<ActionResult<IEnumerable<PlaylistBaseDto>>> GetUserPlaylists([FromQuery][Required] Guid userId, CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<PlaylistBaseDto>>> GetUserPlaylists([FromQuery][Required] Guid userGuid, CancellationToken cancellationToken)
         {
-            return Ok(await _playlistsService.GetUserPlaylists(userId, cancellationToken));
+            return Ok(await _playlistsService.GetUserPlaylists(new Guid(GetUserId()), userGuid, cancellationToken));
         }
 
         [HttpGet("video")]
         public async Task<ActionResult<PlaylistDto>> GetPlaylistVideos([FromQuery][Required] Guid playlistId, CancellationToken cancellationToken)
         {
-            return Ok(await _playlistsService.GetPlaylistVideos(playlistId, cancellationToken));
+            return Ok(await _playlistsService.GetPlaylistVideos(new Guid(GetUserId()), playlistId, cancellationToken));
         }
 
         [HttpPost("{id}/{videoId}")]
         public async Task<IActionResult> PlaylistPostVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken)
         {
-            await _playlistsService.PlaylistPostVideo(playlistId, videoId, cancellationToken);
+            await _playlistsService.PlaylistPostVideo(new Guid(GetUserId()), playlistId, videoId, cancellationToken);
 
             return Ok();
         }
@@ -64,7 +64,7 @@ namespace YouTubeV2.Api.Controllers
         [HttpDelete("{id}/{videoId}")]
         public async Task<IActionResult> PlaylistDeleteVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken)
         {
-            await _playlistsService.PlaylistDeleteVideo(playlistId, videoId, cancellationToken);
+            await _playlistsService.PlaylistDeleteVideo(new Guid(GetUserId()), playlistId, videoId, cancellationToken);
 
             return Ok();
         }
