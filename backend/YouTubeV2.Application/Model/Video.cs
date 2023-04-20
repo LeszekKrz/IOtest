@@ -42,6 +42,8 @@ namespace YouTubeV2.Application.Model
         public virtual User User { get; init; } = null!;
         public virtual IReadOnlyCollection<Tag> Tags { get; init; } = null!;
 
+        public virtual ICollection<Playlist> Playlists { get; init; } = null!;
+
         public Video() { }
 
         public static Video FromDTO(VideoMetadataPostDto videoMetadata, User user, DateTimeOffset now) =>

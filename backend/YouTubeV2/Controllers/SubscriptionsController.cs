@@ -6,6 +6,7 @@ using YouTubeV2.Application.DTO.SubscriptionDTOS;
 using YouTubeV2.Application.Exceptions;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services;
+using YouTubeV2.Application.Services.JwtFeatures;
 
 namespace YouTubeV2.Api.Controllers
 {
