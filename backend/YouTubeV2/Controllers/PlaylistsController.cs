@@ -54,17 +54,17 @@ namespace YouTubeV2.Api.Controllers
         }
 
         [HttpPost("{id}/{videoId}")]
-        public async Task<IActionResult> PlaylistPostVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken)
+        public async Task<IActionResult> PlaylistPostVideo(Guid id, Guid videoId, CancellationToken cancellationToken)
         {
-            await _playlistsService.PlaylistPostVideo(new Guid(GetUserId()), playlistId, videoId, cancellationToken);
+            await _playlistsService.PlaylistPostVideo(new Guid(GetUserId()), id, videoId, cancellationToken);
 
             return Ok();
         }
 
         [HttpDelete("{id}/{videoId}")]
-        public async Task<IActionResult> PlaylistDeleteVideo(Guid playlistId, Guid videoId, CancellationToken cancellationToken)
+        public async Task<IActionResult> PlaylistDeleteVideo(Guid id, Guid videoId, CancellationToken cancellationToken)
         {
-            await _playlistsService.PlaylistDeleteVideo(new Guid(GetUserId()), playlistId, videoId, cancellationToken);
+            await _playlistsService.PlaylistDeleteVideo(new Guid(GetUserId()), id, videoId, cancellationToken);
 
             return Ok();
         }
