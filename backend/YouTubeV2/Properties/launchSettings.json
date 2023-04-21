@@ -15,8 +15,7 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "AZURE_BLOB_STORAGE_CONNECTION_STRING": "DefaultEndpointsProtocol=https;AccountName=filesdevelop;AccountKey=B0eHRGmvGqitZn0niIwOI8NW/TyOvRaAk2muqni/JjYyoBGuxUGbVtcbwf3qgiWsYRTPcOmOaBAB+AStOD7vIw==;EndpointSuffix=core.windows.net"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7133;http://localhost:5197"

@@ -1,24 +1,49 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using YouTubeV2.Application.DTO;
+using System.Security.Claims;
+using YouTubeV2.Api.Attributes;
+using YouTubeV2.Application.DTO.SubscriptionDTOS;
+using YouTubeV2.Application.Exceptions;
+using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services;
+using YouTubeV2.Application.Services.JwtFeatures;
 
 namespace YouTubeV2.Api.Controllers
 {
-	[ApiController]
-	public class SubscriptionsController : ControllerBase
+    [ApiController]
+    [Route("subscriptions")]
+    public class SubscriptionsController : ControllerBase
 	{
-		private readonly SubscriptionsService _subscriptionsService;
+		private readonly ISubscriptionService _subscriptionsService;
 
-		public SubscriptionsController(SubscriptionsService subscriptionsService)
+		public SubscriptionsController(ISubscriptionService subscriptionsService)
 		{
 			_subscriptionsService = subscriptionsService;
 		}
 
-		[HttpGet("subscriptions")]
-		public async Task<ActionResult<UserSubscriptionListDTO>> GetSubscriptionsAsync([FromQuery][Required] Guid id, CancellationToken cancellationToken)
-		{
-			return Ok((await _subscriptionsService.GetSubscriptionsAsync(id, cancellationToken)));
-		}
-	}
+        [Roles(Role.Simple, Role.Creator, Role.Administrator)]
+        [HttpGet]
+		public async Task<ActionResult<UserSubscriptionListDto>> GetSubscriptionsAsync([FromQuery][Required] Guid id, CancellationToken cancellationToken) =>
+            Ok(await _subscriptionsService.GetSubscriptionsAsync(id.ToString(), cancellationToken));
+
+        [Roles(Role.Simple, Role.Creator, Role.Administrator)]
+        [HttpPost]
+        public async Task<IActionResult> PostSubscriptionsAsync([FromQuery][Required] Guid subId, CancellationToken cancellationToken)
+        {
+            string subscriberId = GetUserId();
+            await _subscriptionsService.AddSubscriptionAsync(subId.ToString(), subscriberId, cancellationToken);
+            return Ok();
+        }
+
+        [Roles(Role.Simple, Role.Creator, Role.Administrator)]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteSubscriptionsAsync([FromQuery][Required] Guid subId, CancellationToken cancellationToken)
+        {
+            string subscriberId = GetUserId();
+            await _subscriptionsService.DeleteSubscriptionAsync(subId.ToString(), subscriberId, cancellationToken);
+            return Ok();
+        }
+
+        private string GetUserId() => User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+    }
 }

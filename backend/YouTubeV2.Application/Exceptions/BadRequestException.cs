@@ -4,7 +4,7 @@ namespace YouTubeV2.Application.Exceptions
 {
     public class BadRequestException : Exception
     {
-        public IEnumerable<ErrorResponseDTO> Errors { get; }
+        public IEnumerable<ErrorResponseDTO> Errors { get; } = null!;
 
         public BadRequestException() { }
 

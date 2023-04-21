@@ -3,6 +3,8 @@ import { Injectable } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { VideoListDto } from "../models/video-list-dto";
+import { VideoMetadataDto } from "../models/video-metadata-dto";
+import { getHttpOptionsWithAuthenticationHeader } from "../functions/get-http-options-with-authorization-header";
 
 @Injectable({
   providedIn: 'root'
@@ -16,5 +18,15 @@ export class VideoService {
     let params = new HttpParams().set('id', id);
     
     return this.httpClient.get<VideoListDto>(`${this.videoPageWebAPIUrl}/user/videos`, { params: params });
+  }
+
+  getVideoMetadata(id: string): Observable<VideoMetadataDto> {
+    let params = new HttpParams().set('id', id);
+    const httpOptions = {
+      params: params,
+      headers: getHttpOptionsWithAuthenticationHeader().headers
+    };
+    
+    return this.httpClient.get<VideoMetadataDto>(`${this.videoPageWebAPIUrl}/video-metadata`, httpOptions);
   }
 }

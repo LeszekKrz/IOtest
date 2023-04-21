@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
+using YouTubeV2.Application.Exceptions;
 
 namespace YouTubeV2.Application.Services.JwtFeatures
 {
@@ -36,7 +36,7 @@ namespace YouTubeV2.Application.Services.JwtFeatures
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Email)
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 
             IList<string> roles = await _userManager.GetRolesAsync(user);
@@ -52,6 +52,19 @@ namespace YouTubeV2.Application.Services.JwtFeatures
                 claims: claims,
                 expires: DateTime.Now.AddDays(_jwtSettings.ExpiresInDays),
                 signingCredentials: signingCredentials);
+        }
+
+        public ClaimsPrincipal ValidateToken(string token)
+        {
+            JwtSecurityTokenHandler jwtSecurityTokenHandler = new();
+            TokenValidationParameters tokenValidationParameters = new()
+            {
+                ValidIssuer = _jwtSettings.ValidIssuer,
+                ValidAudience = _jwtSettings.ValidAudience,
+                IssuerSigningKey = new SymmetricSecurityKey(_jwtSettings.SecurityKey),
+            };
+
+            return jwtSecurityTokenHandler.ValidateToken(token, tokenValidationParameters, out var _);
         }
     }
 }

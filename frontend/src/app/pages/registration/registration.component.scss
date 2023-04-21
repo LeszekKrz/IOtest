@@ -31,22 +31,22 @@ small {
   margin-left: 0.375rem;
 }
 
-:host ::ng-deep .p-button-style.p-button {
-  margin-top: 1em;
-  width: 100%;
-  border-radius: 2em;
-}
-
-:host ::ng-deep .p-button-style.p-button {
-  margin-top: 1em;
-  width: 100%;
-  border-radius: 2em;
-}
-
 :host ::ng-deep .p-button-remove {
-  .p-button.p-button-icon-only.p-button-rounded {
-    color: cornflowerblue !important;
-  }
+  width: 25px;
+  height: 25px !important;
+  padding: 0;
+  line-height: 25px;
+}
+
+:host ::ng-deep .p-button-remove .pi {
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+:host ::ng-deep .p-button-style.p-button {
+  margin-top: 1em;
+  width: 100%;
+  border-radius: 2em;
 }
 
 :host ::ng-deep .p-fileupload-style.p-fileupload {
@@ -66,11 +66,6 @@ small {
   }
 }
 
-.offer-data {
-  margin-top: 0.1em;
-  margin-bottom: 0.1em;
-}
-
 .download-icon {
     margin-bottom: 0.5em;
     font-size: 1.5em;
@@ -79,34 +74,4 @@ small {
 .browse-button {
     color: #3366cc;
     cursor: pointer;
-}
-
-.status-pending {
-  color: #348ce0;
-  background-color: #c7ecfc;
-  padding: 2px 10px;
-}
-
-.status-offerreceived {
-  color: #6c35c4;
-  background-color: #ddc9ff;
-  padding: 2px 10px;
-}
-
-.status-waitingforacceptance {
-  color: #a06750;
-  background-color: #fbedba;
-  padding: 2px 10px;
-}
-
-.status-accepted {
-  color: #357b3a;
-  background-color: #d5efd6;
-  padding: 2px 10px;
-}
-
-.status-error, .status-rejected, .status-timeout {
-  color: #b94444;
-  background-color: #ffdbdf;
-  padding: 2px 10px;
 }

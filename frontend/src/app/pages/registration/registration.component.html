@@ -1,7 +1,7 @@
 <div class="progress-spinner" *ngIf="isProgressSpinnerVisible">
     <p-progressSpinner></p-progressSpinner>
   </div>
-  
+
   <p-card
     header="Register"
     styleClass="p-card-style shadow-7">
@@ -159,13 +159,13 @@
         </label>
         <p-inputSwitch id="userType-input" formControlName="userType"/>
       </div>
-      <div class="p-fluid">
+      <div>
         <label for="avatarImage-input" class="field-label">
           <p>Avatar Image</p>
         </label>
         <p-fileUpload
-          #fileUpload
-          name="signedContract[]"
+          #avatarImageUpload
+          name="avatarImage[]"
           accept="image/png, image/jpeg"
           [fileLimit]="1"
           invalidFileTypeMessageSummary="Allowed file type is .png/.jpeg"
@@ -173,21 +173,34 @@
           [showUploadButton]="false"
           [showCancelButton]="false"
           (onSelect)="handleFileSelect($event)"
-          (onRemove)="handleOnRemove()"
           styleClass="p-fileupload-style">
 
           <ng-template pTemplate="content" let-files>
-            <div *ngIf="image == ''">
+            <div *ngIf="registerForm.get('avatarImage')!.value == ''">
               <div class="flex flex-column justify-content-center">
                 <i class="flex justify-content-center pi pi-download download-icon"></i>
                 <div class="flex justify-content-center">
                   Drop or&nbsp;
-                  <span class="browse-button" (click)="fileUpload.choose()">
+                  <span class="browse-button" (click)="avatarImageUpload.choose()">
                     browse
                   </span>
                   &nbsp;uploaded image
                 </div>
               </div>
+            </div>
+          </ng-template>
+
+          <ng-template pTemplate="file" let-file>
+            <div class="flex justify-content-evenly flex align-items-center flex-wrap">
+              {{file.name}}
+              <button
+                pButton
+                pRipple
+                type="button"
+                icon="pi pi-times"
+                class="p-button-rounded p-button-danger p-button-remove"
+                (click)="handleOnRemove()">
+              </button>
             </div>
           </ng-template>
         </p-fileUpload>

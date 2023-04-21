@@ -107,6 +107,23 @@ namespace YouTubeV2.Application.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
+                            RoleId = "39cc2fe2-d00d-4f48-a49d-005d8e983c72"
+                        },
+                        new
+                        {
+                            UserId = "6EBD31DD-0321-4FDA-92FA-CD22A1190DC8",
+                            RoleId = "63798117-72aa-4bc5-a1ef-4e771204d561"
+                        },
+                        new
+                        {
+                            UserId = "CB6A6951-E91A-4A13-B6AC-8634883F5B93",
+                            RoleId = "b3a48a48-1a74-45da-a179-03b298bc53bc"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -126,6 +143,44 @@ namespace YouTubeV2.Application.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("PlaylistVideo", b =>
+                {
+                    b.Property<Guid>("PlaylistsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("VideosId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("PlaylistsId", "VideosId");
+
+                    b.HasIndex("VideosId");
+
+                    b.ToTable("PlaylistVideo");
+                });
+
+            modelBuilder.Entity("YouTubeV2.Application.Model.Playlist", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Visibility")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.ToTable("Playlists");
                 });
 
             modelBuilder.Entity("YouTubeV2.Application.Model.Role", b =>
@@ -157,19 +212,19 @@ namespace YouTubeV2.Application.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "37f0c423-8d1c-4817-a1af-e1bf60c9a0eb",
+                            Id = "39cc2fe2-d00d-4f48-a49d-005d8e983c72",
                             Name = "Simple",
                             NormalizedName = "SIMPLE"
                         },
                         new
                         {
-                            Id = "87978f1a-4281-4a59-8ee8-52b1ed4b3d56",
+                            Id = "63798117-72aa-4bc5-a1ef-4e771204d561",
                             Name = "Creator",
                             NormalizedName = "CREATOR"
                         },
                         new
                         {
-                            Id = "24de6e76-9a75-490b-bddc-a66e91e20fa4",
+                            Id = "b3a48a48-1a74-45da-a179-03b298bc53bc",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -188,6 +243,27 @@ namespace YouTubeV2.Application.Migrations
                     b.HasIndex("SubscribeeId");
 
                     b.ToTable("Subscriptions");
+                });
+
+            modelBuilder.Entity("YouTubeV2.Application.Model.Tag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("VideoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VideoId");
+
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("YouTubeV2.Application.Model.User", b =>
@@ -263,6 +339,108 @@ namespace YouTubeV2.Application.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "f2646084-9389-4cf9-8e19-81aec9de830d",
+                            Email = "simple@test.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            Name = "Simple",
+                            NormalizedEmail = "SIMPLE@TEST.COM",
+                            NormalizedUserName = "TESTSIMPLE",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMAR/AjZLBwz5X0oXszaD2U2NDgC8B1+AhjWlv6h9cQwLlXiGV8UpzVItgWva6iz4A==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "c70f5b0b-1e11-4199-8af5-346171e6edf1",
+                            Surname = "Test",
+                            TwoFactorEnabled = false,
+                            UserName = "TestSimple"
+                        },
+                        new
+                        {
+                            Id = "6EBD31DD-0321-4FDA-92FA-CD22A1190DC8",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "d3ad30ea-72df-4731-9b39-6e7911adb86b",
+                            Email = "creator@test.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            Name = "Creator",
+                            NormalizedEmail = "CREATOR@TEST.COM",
+                            NormalizedUserName = "TESTCREATOR",
+                            PasswordHash = "AQAAAAIAAYagAAAAEObhouxUCAqVuilLVJ9T8fErDAb0FYVE1iaTnNJyTEkwLWhWqe3Z2LqjIy980o6tGA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "cc039acb-3d3b-4149-844b-2f5a3f85609f",
+                            Surname = "Test",
+                            TwoFactorEnabled = false,
+                            UserName = "TestCreator"
+                        },
+                        new
+                        {
+                            Id = "CB6A6951-E91A-4A13-B6AC-8634883F5B93",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "811e4ad8-a263-4d7f-bfa5-1111bc1d975b",
+                            Email = "admin@test.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            Name = "Admin",
+                            NormalizedEmail = "ADMIN@TEST.COM",
+                            NormalizedUserName = "TESTADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIIdXjRgOnpo4A8SBZZ3X350Y+y7g/D4wfEr143VxwiezRU+6V2CzcHWBfiY3XzfHQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "bc0b9e79-66e5-42ef-bb0e-e837aa93fc3c",
+                            Surname = "Test",
+                            TwoFactorEnabled = false,
+                            UserName = "TestAdmin"
+                        });
+                });
+
+            modelBuilder.Entity("YouTubeV2.Application.Model.Video", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Duration")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("EditDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("ProcessingProgress")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTimeOffset>("UploadDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ViewCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Visibility")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Videos");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -316,6 +494,30 @@ namespace YouTubeV2.Application.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PlaylistVideo", b =>
+                {
+                    b.HasOne("YouTubeV2.Application.Model.Playlist", null)
+                        .WithMany()
+                        .HasForeignKey("PlaylistsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YouTubeV2.Application.Model.Video", null)
+                        .WithMany()
+                        .HasForeignKey("VideosId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("YouTubeV2.Application.Model.Playlist", b =>
+                {
+                    b.HasOne("YouTubeV2.Application.Model.User", "Creator")
+                        .WithMany("Playlists")
+                        .HasForeignKey("CreatorId");
+
+                    b.Navigation("Creator");
+                });
+
             modelBuilder.Entity("YouTubeV2.Application.Model.Subscription", b =>
                 {
                     b.HasOne("YouTubeV2.Application.Model.User", "Subscribee")
@@ -335,9 +537,40 @@ namespace YouTubeV2.Application.Migrations
                     b.Navigation("Subscriber");
                 });
 
+            modelBuilder.Entity("YouTubeV2.Application.Model.Tag", b =>
+                {
+                    b.HasOne("YouTubeV2.Application.Model.Video", "Video")
+                        .WithMany("Tags")
+                        .HasForeignKey("VideoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Video");
+                });
+
+            modelBuilder.Entity("YouTubeV2.Application.Model.Video", b =>
+                {
+                    b.HasOne("YouTubeV2.Application.Model.User", "User")
+                        .WithMany("Videos")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("YouTubeV2.Application.Model.User", b =>
                 {
+                    b.Navigation("Playlists");
+
                     b.Navigation("Subscriptions");
+
+                    b.Navigation("Videos");
+                });
+
+            modelBuilder.Entity("YouTubeV2.Application.Model.Video", b =>
+                {
+                    b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618
         }

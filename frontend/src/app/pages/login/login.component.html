@@ -1,1 +1,50 @@
-<p>login works!</p>
+<div class="progress-spinner" *ngIf="isProgressSpinnerVisible">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+  
+  <p-card
+    header="Login"
+    styleClass="p-card-style shadow-7">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="p-fluid">
+        <label for="email-input" class="field-label">
+          <p class="required">Email</p>
+        </label>
+        <input
+          id="email-input"
+          type="text"
+          formControlName="email"
+          pInputText
+          [ngClass]="{
+            'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('email')
+          }"
+          placeholder="Email" />
+          <small class="p-error" *ngIf="isInputTouchedOrDirtyAndEmpty('email'); else invalidEmailFormatMessage">
+            This field is required
+          </small>
+          <ng-template #invalidEmailFormatMessage>
+            <small class="p-error" *ngIf="isEmailInputTouchedOrDirtyAndNotValidEmail()">
+              Please enter valid email address
+            </small>
+          </ng-template>
+      </div>
+      <div class="p-fluid">
+        <label for="password-input" class="field-label">
+          <p class="required">Password</p>
+        </label>
+        <span class="p-input-icon-right">
+          <i class="pi {{ this.passwordEyeIcon }}" (click)="hideShowPassword()"></i>
+          <input
+            pInputText
+            [type]="passwordInputType"
+            id="password-input"
+            formControlName="password"
+            [ngClass]="{
+              'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('password')
+            }"
+            placeholder="Password"/>
+        </span>
+      </div>
+      <p-button type="submit" styleClass="p-button-style" label="Login"></p-button>
+    </form>
+  </p-card>

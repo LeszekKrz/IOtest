@@ -1,4 +1,57 @@
-<video #videoPlayer width="320" height="240" controls>
-  <source src={{videoUrl}} type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+<div class="container">
+  <div class="custom-width">
+    <div>
+      <video #videoPlayer class="full-page-video" controls>
+        <source src={{videoUrl}} type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    <div>
+      <p-card
+        header="{{ videoMetadata.title }}"
+        styleClass="p-card-style shadow-7">
+        <div class="userProfile">
+          <div class="avatar">
+            <img [src] = "author.avatarImage" class="avatarImage">
+          </div>
+          <div class="userInfo">
+            <div class="p-col">
+              <label>{{ author.nickname }}</label>
+            </div>
+            <div class="p-col">
+              <label>{{ author.subscriptionsCount }} subscribers</label> 
+            </div>
+          </div>
+          <div class="flex font-bold text-white border-round m-2">
+            <div class="p-col">
+              <p-button label="Subscribe"></p-button>
+            </div>
+          </div>   
+        </div>
+        <div class="videoDescription">
+          {{ videoMetadata.viewCount }} views, uploaded {{ getTimeAgo(videoMetadata.uploadDate) }} ago
+          <br>
+          {{ videoMetadata.description }}
+        </div>
+      </p-card>
+    </div>
+  </div>
+  <div class="videos">
+    <div *ngIf="videos">
+      <div class="grid">
+        <div class="col" *ngFor="let video of videos">
+          <div class="image-container">
+            <img [src]="video.thumbnail" class="thumbnail" (click)="goToVideo(video.id)">
+            <span class="image-label">{{ video.duration }}</span>
+          </div>
+          <h3 class="noPadding">{{ video.title }}</h3>
+          <p class="noPadding" (click)="goToUserProfile(video.authorId)">{{ video.authorNickname }}</p>
+          <p class="noPadding">{{ video.viewCount }} views</p>
+        </div>
+      </div>
+    </div>    
+  </div>
+</div>
+
+
+
