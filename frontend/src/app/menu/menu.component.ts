@@ -28,6 +28,10 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.router.navigate(['']);
   }
 
+  playlistsButtonOnClick(): void {
+    this.router.navigate(['playlists']);
+  }
+
   registerButtonOnClick(): void {
     this.router.navigate(['register']);
   }

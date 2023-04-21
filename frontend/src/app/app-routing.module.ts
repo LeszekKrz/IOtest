@@ -6,6 +6,8 @@ import { LoginComponent } from '../app/pages/login/login.component';
 import { VideoComponent } from './pages/video/video.component';
 import { AddVideoComponent } from './pages/add-video/add-video.component';
 import { HomeComponent } from './pages/home/home.component';
+import { PlaylistComponent } from './pages/playlist/playlist.component';
+import { UserPlaylistsComponent } from './pages/user-playlists/user-playlists.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -14,6 +16,8 @@ const routes: Routes = [
   { path: 'videos/:videoId', component: VideoComponent },
   { path: 'login', component: LoginComponent },
   { path: 'add-video', component: AddVideoComponent },
+  { path: 'playlist/:id', component: PlaylistComponent },
+  { path: 'playlists', component: UserPlaylistsComponent },
 ];
 
 @NgModule({
