@@ -10,6 +10,9 @@ import { CardModule } from 'primeng/card';
   declarations: [
     VideoComponent,
   ],
+  exports: [
+    VideoComponent
+  ],
   imports: [
     CommonModule,
     ButtonModule,

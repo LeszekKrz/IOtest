@@ -29,6 +29,10 @@ export class CreatorComponent {
     this.getVideos();
   }
 
+  public goToVideo(id: string): void {
+    this.router.navigate(['videos/' + id]);
+  }
+
   public getVideos() {
     this.videoService.getUserVideos(this.id).subscribe(videos => {
       this.videos = videos.videos;

@@ -12,7 +12,7 @@ namespace YouTubeV2.Api.Controllers
 {
     [Roles(Role.Simple, Role.Creator, Role.Administrator)]
     [ApiController]
-    [Route("playlists")]
+    [Route("playlist")]
     public class PlaylistsController : Controller
     {
         private readonly IPlaylistService _playlistsService;
@@ -24,39 +24,44 @@ namespace YouTubeV2.Api.Controllers
         [HttpPost("details")]
         public async Task<ActionResult<CreatePlaylistResponseDto>> CreatePlaylist(CreatePlaylistRequestDto request, CancellationToken cancellationToken)
         {
-            return Ok(await _playlistsService.CreatePlaylist(new Guid(GetUserId()), request, cancellationToken));
+            return Ok(await _playlistsService.CreatePlaylist(GetUserId(), request, cancellationToken));
         }
 
         [HttpPut("details")]
-        public async Task<ActionResult<UserDto>> UpdatePlaylistDetails([FromQuery][Required] Guid playlistId, PlaylistEditDto request, CancellationToken cancellationToken)
+        public async Task<ActionResult<UserDto>> UpdatePlaylistDetails([FromQuery][Required] Guid id, PlaylistEditDto request, CancellationToken cancellationToken)
         {
-            return Ok(await _playlistsService.UpdatePlaylistDetails(new Guid(GetUserId()), playlistId, request, cancellationToken));
+            return Ok(await _playlistsService.UpdatePlaylistDetails(GetUserId(), id, request, cancellationToken));
         }
 
         [HttpDelete("details")]
         public async Task<IActionResult> DeletePlaylist([FromQuery][Required] Guid playlistId, CancellationToken cancellationToken)
         {
-            await _playlistsService.DeletePlaylist(new Guid(GetUserId()), playlistId, cancellationToken);
+            await _playlistsService.DeletePlaylist(GetUserId(), playlistId, cancellationToken);
 
             return Ok();
         }
 
         [HttpGet("user")]
-        public async Task<ActionResult<IEnumerable<PlaylistBaseDto>>> GetUserPlaylists([FromQuery][Required] Guid userGuid, CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<PlaylistBaseDto>>> GetUserPlaylists([FromQuery] Guid? id, CancellationToken cancellationToken)
         {
-            return Ok(await _playlistsService.GetUserPlaylists(new Guid(GetUserId()), userGuid, cancellationToken));
+            if (id is null || id == Guid.Empty)
+            {
+                id = new Guid(GetUserId());
+            }
+
+            return Ok(await _playlistsService.GetUserPlaylists(GetUserId(), id.Value.ToString(), cancellationToken));
         }
 
         [HttpGet("video")]
-        public async Task<ActionResult<PlaylistDto>> GetPlaylistVideos([FromQuery][Required] Guid playlistId, CancellationToken cancellationToken)
+        public async Task<ActionResult<PlaylistDto>> GetPlaylistVideos([FromQuery][Required] Guid id, CancellationToken cancellationToken)
         {
-            return Ok(await _playlistsService.GetPlaylistVideos(new Guid(GetUserId()), playlistId, cancellationToken));
+            return Ok(await _playlistsService.GetPlaylistVideos(GetUserId(), id, cancellationToken));
         }
 
         [HttpPost("{id}/{videoId}")]
         public async Task<IActionResult> PlaylistPostVideo(Guid id, Guid videoId, CancellationToken cancellationToken)
         {
-            await _playlistsService.PlaylistPostVideo(new Guid(GetUserId()), id, videoId, cancellationToken);
+            await _playlistsService.PlaylistPostVideo(GetUserId(), id, videoId, cancellationToken);
 
             return Ok();
         }
@@ -64,7 +69,7 @@ namespace YouTubeV2.Api.Controllers
         [HttpDelete("{id}/{videoId}")]
         public async Task<IActionResult> PlaylistDeleteVideo(Guid id, Guid videoId, CancellationToken cancellationToken)
         {
-            await _playlistsService.PlaylistDeleteVideo(new Guid(GetUserId()), id, videoId, cancellationToken);
+            await _playlistsService.PlaylistDeleteVideo(GetUserId(), id, videoId, cancellationToken);
 
             return Ok();
         }
@@ -72,7 +77,7 @@ namespace YouTubeV2.Api.Controllers
         [HttpGet("recommended")]
         public async Task<ActionResult<PlaylistDto>> GetRecommendedPlaylist(CancellationToken cancellationToken)
         {
-            return Ok(await _playlistsService.GetRecommendedPlaylist(new Guid(GetUserId()), cancellationToken));
+            return Ok(await _playlistsService.GetRecommendedPlaylist(GetUserId(), cancellationToken));
         }
         private string GetUserId() => User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
     }

@@ -81,3 +81,14 @@
     margin-top: 0;
     margin-bottom: 0;
 }
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Align items to the left */
+  }
+
+  .videoCol {
+    /* Add any additional styles for the column, such as width or margin */
+    margin: 0 20px 20px 0; /* Adjust the margin as needed */
+  }
