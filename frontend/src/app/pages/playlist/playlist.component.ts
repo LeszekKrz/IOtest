@@ -41,11 +41,6 @@ export class PlaylistComponent {
     this.router.navigate(['videos/' + id]);
   }
 
-  public addVideo() {
-    console.log('Add Video button clicked');
-    // Add your logic for adding a video here
-  }
-
   public updatePlaylist() {
     console.log('Update Playlist button clicked');
     // Add your logic for updating the playlist here

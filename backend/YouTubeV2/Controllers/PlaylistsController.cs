@@ -30,7 +30,7 @@ namespace YouTubeV2.Api.Controllers
         [HttpPut("details")]
         public async Task<ActionResult<UserDto>> UpdatePlaylistDetails([FromQuery][Required] Guid id, PlaylistEditDto request, CancellationToken cancellationToken)
         {
-            return Ok(await _playlistsService.UpdatePlaylistDetails(new Guid(GetUserId()), id, request, cancellationToken));
+            return Ok(await _playlistsService.UpdatePlaylistDetails(GetUserId(), id, request, cancellationToken));
         }
 
         [HttpDelete("details")]
@@ -49,13 +49,13 @@ namespace YouTubeV2.Api.Controllers
                 id = new Guid(GetUserId());
             }
 
-            return Ok(await _playlistsService.GetUserPlaylists(new Guid(GetUserId()), id.Value, cancellationToken));
+            return Ok(await _playlistsService.GetUserPlaylists(GetUserId(), id.Value.ToString(), cancellationToken));
         }
 
         [HttpGet("video")]
         public async Task<ActionResult<PlaylistDto>> GetPlaylistVideos([FromQuery][Required] Guid id, CancellationToken cancellationToken)
         {
-            return Ok(await _playlistsService.GetPlaylistVideos(new Guid(GetUserId()), id, cancellationToken));
+            return Ok(await _playlistsService.GetPlaylistVideos(GetUserId(), id, cancellationToken));
         }
 
         [HttpPost("{id}/{videoId}")]

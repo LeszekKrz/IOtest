@@ -14,7 +14,7 @@ export class UserPlaylistsComponent {
   showDialog = false;
   inputText = '';
   inputSwitch = false;
-  userPlaylists: UserPlaylistsDto[] = [];
+  userPlaylists!: UserPlaylistsDto[];
   isProgressSpinnerVisible = false;
   subscriptions: Subscription[] = [];
 
