@@ -24,7 +24,7 @@ namespace YouTubeV2.Api.Controllers
         [HttpPost("details")]
         public async Task<ActionResult<CreatePlaylistResponseDto>> CreatePlaylist(CreatePlaylistRequestDto request, CancellationToken cancellationToken)
         {
-            return Ok(await _playlistsService.CreatePlaylist(new Guid(GetUserId()), request, cancellationToken));
+            return Ok(await _playlistsService.CreatePlaylist(GetUserId(), request, cancellationToken));
         }
 
         [HttpPut("details")]
@@ -36,7 +36,7 @@ namespace YouTubeV2.Api.Controllers
         [HttpDelete("details")]
         public async Task<IActionResult> DeletePlaylist([FromQuery][Required] Guid playlistId, CancellationToken cancellationToken)
         {
-            await _playlistsService.DeletePlaylist(new Guid(GetUserId()), playlistId, cancellationToken);
+            await _playlistsService.DeletePlaylist(GetUserId(), playlistId, cancellationToken);
 
             return Ok();
         }
@@ -61,7 +61,7 @@ namespace YouTubeV2.Api.Controllers
         [HttpPost("{id}/{videoId}")]
         public async Task<IActionResult> PlaylistPostVideo(Guid id, Guid videoId, CancellationToken cancellationToken)
         {
-            await _playlistsService.PlaylistPostVideo(new Guid(GetUserId()), id, videoId, cancellationToken);
+            await _playlistsService.PlaylistPostVideo(GetUserId(), id, videoId, cancellationToken);
 
             return Ok();
         }
@@ -69,7 +69,7 @@ namespace YouTubeV2.Api.Controllers
         [HttpDelete("{id}/{videoId}")]
         public async Task<IActionResult> PlaylistDeleteVideo(Guid id, Guid videoId, CancellationToken cancellationToken)
         {
-            await _playlistsService.PlaylistDeleteVideo(new Guid(GetUserId()), id, videoId, cancellationToken);
+            await _playlistsService.PlaylistDeleteVideo(GetUserId(), id, videoId, cancellationToken);
 
             return Ok();
         }
@@ -77,7 +77,7 @@ namespace YouTubeV2.Api.Controllers
         [HttpGet("recommended")]
         public async Task<ActionResult<PlaylistDto>> GetRecommendedPlaylist(CancellationToken cancellationToken)
         {
-            return Ok(await _playlistsService.GetRecommendedPlaylist(new Guid(GetUserId()), cancellationToken));
+            return Ok(await _playlistsService.GetRecommendedPlaylist(GetUserId(), cancellationToken));
         }
         private string GetUserId() => User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
     }

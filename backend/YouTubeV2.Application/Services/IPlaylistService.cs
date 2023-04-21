@@ -5,13 +5,13 @@ namespace YouTubeV2.Application.Services
 {
     public interface IPlaylistService
     {
-        Task<CreatePlaylistResponseDto> CreatePlaylist(Guid requesterUserGuid, CreatePlaylistRequestDto request, CancellationToken cancellationToken);
+        Task<CreatePlaylistResponseDto> CreatePlaylist(string requesterUserId, CreatePlaylistRequestDto request, CancellationToken cancellationToken);
         Task<UserDto> UpdatePlaylistDetails(string requesterUserId, Guid playlistId, PlaylistEditDto request, CancellationToken cancellationToken);
-        Task DeletePlaylist(Guid requesterUserGuid, Guid playlistId, CancellationToken cancellationToken);
+        Task DeletePlaylist(string requesterUserId, Guid playlistId, CancellationToken cancellationToken);
         Task<IEnumerable<PlaylistBaseDto>> GetUserPlaylists(string requesterUserId, string userId, CancellationToken cancellationToken);
-        Task PlaylistPostVideo(Guid requesterUserGuid, Guid playlistId, Guid videoId, CancellationToken cancellationToken);
-        Task PlaylistDeleteVideo(Guid requesterUserGuid, Guid playlistId, Guid videoId, CancellationToken cancellationToken);
+        Task PlaylistPostVideo(string requesterUserId, Guid playlistId, Guid videoId, CancellationToken cancellationToken);
+        Task PlaylistDeleteVideo(string requesterUserId, Guid playlistId, Guid videoId, CancellationToken cancellationToken);
         Task<PlaylistDto> GetPlaylistVideos(string requesterUserId, Guid playlistId, CancellationToken cancellationToken);
-        Task<PlaylistDto> GetRecommendedPlaylist(Guid requesterUserGuid, CancellationToken cancellationToken);
+        Task<PlaylistDto> GetRecommendedPlaylist(string requesterUserId, CancellationToken cancellationToken);
     }
 }
