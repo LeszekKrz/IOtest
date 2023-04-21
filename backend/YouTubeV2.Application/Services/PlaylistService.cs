@@ -120,7 +120,6 @@ namespace YouTubeV2.Application.Services
 
         public async Task<IEnumerable<PlaylistBaseDto>> GetUserPlaylists(Guid requesterUserGuid, Guid userGuid, CancellationToken cancellationToken)
         {
-            
             var userWithPlaylists = await _context.Users
                 .Include(p => p.Playlists)
                 .ThenInclude(p => p.Videos)
