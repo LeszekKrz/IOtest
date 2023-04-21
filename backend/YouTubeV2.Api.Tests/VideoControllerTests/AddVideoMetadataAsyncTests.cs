@@ -83,7 +83,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                 {
                     Video? videoResult = await context
                     .Videos
-                    .Include(video => video.User)
+                    .Include(video => video.Author)
                     .Include(video => video.Tags)
                     .SingleOrDefaultAsync();
 
@@ -97,7 +97,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                     videoResult!.UploadDate.Should().Be(_utcNow);
                     videoResult!.EditDate.Should().Be(_utcNow);
                     videoResult!.Duration.Should().Be("00:00");
-                    videoResult.User.Id.Should().Be(userId);
+                    videoResult.Author.Id.Should().Be(userId);
                     videoResult!.Tags.Select(tag => tag.Value).Should().BeEquivalentTo(videoMetadata.tags);
                 });
         }

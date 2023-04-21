@@ -8,7 +8,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System.Net;
 using System.Text;
-using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.DTO.UserDTOS;
 using YouTubeV2.Application.Model;
 

@@ -12,6 +12,8 @@ namespace YouTubeV2.Application
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<Video> Videos { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<CommentResponse> CommentResponses { get; set; }
 
         public YTContext(DbContextOptions<YTContext> options) : base(options) { }
 

@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 using YouTubeV2.Api.Enums;
 using YouTubeV2.Application.DTO.PlaylistDTOS;
 using YouTubeV2.Application.DTO.UserDTOS;
@@ -174,8 +172,8 @@ namespace YouTubeV2.Application.Services
                 ?? throw new BadRequestException();
 
             var video = await _context.Videos
-                .Include(p => p.User).
-                SingleOrDefaultAsync(v => v.Id == videoId, cancellationToken)
+                .Include(video => video.Author)
+                .SingleOrDefaultAsync(v => v.Id == videoId, cancellationToken)
                 ?? throw new BadRequestException();
 
             if (string.Equals(playlist.Creator.Id, requesterUserId, StringComparison.OrdinalIgnoreCase) is false)

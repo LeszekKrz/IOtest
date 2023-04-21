@@ -39,24 +39,26 @@ namespace YouTubeV2.Application.Model
         public string Duration { get; set; } = "00:00";
 
 
-        public virtual User User { get; init; } = null!;
-        public virtual IReadOnlyCollection<Tag> Tags { get; init; } = null!;
+        public virtual User Author { get; init; }
+        public virtual IReadOnlyCollection<Tag> Tags { get; init; }
+        public virtual IReadOnlyCollection<Comment> Comments { get; init; }
 
         public virtual ICollection<Playlist> Playlists { get; init; } = null!;
 
         public Video() { }
 
-        public static Video FromDTO(VideoMetadataPostDto videoMetadata, User user, DateTimeOffset now) =>
-            new (videoMetadata.title, videoMetadata.description, videoMetadata.visibility, videoMetadata.tags, user, now);
+        public static Video FromDTO(VideoMetadataPostDto videoMetadata, User author, DateTimeOffset now) =>
+            new (videoMetadata.title, videoMetadata.description, videoMetadata.visibility, videoMetadata.tags, author, now);
 
-        public Video(string title, string description, Visibility visibility, IReadOnlyCollection<string> tags, User user, DateTimeOffset now)
+        public Video(string title, string description, Visibility visibility, IReadOnlyCollection<string> tags, User author, DateTimeOffset now)
         {
             Title = title;
             Description = description;
             Visibility = visibility;
             Tags = tags.Select(tag => new Tag(tag)).ToImmutableList();
-            User = user;
+            Author = author;
             UploadDate = EditDate = now;
+            Comments = ImmutableList.Create<Comment>();
         }
     }
 }

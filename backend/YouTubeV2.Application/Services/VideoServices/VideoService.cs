@@ -1,7 +1,5 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Linq.Expressions;
 using YouTubeV2.Api.Enums;
 using YouTubeV2.Application.DTO.VideoMetadataDTOS;
@@ -62,7 +60,7 @@ namespace YouTubeV2.Application.Services.VideoServices
             {
                 video = await _context.Videos
                     .Include(video => video.Tags)
-                    .Include(video => video.User)
+                    .Include(video => video.Author)
                     .SingleAsync(video => video.Id == id, cancellationToken);
                 thumbnail = _blobImageService.GetVideoThumbnail(video.Id.ToString());
             }
@@ -79,8 +77,8 @@ namespace YouTubeV2.Application.Services.VideoServices
                 video.Title,
                 video.Description,
                 thumbnail.ToString(),
-                video.User.Id,
-                video.User.UserName!,
+                video.Author.Id,
+                video.Author.UserName!,
                 video.ViewCount,
                 video.Tags.Select(tag => tag.Value).ToList(),
                 video.Visibility.ToString(),
@@ -93,10 +91,10 @@ namespace YouTubeV2.Application.Services.VideoServices
         public async Task AuthorizeVideoAccessAsync(Guid videoId, string userId, CancellationToken cancellationToken = default)
         {
             var video = await _context.Videos
-                    .Include(video => video.User)
+                    .Include(video => video.Author)
                     .SingleAsync(video => video.Id == videoId, cancellationToken);
 
-            if (video.Visibility == Visibility.Private && video.User.Id != userId)
+            if (video.Visibility == Visibility.Private && video.Author.Id != userId)
                 throw new ForbiddenException("Video is private");
         }
 
