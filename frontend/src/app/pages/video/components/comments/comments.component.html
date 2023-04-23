@@ -1,0 +1,126 @@
+<div class="progress-spinner" *ngIf="isProgressSpinnerVisible">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+
+<h3>Comments</h3>
+
+<div class="p-fluid">
+  <textarea
+    type="text"
+    pInputTextarea
+    [autoResize]="true"
+    placeholder="Add comment"
+    [formControl]="newComment">
+  </textarea>
+  <div *ngIf="isTouchOrDirty(newComment)" class="flex justify-content-end flex-wrap">
+    <p-button
+      label="Cancel"
+      styleClass="p-button-rounded p-button-raised p-button-text"
+      class="mr-1 mt-2"
+      (onClick)="handleOnCancelCommentClick(newComment)"></p-button>
+    <p-button
+      label="Comment"
+      styleClass="p-button-rounded p-button-raised"
+      class="ml-1 mt-2"
+      (onClick)="handleOnAddCommentClick(newComment)"
+      [disabled]="isEmpty(newComment)"></p-button>
+  </div>
+</div>
+
+
+<div class="flex comment-container mt-2" *ngFor="let comment of comments; let commentIndex = index">
+  <div class="flex-none flex mt-1 mr-2 ">
+    <p-avatar [image]="comment.avatarImage" shape="circle" size="large"></p-avatar>
+  </div>
+
+  <div class="flex-grow-1 flex flex-column">
+    <strong>{{ comment.nickname }}</strong>
+    <div>{{ comment.content }}</div>
+    <div *ngIf="comment.isResponseGettingAdded">
+      <div class="p-fluid mt-1">
+        <textarea
+          type="text"
+          pInputTextarea
+          [autoResize]="true"
+          placeholder="Add response"
+          [formControl]="comment.responseFormControl">
+        </textarea>
+        <div
+          *ngIf="isTouchOrDirty(comment.responseFormControl)" class="flex justify-content-end flex-wrap">
+          <p-button
+            label="Cancel"
+            styleClass="p-button-rounded p-button-raised p-button-text"
+            class="mr-1 mt-2"
+            (onClick)="handleOnCancelCommentResponseClick(comment)"></p-button>
+          <p-button
+            label="Respond"
+            styleClass="p-button-rounded p-button-raised"
+            class="ml-1 mt-2"
+            (onClick)="handleOnAddCommentResponseClick(comment)"
+            [disabled]="isEmpty(comment.responseFormControl)"></p-button>
+        </div>
+      </div>
+    </div>
+    <div class="flex">
+      <div *ngIf="!comment.isResponseGettingAdded">
+        <p-button
+            label="Add Response"
+            styleClass="p-button-rounded p-button-text p-button-sm response-button"
+            class="px-10 mr-1"
+            (onClick)="handleOnAddResponseClick(comment)"></p-button>
+      </div>
+      <div *ngIf="comment.hasResponses" class="mt-1 comment-responses">
+        <div *ngIf="comment.isResponsesVisible; else showResponsesButton">
+          <p-button
+            label="Hide Responses"
+            styleClass="p-button-rounded p-button-text p-button-sm response-button"
+            icon="pi pi-chevron-up"
+            class="px-10"
+            (onClick)="handleOnHideResponsesClick(comment)"></p-button>
+        </div>
+        <ng-template #showResponsesButton>
+          <p-button
+            label="Show Responses"
+            styleClass="p-button-rounded p-button-text p-button-sm response-button"
+            icon="pi pi-chevron-down"
+            (onClick)="handleOnShowResponsesClick(comment)"></p-button>
+        </ng-template>
+      </div>
+    </div>
+    <div *ngIf="comment.hasResponses && comment.isResponsesVisible">
+      <div class="flex comment-response-container mt-2" *ngFor="let response of comment.responses; let responseIndex = index">
+        <div class="flex-none flex mt-1 mr-2">
+          <p-avatar [image]="response.avatarImage" shape="circle"></p-avatar>
+        </div>
+        <div class="flex-grow-1 flex flex-column">
+          <strong>{{ response.nickname }}</strong>
+          <div>{{ response.content }}</div>
+        </div>
+        <div class="flex-none">
+          <p-menu
+            #commentResponseMenu
+            [model]="getCommentResponseMenuModel(comment, responseIndex)"
+            [popup]="true"
+            class="comment-p-menu"></p-menu>
+          <p-button
+            icon="pi pi-ellipsis-v"
+            class="comment-response-menu-button"
+            styleClass="p-button-rounded p-button-text p-button-secondary"
+            (click)="commentResponseMenu.toggle($event)"></p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-none">
+    <p-menu
+      #commentMenu
+      [model]="getCommentMenuModel(commentIndex)"
+      [popup]="true" class="comment-p-menu"></p-menu>
+    <p-button
+      icon="pi pi-ellipsis-v"
+      class="comment-menu-button"
+      styleClass="p-button-rounded p-button-text p-button-secondary"
+      (click)="commentMenu.toggle($event); commentMenu.el.nativeElement.focus()"></p-button>
+  </div>
+</div>
