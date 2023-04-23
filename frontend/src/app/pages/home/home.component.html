@@ -1,1 +1,28 @@
-<p>home works!</p>
+<div class="container">
+    <div class="left-column">
+        <ul *ngIf="subscriptions">
+            <div class="grid">
+                <div class="videoCol" *ngFor="let sub of subscriptions">
+                    <div class="image-container">
+                        <img [src] = "sub.avatarImage" class="avatarImage" (click)="goToCreator(sub.id)">
+                        <span class="image-label">{{ sub.nickname }}</span>
+                    </div>
+                </div>
+            </div>
+        </ul>
+    </div>
+    <div class="right-column">
+        <ul *ngIf="videos">
+            <div class="grid">
+                <div class="videoCol" *ngFor="let video of videos">
+                    <div class="image-container">
+                        <img [src] = "video.thumbnail" class="video" (click)="goToVideo(video.id)">
+                        <span class="image-label">{{ video.duration }}</span>
+                    </div>
+                    <h3 class="noPadding">{{ video.title }}</h3>
+                    <p class="noPadding">{{ video.viewCount }} views</p>
+                </div>
+            </div>
+        </ul>
+    </div>
+</div>

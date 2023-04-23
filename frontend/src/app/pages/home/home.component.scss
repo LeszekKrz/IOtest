@@ -1,0 +1,67 @@
+/* Existing styles */
+.container {
+    display: flex;
+  }
+  
+  .left-column {
+    width: 30%;
+    background-color: #f0f0f0;
+    overflow-y: scroll;
+    padding: 20px;
+  }
+  
+  .right-column {
+    width: 70%;
+    background-color: #e0e0e0;
+    overflow-y: scroll;
+    height: 100%;
+  }
+
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Align items to the left */
+  }
+  
+  .videoCol {
+    /* Add any additional styles for the column, such as width or margin */
+    margin: 0 20px 20px 0; /* Adjust the margin as needed */
+  }
+
+  .image-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .video {
+    max-width: 200px;
+    max-height: 200px;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .avatarImage {
+    max-width: 200px;
+    max-height: 200px;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .image-label {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    z-index: 1;
+  }
+  
+  .noPadding {
+    padding: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
