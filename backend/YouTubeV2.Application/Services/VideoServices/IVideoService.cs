@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using YouTubeV2.Application.DTO.VideoDTOS;
 using YouTubeV2.Application.DTO.VideoMetadataDTOS;
 using YouTubeV2.Application.Enums;
 using YouTubeV2.Application.Model;
@@ -18,5 +19,9 @@ namespace YouTubeV2.Application.Services.VideoServices
         Task AuthorizeVideoAccessAsync(Guid videoId, string userId, CancellationToken cancellationToken = default);
 
         Task SetVideoLengthAsync(Video video, double length, CancellationToken cancellationToken = default);
+
+        Task<VideoListDto> GetAllUserVideos(string userId, CancellationToken cancellationToken = default);
+
+        Task<VideoListDto> GetAllAvailableUserVideos(string userId, CancellationToken cancellationToken= default);
     }
 }

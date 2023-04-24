@@ -1,21 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using YouTubeV2.Application.DTO.UserDTOS;
 using YouTubeV2.Application.DTO.VideoDTOS;
-using YouTubeV2.Application.DTO.VideoMetadataDTOS;
 using YouTubeV2.Application.Services;
+using YouTubeV2.Application.Services.VideoServices;
 
 namespace YouTubeV2.Api.Controllers
 {
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : IdentityControllerBase
     {
         private readonly IUserService _userService;
         private readonly ISubscriptionService _subscriptionsService;
+        private readonly IVideoService _videoService;
 
-        public UserController(IUserService userService, ISubscriptionService subscriptionsService)
+        public UserController(IUserService userService, ISubscriptionService subscriptionsService, IVideoService videoService)
         {
             _userService = userService;
             _subscriptionsService = subscriptionsService;
+            _videoService = videoService;
         }
 
         [HttpPost("register")]
@@ -51,40 +53,14 @@ namespace YouTubeV2.Api.Controllers
         }
 
         [HttpGet("user/videos")]
-        public async Task<VideoListDto> GetVideosAsync([FromQuery] string id, CancellationToken cancellationToken)
+        public async Task<ActionResult<VideoListDto>> GetUserVideosAsync([FromQuery] string? id, CancellationToken cancellationToken)
         {
-            // This endpoint exists only to check if frontend works. It will need to be raplaced
+            string? userId = GetUserId();
+            if (userId is null) return Forbid();
 
-            List<string> tags = new List<string>() { "tag1", "tag2", "tag3" };
-            List<VideoMetadataDto> videos = new List<VideoMetadataDto>()
-            {
-                new VideoMetadataDto("k4l2h342kjh", "Title", "desc", "https://filesdevelop.blob.core.windows.net/videos/pobrane.jpg",
-                "h43il5u435", "Mr. Beast", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title2", "desc2", "https://filesdevelop.blob.core.windows.net/videos/Rank1Bridge.png",
-                "h43il5u435", "Pewdiepie", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title3", "desc3", "https://filesdevelop.blob.core.windows.net/videos/pobrane.jpg",
-                "h43il5u435", "Idk", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title", "desc", "https://filesdevelop.blob.core.windows.net/videos/Rank1Bridge.png",
-                "h43il5u435", "Mr. Beast", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title2", "desc2", "https://filesdevelop.blob.core.windows.net/videos/pobrane.jpg",
-                "h43il5u435", "Pewdiepie", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title3", "desc3", "https://filesdevelop.blob.core.windows.net/videos/Rank1Bridge.png",
-                "h43il5u435", "Idk", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title", "desc", "https://filesdevelop.blob.core.windows.net/videos/pobrane.jpg",
-                "h43il5u435", "Mr. Beast", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title2", "desc2", "https://filesdevelop.blob.core.windows.net/videos/Rank1Bridge.png",
-                "h43il5u435", "Pewdiepie", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title3", "desc3", "https://filesdevelop.blob.core.windows.net/videos/pobrane.jpg",
-                "h43il5u435", "Idk", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title", "desc", "https://filesdevelop.blob.core.windows.net/videos/Rank1Bridge.png",
-                "h43il5u435", "Mr. Beast", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title2", "desc2", "https://filesdevelop.blob.core.windows.net/videos/pobrane.jpg",
-                "h43il5u435", "Pewdiepie", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title3", "desc3", "https://filesdevelop.blob.core.windows.net/videos/Rank1Bridge.png",
-                "h43il5u435", "Idk", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-            };
-
-            return new VideoListDto(videos);
+            return userId == id || id is null
+                ? await _videoService.GetAllUserVideos(userId, cancellationToken)
+                : await _videoService.GetAllAvailableUserVideos(id, cancellationToken);
         }
     }
 }
