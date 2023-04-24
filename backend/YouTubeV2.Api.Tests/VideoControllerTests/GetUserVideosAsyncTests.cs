@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +15,7 @@ using YouTubeV2.Application.Enums;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services.BlobServices;
 
-namespace YouTubeV2.Api.Tests.UserControllerTests
+namespace YouTubeV2.Api.Tests.VideoControllerTests
 {
     [TestClass]
     public class GetUserVideosAsyncTests
@@ -25,7 +24,11 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
 
         private readonly Mock<IBlobImageService> _blobImageServiceMock = new();
 
-        private static readonly DateTimeOffset _utcNow = DateTimeOffset.UtcNow;
+        private static readonly DateTimeOffset _firstUploadTime = DateTimeOffset.UtcNow;
+        
+        private static readonly DateTimeOffset _secondUploadTime = DateTimeOffset.UtcNow.AddDays(1);
+
+        private static readonly DateTimeOffset _thirdUploadTime = DateTimeOffset.UtcNow.AddDays(2);
 
         private static User _user = new()
         {
@@ -48,8 +51,8 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
             Title = "public ready title",
             Description = "public ready description",
             Visibility = Visibility.Public,
-            UploadDate = _utcNow,
-            EditDate = _utcNow,
+            UploadDate = _firstUploadTime,
+            EditDate = _firstUploadTime,
             ProcessingProgress = ProcessingProgress.Ready,
             Author = _user,
             Duration = "10:10",
@@ -60,8 +63,8 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
             Title = "private ready title",
             Description = "private ready description",
             Visibility = Visibility.Private,
-            UploadDate = _utcNow,
-            EditDate = _utcNow,
+            UploadDate = _secondUploadTime,
+            EditDate = _secondUploadTime,
             ProcessingProgress = ProcessingProgress.Ready,
             Author = _user,
             Duration = "20:20",
@@ -72,8 +75,8 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
             Title = "public not ready title",
             Description = "public not ready description",
             Visibility = Visibility.Public,
-            UploadDate = _utcNow,
-            EditDate = _utcNow,
+            UploadDate = _thirdUploadTime,
+            EditDate = _thirdUploadTime,
             ProcessingProgress = ProcessingProgress.Processing,
             Author = _user,
             Duration = "30:30",
@@ -84,8 +87,8 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
             Title = "other user private ready title",
             Description = "other user private ready description",
             Visibility = Visibility.Public,
-            UploadDate = _utcNow,
-            EditDate = _utcNow,
+            UploadDate = _firstUploadTime,
+            EditDate = _firstUploadTime,
             ProcessingProgress = ProcessingProgress.Ready,
             Author = _otherUser,
             Duration = "40:40",
@@ -147,19 +150,19 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
             deserializedResponseBody.videos.Count.Should().Be(3);
             deserializedResponseBody.videos.Should().BeEquivalentTo(new[] {
                 new VideoMetadataDto(
-                    _userPublicReadyVideoId,
-                    _userPublicReadyVideo.Title,
-                    _userPublicReadyVideo.Description,
-                    new Uri($"{_videoThumbnailDomain}{_userPublicReadyVideoId}"),
+                    _userPublicNotReadyVideoId,
+                    _userPublicNotReadyVideo.Title,
+                    _userPublicNotReadyVideo.Description,
+                    new Uri($"{_videoThumbnailDomain}{_userPublicNotReadyVideoId}"),
                     _userId,
                     _user.UserName!,
                     0,
                     Array.Empty<string>(),
-                    _userPublicReadyVideo.Visibility,
-                    _userPublicReadyVideo.ProcessingProgress,
-                    _utcNow.ToUniversalTime().Date,
-                    _utcNow.ToUniversalTime().Date,
-                    _userPublicReadyVideo.Duration),
+                    _userPublicNotReadyVideo.Visibility,
+                    _userPublicNotReadyVideo.ProcessingProgress,
+                    _userPublicNotReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPublicNotReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPublicNotReadyVideo.Duration),
                 new VideoMetadataDto(
                     _userPrivateReadyVideoId,
                     _userPrivateReadyVideo.Title,
@@ -171,24 +174,24 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
                     Array.Empty<string>(),
                     _userPrivateReadyVideo.Visibility,
                     _userPrivateReadyVideo.ProcessingProgress,
-                    _utcNow.ToUniversalTime().Date,
-                    _utcNow.ToUniversalTime().Date,
+                    _userPrivateReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPrivateReadyVideo.UploadDate.ToUniversalTime().Date,
                     _userPrivateReadyVideo.Duration),
                 new VideoMetadataDto(
-                    _userPublicNotReadyVideoId,
-                    _userPublicNotReadyVideo.Title,
-                    _userPublicNotReadyVideo.Description,
-                    new Uri($"{_videoThumbnailDomain}{_userPublicNotReadyVideoId}"),
+                    _userPublicReadyVideoId,
+                    _userPublicReadyVideo.Title,
+                    _userPublicReadyVideo.Description,
+                    new Uri($"{_videoThumbnailDomain}{_userPublicReadyVideoId}"),
                     _userId,
                     _user.UserName!,
                     0,
                     Array.Empty<string>(),
-                    _userPublicNotReadyVideo.Visibility,
-                    _userPublicNotReadyVideo.ProcessingProgress,
-                    _utcNow.ToUniversalTime().Date,
-                    _utcNow.ToUniversalTime().Date,
-                    _userPublicNotReadyVideo.Duration),
-            });
+                    _userPublicReadyVideo.Visibility,
+                    _userPublicReadyVideo.ProcessingProgress,
+                    _userPublicReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPublicReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPublicReadyVideo.Duration),
+            }, options => options.WithStrictOrdering());
         }
 
         [TestMethod]
@@ -209,19 +212,19 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
             deserializedResponseBody.videos.Count.Should().Be(3);
             deserializedResponseBody.videos.Should().BeEquivalentTo(new[] {
                 new VideoMetadataDto(
-                    _userPublicReadyVideoId,
-                    _userPublicReadyVideo.Title,
-                    _userPublicReadyVideo.Description,
-                    new Uri($"{_videoThumbnailDomain}{_userPublicReadyVideoId}"),
+                    _userPublicNotReadyVideoId,
+                    _userPublicNotReadyVideo.Title,
+                    _userPublicNotReadyVideo.Description,
+                    new Uri($"{_videoThumbnailDomain}{_userPublicNotReadyVideoId}"),
                     _userId,
                     _user.UserName!,
                     0,
                     Array.Empty<string>(),
-                    _userPublicReadyVideo.Visibility,
-                    _userPublicReadyVideo.ProcessingProgress,
-                    _utcNow.ToUniversalTime().Date,
-                    _utcNow.ToUniversalTime().Date,
-                    _userPublicReadyVideo.Duration),
+                    _userPublicNotReadyVideo.Visibility,
+                    _userPublicNotReadyVideo.ProcessingProgress,
+                    _userPublicNotReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPublicNotReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPublicNotReadyVideo.Duration),
                 new VideoMetadataDto(
                     _userPrivateReadyVideoId,
                     _userPrivateReadyVideo.Title,
@@ -233,24 +236,24 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
                     Array.Empty<string>(),
                     _userPrivateReadyVideo.Visibility,
                     _userPrivateReadyVideo.ProcessingProgress,
-                    _utcNow.ToUniversalTime().Date,
-                    _utcNow.ToUniversalTime().Date,
+                    _userPrivateReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPrivateReadyVideo.UploadDate.ToUniversalTime().Date,
                     _userPrivateReadyVideo.Duration),
                 new VideoMetadataDto(
-                    _userPublicNotReadyVideoId,
-                    _userPublicNotReadyVideo.Title,
-                    _userPublicNotReadyVideo.Description,
-                    new Uri($"{_videoThumbnailDomain}{_userPublicNotReadyVideoId}"),
+                    _userPublicReadyVideoId,
+                    _userPublicReadyVideo.Title,
+                    _userPublicReadyVideo.Description,
+                    new Uri($"{_videoThumbnailDomain}{_userPublicReadyVideoId}"),
                     _userId,
                     _user.UserName!,
                     0,
                     Array.Empty<string>(),
-                    _userPublicNotReadyVideo.Visibility,
-                    _userPublicNotReadyVideo.ProcessingProgress,
-                    _utcNow.ToUniversalTime().Date,
-                    _utcNow.ToUniversalTime().Date,
-                    _userPublicNotReadyVideo.Duration),
-            });
+                    _userPublicReadyVideo.Visibility,
+                    _userPublicReadyVideo.ProcessingProgress,
+                    _userPublicReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPublicReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPublicReadyVideo.Duration),
+            }, options => options.WithStrictOrdering());
         }
 
         [TestMethod]
@@ -281,43 +284,10 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
                     Array.Empty<string>(),
                     _userPublicReadyVideo.Visibility,
                     _userPublicReadyVideo.ProcessingProgress,
-                    _utcNow.ToUniversalTime().Date,
-                    _utcNow.ToUniversalTime().Date,
+                    _userPublicReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPublicReadyVideo.UploadDate.ToUniversalTime().Date,
                     _userPublicReadyVideo.Duration),
             });
         }
-
-        //private static Video _userPublicReadyVideo = new()
-        //{
-        //    Title = "private ready title",
-        //    Description = "private ready description",
-        //    Visibility = Visibility.Public,
-        //    UploadDate = _utcNow ,
-        //    EditDate = _utcNow ,
-        //    ProcessingProgress = ProcessingProgress.Ready,
-        //    Author = _user,
-        //};
-
-        //private static Video _userPrivateReadyVideo = new()
-        //{
-        //    Title = "private ready title",
-        //    Description = "private ready description",
-        //    Visibility = Visibility.Private,
-        //    UploadDate = _utcNow ,
-        //    EditDate = _utcNow ,
-        //    ProcessingProgress = ProcessingProgress.Ready,
-        //    Author = _user,
-        //};
-
-        //private static Video _userPublicNotReadyVideo = new()
-        //{
-        //    Title = "private not ready title",
-        //    Description = "private not ready description",
-        //    Visibility = Visibility.Public,
-        //    UploadDate = _utcNow ,
-        //    EditDate = _utcNow ,
-        //    ProcessingProgress = ProcessingProgress.Processing,
-        //    Author = _user,
-        //};
     }
 }
