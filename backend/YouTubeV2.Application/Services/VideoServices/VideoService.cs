@@ -140,18 +140,6 @@ namespace YouTubeV2.Application.Services.VideoServices
 
         public async Task<VideoListDto> GetVideosFromSubscriptionsAsync(string userId, CancellationToken cancellationToken = default)
         {
-            var vid = await _context
-                .Subscriptions
-                .Include(subscription => subscription.Subscribee)
-                .ThenInclude(subscribee => subscribee.Videos)
-                .ThenInclude(video => video.Tags)
-                .Where(subscription => subscription.SubscriberId == userId)
-                .SelectMany(subscription => subscription.Subscribee.Videos)
-                .Where(video => video.Visibility == Visibility.Public && video.ProcessingProgress == ProcessingProgress.Ready)
-                .FirstAsync();
-
-            var thumb = _blobImageService.GetVideoThumbnail(vid.Id.ToString());
-
             List<VideoMetadataDto> videos = await _context
                 .Subscriptions
                 .Include(subscription => subscription.Subscribee)

@@ -32,6 +32,10 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.router.navigate(['playlists']);
   }
 
+  subscriptionsVideosButtonOnClick(): void {
+    this.router.navigate(['subscriptions-videos']);
+  }
+
   registerButtonOnClick(): void {
     this.router.navigate(['register']);
   }

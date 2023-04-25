@@ -16,8 +16,12 @@ export class VideoService {
 
   getUserVideos(id: string): Observable<VideoListDto> {
     let params = new HttpParams().set('id', id);
-    
-    return this.httpClient.get<VideoListDto>(`${this.videoPageWebAPIUrl}/user/videos`, { params: params });
+    const httpOptions = {
+      params: params,
+      headers: getHttpOptionsWithAuthenticationHeader().headers
+    };
+
+    return this.httpClient.get<VideoListDto>(`${this.videoPageWebAPIUrl}/user/videos`, httpOptions);
   }
 
   getVideoMetadata(id: string): Observable<VideoMetadataDto> {
@@ -26,7 +30,7 @@ export class VideoService {
       params: params,
       headers: getHttpOptionsWithAuthenticationHeader().headers
     };
-    
+
     return this.httpClient.get<VideoMetadataDto>(`${this.videoPageWebAPIUrl}/video-metadata`, httpOptions);
   }
 }

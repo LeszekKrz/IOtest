@@ -17,6 +17,7 @@ import { HomeModule } from './pages/home/home.module';
 import { PlaylistModule } from './pages/playlist/playlist.module';
 import { UserPlaylistsModule } from './pages/user-playlists/user-playlists.module';
 import { CommentsModule } from './pages/video/components/comments/comments.module';
+import { SubscriptionsVideosModule } from './pages/subscriptions-videos/subscriptions-videos.module';
 
 @NgModule({
     declarations: [
@@ -47,6 +48,7 @@ import { CommentsModule } from './pages/video/components/comments/comments.modul
         UserPlaylistsModule,
         PlaylistModule,
         CommentsModule,
+        SubscriptionsVideosModule,
     ]
 })
 export class AppModule { }

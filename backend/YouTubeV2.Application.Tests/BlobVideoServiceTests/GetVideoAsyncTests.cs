@@ -44,7 +44,7 @@ namespace YouTubeV2.Application.Tests.BlobVideoServiceTests
                 .ReturnsAsync(Response.FromValue(true, new Mock<Response>().Object));
 
             // ACT
-            Stream stream = await _blobVideoService.GetVideoAsync(It.IsAny<string>(), It.IsAny<CancellationToken>());
+            Stream stream = await _blobVideoService.GetVideoAsync("test file name", It.IsAny<CancellationToken>());
 
             // ASSERT
             stream.Length.Should().Be(_expectedStreamContent.Length);
