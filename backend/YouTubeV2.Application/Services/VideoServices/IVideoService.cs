@@ -27,5 +27,7 @@ namespace YouTubeV2.Application.Services.VideoServices
         Task<VideoListDto> GetVideosFromSubscriptionsAsync(string userId, CancellationToken cancellationToken = default);
 
         Task DeleteVideoAsync(Video video, CancellationToken cancellationToken = default);
+
+        Task<int> GetVideoCountAsync(User user, CancellationToken cancellationToke = default);
     }
 }

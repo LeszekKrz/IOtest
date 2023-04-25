@@ -22,11 +22,17 @@ namespace YouTubeV2.Application.Services.BlobServices
         public async Task UploadProfilePictureAsync(string base64Content, string fileName, CancellationToken cancellationToken = default) =>
             await UploadImageAsync(base64Content, fileName, _blobStorageConfig.UserAvatarsContainerName, cancellationToken);
 
+        public async Task DeleteProfilePictureAsync(string fileName, CancellationToken cancellationToken = default) =>
+            await DeleteImageAsync(fileName, _blobStorageConfig.UserAvatarsContainerName, cancellationToken);
+
+        public async Task DeleteThumbnailAsync(string fileName, CancellationToken cancellationToken = default) =>
+          await DeleteImageAsync(fileName, _blobStorageConfig.VideoThumbnailsContainerName, cancellationToken);
+
         public Uri GetVideoThumbnail(string fileName) => GetImageUrl(fileName, _blobStorageConfig.VideoThumbnailsContainerName);
 
         public async Task UploadVideoThumbnailAsync(string base64Content, string fileName, CancellationToken cancellationToken = default) =>
             await UploadImageAsync(base64Content, fileName, _blobStorageConfig.VideoThumbnailsContainerName, cancellationToken);
-
+ 
         private Uri GetImageUrl(string fileName, string blobContainerName)
         {
             BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(blobContainerName);
@@ -45,9 +51,6 @@ namespace YouTubeV2.Application.Services.BlobServices
             await using MemoryStream memoryStream = new(Convert.FromBase64String(imageData));
             await blobClient.UploadAsync(memoryStream, new BlobHttpHeaders { ContentType = imageFormat }, cancellationToken: cancellationToken);
         }
-
-        public async Task DeleteThumbnailAsync(string fileName, CancellationToken cancellationToken = default) =>
-            await DeleteImageAsync(fileName, _blobStorageConfig.VideoThumbnailsContainerName, cancellationToken);
 
         private async Task DeleteImageAsync(string fileName, string blobContainerName, CancellationToken cancellationToken = default)
         {

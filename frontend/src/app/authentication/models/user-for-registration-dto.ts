@@ -5,5 +5,5 @@ export interface UserForRegistrationDTO {
   surname: string;
   password: string;
   userType: string;
-  avatarImage: string;
+  avatarImage: string | null;
 }

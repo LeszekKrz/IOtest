@@ -86,13 +86,26 @@ namespace YouTubeV2.Application.Tests.UtilsTests
         }
 
         [TestMethod]
-        public void IsValidBase64ImageOrEmpty_EmptyString_ReturnsTrue()
+        public void IsValidBase64ImageOrNullOrEmpty_EmptyString_ReturnsTrue()
         {
             // ARRANGE
             string input = string.Empty;
 
             // ACT
-            bool result = input.IsValidBase64ImageOrEmpty();
+            bool result = input.IsValidBase64ImageOrNullOrEmpty();
+
+            // ASSERT
+            result.Should().BeTrue();
+        }
+
+        [TestMethod]
+        public void IsValidBase64ImageOrNullOrEmpty_NullString_ReturnsTrue()
+        {
+            // ARRANGE
+            string? input = null;
+
+            // ACT
+            bool result = input.IsValidBase64ImageOrNullOrEmpty();
 
             // ASSERT
             result.Should().BeTrue();

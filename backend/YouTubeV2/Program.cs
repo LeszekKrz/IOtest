@@ -1,6 +1,7 @@
 using Azure.Storage.Blobs;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
@@ -79,6 +80,7 @@ builder.Services.AddSingleton<IBlobVideoService, BlobVideoService>();
 builder.Services.AddTransient<IVideoService, VideoService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<IDateTimeProvider, DateTimeProvider>();
+builder.Services.AddTransient<ISearchService, SearchService>();
 
 builder.Services.AddSingleton<IVideoProcessingService, VideoProcessingService>();
 builder.Services.AddHostedService(serviceProvider => (VideoProcessingService)serviceProvider.GetRequiredService<IVideoProcessingService>());
@@ -95,6 +97,15 @@ builder.Services.Configure<IISServerOptions>(options =>
 builder.Services.Configure<KestrelServerOptions>(options =>
 {
     options.Limits.MaxRequestBodySize = null;
+});
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 1;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireDigit = false;
 });
 
 builder.Services.AddCors(options =>

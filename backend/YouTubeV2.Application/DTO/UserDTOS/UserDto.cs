@@ -1,13 +1,13 @@
 ﻿namespace YouTubeV2.Application.DTO.UserDTOS
 {
     public record UserDto(
-        string id,
+        Guid id,
         string email,
         string nickname,
         string name,
         string surname,
-        double accountBalance,
+        decimal? accountBalance,
         string userType,
         string avatarImage,
-        int subscriptionsCount);
+        int? subscriptionsCount);
 }

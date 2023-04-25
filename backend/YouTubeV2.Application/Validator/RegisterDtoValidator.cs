@@ -31,15 +31,11 @@ namespace YouTubeV2.Application.Validator
 
             RuleFor(x => x.password)
                 .NotNull()
-                .MinimumLength(UserConstants.MinUserPasswordLength).WithMessage($"Your password length must be at least {UserConstants.MinUserPasswordLength}.")
-                .MaximumLength(UserConstants.MaxUserPasswordLength).WithMessage($"Your password length must not exceed {UserConstants.MaxUserPasswordLength}.")
-                .Matches(@"[A-Z]+").WithMessage("Your password must contain at least one uppercase letter.")
-                .Matches(@"[a-z]+").WithMessage("Your password must contain at least one lowercase letter.")
-                .Matches(@"[0-9]+").WithMessage("Your password must contain at least one number.")
-                .Matches(@"[!@#$%^&*(),.<>?/]+").WithMessage("Your password must contain at least one special character.");
+                .MaximumLength(UserConstants.MaxUserPasswordLength)
+                .WithMessage($"Your password length must not exceed {UserConstants.MaxUserPasswordLength}.");
 
             RuleFor(x => x.avatarImage)
-                .Must(avatarImage => avatarImage.IsValidBase64ImageOrEmpty())
+                .Must(avatarImage => avatarImage.IsValidBase64ImageOrNullOrEmpty())
                 .WithMessage("Avatar must be a valid base64-encoded PNG or JPEG image or empty.");
         }
     }

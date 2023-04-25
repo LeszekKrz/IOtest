@@ -11,5 +11,7 @@
         Uri GetVideoThumbnail(string fileName);
 
         Task DeleteThumbnailAsync(string fileName, CancellationToken cancellationToken = default);
+
+        Task DeleteProfilePictureAsync(string fileName, CancellationToken cancellationToken = default);
     }
 }

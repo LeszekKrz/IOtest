@@ -12,6 +12,8 @@ import { HttpErrorInterceptor } from './core/interceptors/http-error-interceptor
 import { VideoModule } from './pages/video/video.module';
 import { CreatorModule } from './pages/creator/creator.module';
 import { LoginModule } from './pages/login/login.module';
+import { SearchModule } from './pages/search/search.module';
+import { UserModule } from './pages/user/user.module';
 import { AddVideoModule } from './pages/add-video/add-video.module';
 import { HomeModule } from './pages/home/home.module';
 import { PlaylistModule } from './pages/playlist/playlist.module';
@@ -42,6 +44,8 @@ import { SubscriptionsVideosModule } from './pages/subscriptions-videos/subscrip
         BrowserAnimationsModule,
         VideoModule,
         CreatorModule,
+        SearchModule,
+        UserModule,
         AddVideoModule,
         HomeModule,
         PlaylistModule,

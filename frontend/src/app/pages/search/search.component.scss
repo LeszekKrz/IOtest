@@ -1,0 +1,41 @@
+.column {
+    width: 30%;
+    padding: 10px;
+}
+
+.noPadding {
+    padding: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.searchGroup {
+    display: flex;
+    justify-content: center;
+}
+
+.searchItem {
+    width: 25%;
+}
+
+.avatarImage {
+    max-width: 150px;
+    max-height: 150px;
+    width: 150px;
+    height: 150px;
+    display: block;
+    margin: 0 auto;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+    margin: 20px;
+  }
+
+.userContainer {
+    margin: 10px;
+    border-bottom: 2px solid black;
+    display: flex;
+    align-items: center;
+  }

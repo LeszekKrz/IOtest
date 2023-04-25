@@ -14,7 +14,7 @@ using YouTubeV2.Application.Model;
 namespace YouTubeV2.Api.Tests.UserControllerTests
 {
     [TestClass]
-    public class UserTests
+    public class UserRegisterLoginTests
     {
         private WebApplicationFactory<Program> _webApplicationFactory = null!;
 
@@ -59,12 +59,13 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
                     roles.Should().Contain(Role.Simple);
                 });
 
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
         }
+
         [TestMethod]
         public async Task LoginUserShouldReturnOk()
         {
-            // ARRANGE
+            // Arrange
             var httpClient = _webApplicationFactory.CreateClient();
 
             var registerDto = new RegisterDto("mail@mail.com", "Senior", "Generator", "Frajdy", "asdf1243@#$GJH", Role.Simple, "");
@@ -79,15 +80,54 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
             var loginDto = new LoginDto("mail@mail.com", "asdf1243@#$GJH");
 
             // Act
-
             var response = await httpClient.PostAsync("login", new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, "application/json"));
 
             var content = await response.Content.ReadAsStringAsync();
             LoginResponseDto loginResponseDto = JsonConvert.DeserializeObject<LoginResponseDto>(content);
-            // ASSERT
+
+            // Assert
             loginResponseDto.token.Should().NotBeNullOrEmpty();
             response.Content.Should().NotBeNull();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [TestMethod]
+        public async Task LoginUser_IncorrectEmail_ShouldReturnNotFound()
+        {
+            // Arrange
+            var httpClient = _webApplicationFactory.CreateClient();
+
+            var loginDto = new LoginDto("not@registered.com", "asdf1243@#$GJH");
+
+            // Act
+            var response = await httpClient.PostAsync("login", new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, "application/json"));
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [TestMethod]
+        public async Task LoginUser_IncorrectPassword_ShouldReturnUnauthorized()
+        {
+            // Arrange
+            var httpClient = _webApplicationFactory.CreateClient();
+
+            var registerDto = new RegisterDto("log@log.com", "Seniorita", "Generator", "Frajdy", "asdf1243@#$GJH", Role.Simple, "");
+
+            await _webApplicationFactory.DoWithinScope<UserManager<User>>(
+              async userManager =>
+              {
+                  User user = new(registerDto);
+                  await userManager.CreateAsync(user);
+                  await userManager.AddPasswordAsync(user, "asdf1243@#$GJH");
+              });
+            var loginDto = new LoginDto("log@log.com", "willNotWork");
+
+            // Act
+            var response = await httpClient.PostAsync("login", new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, "application/json"));
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
     }
 }

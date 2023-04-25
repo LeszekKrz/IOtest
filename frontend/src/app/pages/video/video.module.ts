@@ -10,9 +10,6 @@ import { MenuModule } from 'primeng/menu';
 
 @NgModule({
   declarations: [
-    VideoComponent,
-  ],
-  exports: [
     VideoComponent
   ],
   imports: [

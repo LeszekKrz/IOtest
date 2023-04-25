@@ -332,9 +332,15 @@ namespace YouTubeV2.Application.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("AccountBalance")
+                        .HasColumnType("money");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("CreationDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Email")
                         .HasMaxLength(30)
@@ -403,16 +409,18 @@ namespace YouTubeV2.Application.Migrations
                         {
                             Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "08803007-ce53-4b86-99fc-a6fc4e4d095a",
+                            AccountBalance = 0m,
+                            ConcurrencyStamp = "d0a68b9e-243b-49cf-b33b-7b946eca71db",
+                            CreationDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Email = "simple@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Simple",
                             NormalizedEmail = "SIMPLE@TEST.COM",
                             NormalizedUserName = "TESTSIMPLE",
-                            PasswordHash = "AQAAAAIAAYagAAAAEA1OwJWOEzSG7SZcMz0hlLdaPpRy3Mx2oRJfXvQINgxe+zy3BCEwmw6nULReKbgowg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEN8lpLfxrRkY3X3x+OAjkbsEN7hfQR1X0v5t2fuQNSaIslnfgu980CyYa0pHDsuPTw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "63061695-9037-4c29-aa6c-13cccda8f5b2",
+                            SecurityStamp = "973ab52b-55fc-45c2-80fa-e54107d588af",
                             Surname = "Test",
                             TwoFactorEnabled = false,
                             UserName = "TestSimple"
@@ -421,16 +429,18 @@ namespace YouTubeV2.Application.Migrations
                         {
                             Id = "6EBD31DD-0321-4FDA-92FA-CD22A1190DC8",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8d3ebc1d-7606-41a5-87e7-c3ab5592c9f2",
+                            AccountBalance = 0m,
+                            ConcurrencyStamp = "68b288dd-58aa-4c4a-8f9f-27110e97451c",
+                            CreationDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Email = "creator@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Creator",
                             NormalizedEmail = "CREATOR@TEST.COM",
                             NormalizedUserName = "TESTCREATOR",
-                            PasswordHash = "AQAAAAIAAYagAAAAEB5smZL6LRrGI5WTsjslHccf1GbxPmxj63Cv4jisSa7ISNAaWaGrJIAWX5ZSsrrb6A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECAPE+K/CoSs7Jf0SUrg359awex4pVLKw4oun9itkSJwrcJ5uHdx6IHZtujxlZ1F5g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "11b86b1a-cbff-48ca-852e-867e1c182a80",
+                            SecurityStamp = "5fd85a84-97c7-434c-806b-9c22f5e3e4cb",
                             Surname = "Test",
                             TwoFactorEnabled = false,
                             UserName = "TestCreator"
@@ -439,16 +449,18 @@ namespace YouTubeV2.Application.Migrations
                         {
                             Id = "CB6A6951-E91A-4A13-B6AC-8634883F5B93",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a12ff120-4800-40ea-ab24-76f61dddf9ab",
+                            AccountBalance = 0m,
+                            ConcurrencyStamp = "d85119b4-a417-46f5-950d-6cea1873f9c6",
+                            CreationDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Email = "admin@test.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "TESTADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAELharXakR+FR6kfmqQauWwUBTL+kK1BI0W6sQjBBxmMzNNKFZ+3iJqYtyZ2DYBCoaQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJpRJOUuUIpKr4RTXQ/KF8LvfLMP1o6yv32pTdmKK4mta5sgv+05pFcoJEKa2d2wLw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0b3316b0-21cc-43d4-80e6-facea709efb5",
+                            SecurityStamp = "9e83c101-7a02-47a9-8918-a5638bc1ee4a",
                             Surname = "Test",
                             TwoFactorEnabled = false,
                             UserName = "TestAdmin"
