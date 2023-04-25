@@ -45,5 +45,14 @@ namespace YouTubeV2.Application.Services.BlobServices
             await using MemoryStream memoryStream = new(Convert.FromBase64String(imageData));
             await blobClient.UploadAsync(memoryStream, new BlobHttpHeaders { ContentType = imageFormat }, cancellationToken: cancellationToken);
         }
+
+        public async Task DeleteThumbnailAsync(string fileName, CancellationToken cancellationToken = default) =>
+            await DeleteImageAsync(fileName, _blobStorageConfig.VideoThumbnailsContainerName, cancellationToken);
+
+        private async Task DeleteImageAsync(string fileName, string blobContainerName, CancellationToken cancellationToken = default)
+        {
+            BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(blobContainerName);
+            await blobContainerClient.DeleteBlobIfExistsAsync(fileName.ToLower(), DeleteSnapshotsOption.IncludeSnapshots, cancellationToken: cancellationToken);
+        }
     }
 }

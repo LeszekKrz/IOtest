@@ -8,8 +8,22 @@
     </div>
     <div>
       <p-card
-        header="{{ videoMetadata.title }}"
         styleClass="p-card-style shadow-7">
+        <div class="flex justify-content-between">
+          <h2 class="mt-0">{{ videoMetadata.title }}</h2>
+          <div>
+            <p-menu
+              #videoMenu
+              [model]="videoMenuModel"
+              [popup]="true">
+            </p-menu>
+            <p-button
+              icon="pi pi-ellipsis-v"
+              styleClass="p-button-rounded p-button-text p-button-secondary"
+              (click)="videoMenu.toggle($event)">
+            </p-button>
+          </div>
+        </div>
         <div class="userProfile">
           <div class="avatar">
             <img [src] = "author.avatarImage" class="avatarImage">

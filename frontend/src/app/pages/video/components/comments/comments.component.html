@@ -100,13 +100,14 @@
           <p-menu
             #commentResponseMenu
             [model]="getCommentResponseMenuModel(comment, responseIndex)"
-            [popup]="true"
-            class="comment-p-menu"></p-menu>
+            [popup]="true">
+          </p-menu>
           <p-button
             icon="pi pi-ellipsis-v"
             class="comment-response-menu-button"
             styleClass="p-button-rounded p-button-text p-button-secondary"
-            (click)="commentResponseMenu.toggle($event)"></p-button>
+            (click)="commentResponseMenu.toggle($event)">
+          </p-button>
         </div>
       </div>
     </div>
@@ -116,11 +117,13 @@
     <p-menu
       #commentMenu
       [model]="getCommentMenuModel(commentIndex)"
-      [popup]="true" class="comment-p-menu"></p-menu>
+      [popup]="true">
+    </p-menu>
     <p-button
       icon="pi pi-ellipsis-v"
       class="comment-menu-button"
       styleClass="p-button-rounded p-button-text p-button-secondary"
-      (click)="commentMenu.toggle($event); commentMenu.el.nativeElement.focus()"></p-button>
+      (click)="commentMenu.toggle($event)">
+    </p-button>
   </div>
 </div>

@@ -154,5 +154,13 @@ namespace YouTubeV2.Application.Services.VideoServices
 
             return new VideoListDto(videos);
         }
+
+        public async Task DeleteVideoAsync(Video video, CancellationToken cancellationToken = default)
+        {
+            _context.Videos.Remove(video);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            await _blobImageService.DeleteThumbnailAsync(video.Id.ToString(), cancellationToken);
+        }
     }
 }

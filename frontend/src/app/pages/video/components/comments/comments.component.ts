@@ -25,6 +25,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
       subscription.unsubscribe();
     });
   }
+  
   ngOnInit(): void {
     this.getAllComments();
   }

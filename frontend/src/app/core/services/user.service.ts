@@ -5,6 +5,7 @@ import { environment } from "../../../environments/environment";
 import { UserForRegistrationDTO } from "../../authentication/models/user-for-registration-dto";
 import { UserDTO } from "../models/user-dto";
 import { UserForLoginDTO } from "src/app/authentication/models/user-login-dto";
+import { getHttpOptionsWithAuthenticationHeader } from "../functions/get-http-options-with-authorization-header";
 
 @Injectable({
   providedIn: 'root'
@@ -36,8 +37,12 @@ export class UserService {
 
   getUser(id: string): Observable<UserDTO> {
     let params = new HttpParams().set('id', id);
+    const httpOptions = {
+      params: params,
+      headers: getHttpOptionsWithAuthenticationHeader().headers
+    };
 
-    return this.httpClient.get<UserDTO>(`${this.registrationPageWebAPIUrl}/user`, { params: params });
+    return this.httpClient.get<UserDTO>(`${this.registrationPageWebAPIUrl}/user`, httpOptions);
   }
 
   loginUser(userForLogin: UserForLoginDTO): Observable<string> {
