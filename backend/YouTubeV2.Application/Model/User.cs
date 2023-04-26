@@ -10,6 +10,7 @@ namespace YouTubeV2.Application.Model
         public virtual ICollection<Subscription> Subscriptions { get; init; } = null!;
         public virtual IReadOnlyCollection<Video> Videos { get; init; } = null!;
         public virtual ICollection<Playlist> Playlists { get; init; } = null!;
+        public virtual IReadOnlyCollection<Reaction> Reactions { get; init; } = null!;
         public User() { }
         public User(string email, string nickname, string name, string surname)
         {

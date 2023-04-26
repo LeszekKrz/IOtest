@@ -40,10 +40,14 @@ namespace YouTubeV2.Application.Model
 
 
         public virtual User Author { get; init; }
+
         public virtual IReadOnlyCollection<Tag> Tags { get; init; }
+
         public virtual IReadOnlyCollection<Comment> Comments { get; init; }
 
         public virtual ICollection<Playlist> Playlists { get; init; } = null!;
+
+        public virtual IReadOnlyCollection<Reaction> Reactions { get; init; } = null!;
 
         public Video() { }
 
