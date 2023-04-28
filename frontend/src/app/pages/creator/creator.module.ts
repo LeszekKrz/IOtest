@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CreatorComponent } from './creator.component';
-import { PanelModule } from 'primeng/panel';
 import { TabViewModule } from 'primeng/tabview';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
   declarations: [
@@ -13,10 +13,10 @@ import { ButtonModule } from 'primeng/button';
     CreatorComponent
   ],
   imports: [
-    PanelModule,
     TabViewModule,
     CommonModule,
-    ButtonModule
+    ButtonModule,
+    CardModule,
   ]
 })
 export class CreatorModule { }

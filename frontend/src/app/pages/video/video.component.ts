@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getToken } from 'src/app/core/functions/get-token';
 import { UserDTO } from 'src/app/core/models/user-dto';
@@ -6,31 +6,47 @@ import { VideoMetadataDto } from 'src/app/core/models/video-metadata-dto';
 import { UserService } from 'src/app/core/services/user.service';
 import { VideoService } from 'src/app/core/services/video.service';
 import { environment } from 'src/environments/environment';
-import { switchMap } from 'rxjs/operators';
-import { forkJoin } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
+import { Subscription, forkJoin } from 'rxjs';
+import { MenuItem } from 'primeng/api';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-video',
   templateUrl: './video.component.html',
   styleUrls: ['./video.component.scss']
 })
-export class VideoComponent  {
+export class VideoComponent implements OnDestroy {
   videoId: string;
   videoUrl: string;
   videoMetadata!: VideoMetadataDto;
   author!: UserDTO;
   videos: VideoMetadataDto[] = [];
+  subscriptions: Subscription[] = [];
+  videoMenuModel: MenuItem[] = [
+    {
+      label: 'Delete',
+      icon: 'pi pi-trash',
+      command: () => this.deleteVideo(),
+    },
+    {
+      label: 'Report',
+      icon: 'pi pi-flag',
+      command: () => this.reportVideo(),
+    },
+  ];
 
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
     private router: Router,
-    private videoService: VideoService
+    private videoService: VideoService,
+    private location: Location
   ) {
     this.videoId = this.route.snapshot.params['videoId'];
     this.videoUrl = `${environment.webApiUrl}/video/${this.videoId}?access_token=${getToken()}`;
-  
-    videoService
+
+    this.subscriptions.push(videoService
       .getVideoMetadata(this.videoId)
       .pipe(
         switchMap(videoMetadata => {
@@ -45,7 +61,26 @@ export class VideoComponent  {
       .subscribe(({ user, userVideos }) => {
         this.author = user;
         this.videos = userVideos.videos;
-      });
+      }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+  }
+
+  private deleteVideo(): void {
+    const deleteVideo$ = this.videoService.deleteVideo(this.videoMetadata.id).pipe(
+      tap(() => {
+        this.location.back();
+      }),
+    );
+    this.subscriptions.push(deleteVideo$.subscribe());
+  }
+
+  private reportVideo(): void {
+    // REPORT VIDEO LOGIC HERE
   }
 
   public goToUserProfile(id: string): void {

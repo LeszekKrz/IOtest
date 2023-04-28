@@ -1,30 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection.Metadata.Ecma335;
+using YouTubeV2.Api.Attributes;
+using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.DTO.UserDTOS;
-using YouTubeV2.Application.DTO.VideoDTOS;
-using YouTubeV2.Application.DTO.VideoMetadataDTOS;
+using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services;
 
 namespace YouTubeV2.Api.Controllers
 {
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : IdentityControllerBase
     {
         private readonly IUserService _userService;
-        private readonly ISubscriptionService _subscriptionsService;
 
         public UserController(IUserService userService, ISubscriptionService subscriptionsService)
         {
             _userService = userService;
-            _subscriptionsService = subscriptionsService;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterDto registerDto, CancellationToken cancellationToken)
         {
-            await _userService.RegisterAsync(registerDto, cancellationToken);
+            string createdID = await _userService.RegisterAsync(registerDto, cancellationToken);
 
-            return Ok();
+            return StatusCode(StatusCodes.Status201Created);
         }
+
         [HttpPost("login")]
         public async Task<IActionResult> LoginAsync(LoginDto loginDto, CancellationToken cancellationToken)
         {
@@ -34,57 +37,50 @@ namespace YouTubeV2.Api.Controllers
         }
 
         [HttpGet("user")]
-        public async Task<UserDto> GetUserAsync([FromQuery] string id, CancellationToken cancellationToken)
+        [Roles(Role.Simple, Role.Creator, Role.Administrator)]
+        public async Task<ActionResult<UserDto>> GetAsync([FromQuery] Guid id, CancellationToken cancellationToken)
         {
-            // This endpoint exists only to check if frontend works. It will need to be raplaced
-            int subs = await _subscriptionsService.GetSubscriptionCount(id, cancellationToken);
+            var callerID = GetUserId();
+            if (callerID == null) return Forbid();
 
-            return new UserDto(id,
-              "john.doe@mail.com",
-              "johnny123",
-              "John",
-              "Doe",
-              10,
-              "Simple",
-              "https://filesdevelop.blob.core.windows.net/useravatars/53_square.jpg",
-              subs);
+            string userID = id.ToString();
+            if (id == Guid.Empty)
+                userID = string.Empty;
+
+            return Ok(await _userService.GetAsync(callerID, userID, cancellationToken));
         }
 
-        [HttpGet("user/videos")]
-        public async Task<VideoListDto> GetVideosAsync([FromQuery] string id, CancellationToken cancellationToken)
+        [HttpPut("user")]
+        [Roles(Role.Simple, Role.Creator, Role.Administrator)]
+        public async Task<IActionResult> PutAsync([FromQuery] Guid id, [FromBody][Required] UpdateUserDto updateUserDTO, 
+            CancellationToken cancellationToken)
         {
-            // This endpoint exists only to check if frontend works. It will need to be raplaced
+            var callerID = GetUserId();
+            if (callerID == null) return Forbid();
 
-            List<string> tags = new List<string>() { "tag1", "tag2", "tag3" };
-            List<VideoMetadataDto> videos = new List<VideoMetadataDto>()
-            {
-                new VideoMetadataDto("k4l2h342kjh", "Title", "desc", "https://filesdevelop.blob.core.windows.net/videos/pobrane.jpg",
-                "h43il5u435", "Mr. Beast", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title2", "desc2", "https://filesdevelop.blob.core.windows.net/videos/Rank1Bridge.png",
-                "h43il5u435", "Pewdiepie", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title3", "desc3", "https://filesdevelop.blob.core.windows.net/videos/pobrane.jpg",
-                "h43il5u435", "Idk", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title", "desc", "https://filesdevelop.blob.core.windows.net/videos/Rank1Bridge.png",
-                "h43il5u435", "Mr. Beast", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title2", "desc2", "https://filesdevelop.blob.core.windows.net/videos/pobrane.jpg",
-                "h43il5u435", "Pewdiepie", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title3", "desc3", "https://filesdevelop.blob.core.windows.net/videos/Rank1Bridge.png",
-                "h43il5u435", "Idk", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title", "desc", "https://filesdevelop.blob.core.windows.net/videos/pobrane.jpg",
-                "h43il5u435", "Mr. Beast", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title2", "desc2", "https://filesdevelop.blob.core.windows.net/videos/Rank1Bridge.png",
-                "h43il5u435", "Pewdiepie", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title3", "desc3", "https://filesdevelop.blob.core.windows.net/videos/pobrane.jpg",
-                "h43il5u435", "Idk", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title", "desc", "https://filesdevelop.blob.core.windows.net/videos/Rank1Bridge.png",
-                "h43il5u435", "Mr. Beast", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title2", "desc2", "https://filesdevelop.blob.core.windows.net/videos/pobrane.jpg",
-                "h43il5u435", "Pewdiepie", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-                new VideoMetadataDto("k4l2h342kjh", "Title3", "desc3", "https://filesdevelop.blob.core.windows.net/videos/Rank1Bridge.png",
-                "h43il5u435", "Idk", 439870324, tags, "public", "queued", DateTime.Now, DateTime.Now, "43:21"),
-            };
+            string userID = id.ToString();
+            if (id == Guid.Empty)
+                userID = string.Empty;
 
-            return new VideoListDto(videos);
+            await _userService.EditAsync(callerID, userID, updateUserDTO, cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpDelete("user")]
+        [Roles(Role.Simple, Role.Creator, Role.Administrator)]
+        public async Task<IActionResult> DeleteAsync([FromQuery][Required] Guid id, CancellationToken cancellationToken)
+        {
+            var callerID = GetUserId();
+            if (callerID == null) return Forbid();
+
+            string userID = id.ToString();
+            if (id == Guid.Empty)
+                userID = string.Empty;
+
+            await _userService.DeleteAsync(callerID, userID, cancellationToken);
+
+            return Ok();
         }
     }
 }

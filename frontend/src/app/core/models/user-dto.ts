@@ -4,8 +4,8 @@ export interface UserDTO {
     nickname: string;
     name: string;
     surname: string;
-    accountBalance: number;
+    accountBalance: number | null;
     userType: string;
-    avatarImage: string;
-    subscriptionsCount: number;
+    avatarImage: string | null;
+    subscriptionsCount: number | null;
   }

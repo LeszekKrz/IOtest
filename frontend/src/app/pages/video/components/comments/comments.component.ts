@@ -25,12 +25,13 @@ export class CommentsComponent implements OnInit, OnDestroy {
       subscription.unsubscribe();
     });
   }
+  
   ngOnInit(): void {
     this.getAllComments();
   }
 
   getAllComments(): void {
-    const $getAllComments = this.commentService.getAllComments(this.videoId).pipe(
+    const getAllComments$ = this.commentService.getAllComments(this.videoId).pipe(
       tap((commentsDTO: CommentsDTO) => {
         this.comments = commentsDTO.comments.map(comment => ({
           id: comment.id,
@@ -47,11 +48,11 @@ export class CommentsComponent implements OnInit, OnDestroy {
       }),
     );
 
-    this.subscriptions.push($getAllComments.subscribe());
+    this.subscriptions.push(getAllComments$.subscribe());
   }
 
   getAllCommentResponses(comment: Comment): void {
-    const $getAllCommentResponses = this.commentService.getAllCommentResponses(comment.id).pipe(
+    const getAllCommentResponses$ = this.commentService.getAllCommentResponses(comment.id).pipe(
       tap((commentsDTO: CommentsDTO) => {
         comment.responses = commentsDTO.comments.map(response => ({
           id: response.id,
@@ -63,7 +64,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
       }),
     );
 
-    this.subscriptions.push($getAllCommentResponses.subscribe());
+    this.subscriptions.push(getAllCommentResponses$.subscribe());
   }
 
   isEmptyAndTouchOrDirty(formControl: FormControl): boolean {
@@ -84,13 +85,13 @@ export class CommentsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const $addComment = this.commentService.addComment(formControl.value, this.videoId).pipe(
+    const addComment$ = this.commentService.addComment(formControl.value, this.videoId).pipe(
       tap(() => {
         this.getAllComments();
         formControl.reset();
       }),
     );
-    this.subscriptions.push($addComment.subscribe());
+    this.subscriptions.push(addComment$.subscribe());
   }
 
   isEmpty(formControl: FormControl): boolean {
@@ -98,13 +99,13 @@ export class CommentsComponent implements OnInit, OnDestroy {
   }
 
   deleteComment(commentIndex: number): void {
-    const $deleteComment = this.commentService.deleteComment(this.comments[commentIndex].id).pipe(
+    const deleteComment$ = this.commentService.deleteComment(this.comments[commentIndex].id).pipe(
       tap(() => {
         this.comments.splice(commentIndex, 1);
       }),
     );
 
-    this.subscriptions.push($deleteComment.subscribe());
+    this.subscriptions.push(deleteComment$.subscribe());
   }
 
   reportComment(commentIndex: number): void {
@@ -121,13 +122,13 @@ export class CommentsComponent implements OnInit, OnDestroy {
   }
 
   deleteCommentResponse(comment: Comment, responseIndex: number): void {
-    const $deleteCommentResponse = this.commentService.deleteCommentResponse(comment.responses![responseIndex].id).pipe(
+    const deleteCommentResponse$ = this.commentService.deleteCommentResponse(comment.responses![responseIndex].id).pipe(
       tap(() => {
         this.getAllCommentResponses(comment);
       }),
     );
 
-    this.subscriptions.push($deleteCommentResponse.subscribe());
+    this.subscriptions.push(deleteCommentResponse$.subscribe());
   }
 
   reportCommentResponse(comment: Comment, responseIndex: number): void {
@@ -149,7 +150,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const $addCommentResponse = this.commentService.addCommentResponse(comment.responseFormControl.value, comment.id).pipe(
+    const addCommentResponse$ = this.commentService.addCommentResponse(comment.responseFormControl.value, comment.id).pipe(
       tap(() => {
         if (comment.isResponsesVisible) {
           this.getAllCommentResponses(comment);
@@ -159,7 +160,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
         comment.hasResponses = true;
       }),
     );
-    this.subscriptions.push($addCommentResponse.subscribe());
+    this.subscriptions.push(addCommentResponse$.subscribe());
   }
 
   getCommentMenuModel(commentIndex: number): MenuItem[] {

@@ -46,7 +46,6 @@ namespace YouTubeV2.Api.Tests.CommentControllerTests
         };
 
         private Video _video = null!;
-        private string _commentAuthorId = null!;
         private string _responseAuthorId = null!;
         private Guid _commentId;
 
@@ -84,7 +83,6 @@ namespace YouTubeV2.Api.Tests.CommentControllerTests
                   await userManager.CreateAsync(_videoAuthor);
                   await userManager.CreateAsync(_commentAuthor);
                   await userManager.CreateAsync(_responseAuthor);
-                  _commentAuthorId = await userManager.GetUserIdAsync(_commentAuthor);
                   _responseAuthorId = await userManager.GetUserIdAsync(_responseAuthor);
               });
 

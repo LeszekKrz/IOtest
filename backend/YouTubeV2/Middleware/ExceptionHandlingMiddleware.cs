@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.Extensions.FileProviders.Physical;
 using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.Exceptions;
 
@@ -35,9 +36,13 @@ namespace YouTubeV2.Api.Middleware
             {
                 await HandleArgumentExceptionAsync(httpContext, argumentException);
             }
-            catch (ForbiddenException forbiddenExcaption)
+            catch (ForbiddenException forbiddenException)
             {
-                await HandleForbiddenExcaption(httpContext, forbiddenExcaption);
+                await HandleForbiddenExcaption(httpContext, forbiddenException);
+            }
+            catch (UnauthorizedException unauthorizedException)
+            {
+                await HandleUnauthorizedExceptionAsync(httpContext, unauthorizedException);
             }
             catch (Exception notFoundException) when (notFoundException is FileNotFoundException || notFoundException is NotFoundException)
             {
@@ -79,6 +84,12 @@ namespace YouTubeV2.Api.Middleware
         {
             httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
             await httpContext.Response.WriteAsJsonAsync(new ErrorResponseDTO(notFoundException.Message));
+        }
+
+        private static async Task HandleUnauthorizedExceptionAsync(HttpContext httpContext, UnauthorizedException unauthorizedException)
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await httpContext.Response.WriteAsJsonAsync(new ErrorResponseDTO(unauthorizedException.Message));
         }
 
         private void HandleException(HttpContext httpContext, Exception exception)

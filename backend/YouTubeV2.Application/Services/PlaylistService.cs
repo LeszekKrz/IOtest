@@ -211,12 +211,12 @@ namespace YouTubeV2.Application.Services
             var roles = await _userManager.GetRolesAsync(creator);
 
             var result = new UserDto(
-                playlist.Creator.Id,
+                new Guid(playlist.Creator.Id),
                 playlist.Creator.Email,
                 playlist.Creator.UserName,
                 playlist.Creator.Name,
                 playlist.Creator.Surname,
-                0.0,
+                decimal.Zero,
                 roles[0],
                 _blobImageService.GetProfilePicture(playlist.Creator.Id).ToString(),
                 playlist.Creator.Subscriptions.Count);

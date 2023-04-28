@@ -13,6 +13,7 @@ namespace YouTubeV2.Application.EntityConfiguration
             builder.Property(x => x.Surname).HasMaxLength(UserConstants.MaxUserSurnameLength);
             builder.Property(x => x.Email).HasMaxLength(UserConstants.MaxUserEmailLength);
             builder.Property(x => x.UserName).HasMaxLength(UserConstants.MaxUserNicknameLength);
+            builder.Property(x => x.AccountBalance).HasColumnType("money");
         }
     }
 }

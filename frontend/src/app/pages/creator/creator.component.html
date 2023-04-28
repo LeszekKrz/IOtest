@@ -1,40 +1,35 @@
-<p-panel>  
-  <div class="userProfile">
-    <div class="avatar">
-      <img [src] = "user.avatarImage" class="avatarImage">
+<p-card
+  styleClass="p-card-style shadow-7">
+  <div class="flex flex-wrap justify-content-start mx-2 mt-2">
+    <img [src] = "user.avatarImage" class="avatar-image mr-3">
+    <div class="flex flex-column">
+      <h1>{{ user.nickname }}</h1>
+      <label class="mb-1">{{ user.name }} {{ user.surname }}</label>
+      <label class="mb-1">{{ user.email }}</label>
+      <label>{{ user.subscriptionsCount }} subscribers, {{ videos.length }} videos</label>
+      <p-button label="Subscribe" class="mt-3"></p-button>
     </div>
-    <div class="userInfo">
-      <div class="p-col">
-        <h2>{{ user.nickname }}</h2>
-      </div>
-      <div class="p-col">
-        <label>{{ user.name }} {{ user.surname }}</label> 
-      </div>
-      <div class="p-col">
-        <label>{{ user.email }}</label> 
-      </div>
-      <div class="p-col">
-        <label>{{ user.subscriptionsCount }} subscribers, {{ videos.length }} videos</label> 
-      </div>
-    </div>
-    <div class="flex align-items-center justify-content-center font-bold text-white border-round m-2">
-      <div class="p-col">
-        <p-button label="Subscribe"></p-button>
-      </div>
-    </div>   
   </div>
-  <ul *ngIf="videos">
-    <div class="grid">
-      <div class="videoCol" *ngFor="let video of videos">
-        <div class="image-container">
-          <img [src] = "video.thumbnail" class="video" (click)="goToVideo(video.id)">
-          <span class="image-label">{{ video.duration }}</span>
+
+  <div class="mt-4">
+    <div *ngIf="videos !== null && videos.length !== 0; else noVideos">
+      <div class="grid">
+        <div class="m-2 video" *ngFor="let video of videos" (click)="goToVideo(video.id)">
+          <div class="thumbnail-container">
+            <img [src] = "video.thumbnail" class="thumbnail">
+            <span class="video-length">{{ video.duration }}</span>
+          </div>
+          <strong class="video-title">{{ video.title }}</strong>
+          <div>
+            {{ video.viewCount }} views, {{ getTimeAgo(video) }} ago
+          </div>
         </div>
-        <h3 class="noPadding">{{ video.title }}</h3>
-        <p class="noPadding" (click)="goToUserProfile(video.authorId)">{{ video.authorNickname }}</p>
-        <p class="noPadding">{{ video.viewCount }} views</p>
       </div>
     </div>
-  </ul>
-</p-panel>
-
+    <ng-template #noVideos>
+      <div style="text-align: center;">
+        This user does not have videos
+      </div>
+    </ng-template>
+  </div>
+</p-card>

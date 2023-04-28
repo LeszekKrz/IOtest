@@ -22,14 +22,14 @@ namespace YouTubeV2.Application.Services
         }
 
         public async Task<UserSubscriptionListDto> GetSubscriptionsAsync(string id, CancellationToken cancellationToken = default) =>
-            new UserSubscriptionListDto (await _context
-                .Subscriptions
-                .Include(subscribtion => subscribtion.Subscribee)
-                .Where(s => s.SubscriberId == id)
-                .Select(s => new SubscriptionDto(s.SubscribeeId, _blobImageService.GetProfilePicture(s.Subscribee.Id), s.Subscribee.UserName!))
-                .ToArrayAsync(cancellationToken));
+             new UserSubscriptionListDto(await _context
+                 .Subscriptions
+                 .Include(subscribtion => subscribtion.Subscribee)
+                 .Where(s => s.SubscriberId == id)
+                 .Select(s => new SubscriptionDto(s.SubscribeeId, _blobImageService.GetProfilePicture(s.Subscribee.Id), s.Subscribee.UserName!))
+                 .ToArrayAsync(cancellationToken));
 
-        public async Task<int> GetSubscriptionCount(string id, CancellationToken cancellationToken = default) =>
+        public async Task<int> GetSubscriptionCountAsync(string id, CancellationToken cancellationToken = default) =>
             await _context.Subscriptions.CountAsync(s => s.SubscribeeId == id, cancellationToken);
 
         public async Task AddSubscriptionAsync(string subscribeeId, string subscriberId, CancellationToken cancellationToken = default)
@@ -59,6 +59,31 @@ namespace YouTubeV2.Application.Services
                 ?? throw new NotFoundException($"Subscription with subscriber id {subscriberId} and subscribee id {subscribeeId} not found");
 
             _context.Subscriptions.Remove(subscription);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteAllSubscriptionsRelatedToUserAsync(User user, CancellationToken cancellationToken = default)
+        {
+            var subscriptions = await _context.Subscriptions.Where(
+                subscription => subscription.Subscriber == user || subscription.Subscribee == user).ToListAsync(cancellationToken);
+
+            if (subscriptions.Count == 0)
+                return;
+
+            _context.RemoveRange(subscriptions);
+                
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteAllSubscriptionsWhereUserIsSubscribeeAsync(User user, CancellationToken cancellationToken = default)
+        {
+            var subscriptions = await _context.Subscriptions.Where(subscription => subscription.Subscribee == user).ToListAsync(cancellationToken);
+
+            if (subscriptions.Count == 0)
+                return;
+
+            _context.RemoveRange(subscriptions);
+
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

@@ -12,6 +12,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   isUserAuthenticated!: boolean;
   isUserBankEmployee!: boolean;
   subscriptions: Subscription[] = [];
+  query: string = '';
 
   constructor(private router: Router, private userService: UserService) {
     this.isUserAuthenticated = this.userService.isUserAuthenticated();
@@ -28,8 +29,16 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.router.navigate(['']);
   }
 
+  searchButtonOnClick(): void {
+    this.router.navigate(['search'], {state: {query: this.query}});
+  }
+
   playlistsButtonOnClick(): void {
     this.router.navigate(['playlists']);
+  }
+
+  subscriptionsVideosButtonOnClick(): void {
+    this.router.navigate(['subscriptions-videos']);
   }
 
   registerButtonOnClick(): void {
@@ -40,9 +49,17 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.router.navigate(['login']);
   }
 
+  accountButtonOnClick(): void {
+    this.router.navigate(['user']);
+  }
+
   logoutButtonOnClick(): void {
     this.userService.logout();
     this.router.navigate(['login']);
+  }
+
+  isQueryEmpty() {
+    return (this.query.length === 0);
   }
 
   ngOnDestroy(): void {

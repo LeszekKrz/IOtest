@@ -1,7 +1,10 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Linq.Expressions;
 using YouTubeV2.Api.Enums;
+using YouTubeV2.Application.DTO.VideoDTOS;
 using YouTubeV2.Application.DTO.VideoMetadataDTOS;
 using YouTubeV2.Application.Enums;
 using YouTubeV2.Application.Exceptions;
@@ -73,16 +76,16 @@ namespace YouTubeV2.Application.Services.VideoServices
             await _context.SaveChangesAsync(cancellationToken);
 
             return new VideoMetadataDto(
-                video.Id.ToString(),
+                video.Id,
                 video.Title,
                 video.Description,
-                thumbnail.ToString(),
+                thumbnail,
                 video.Author.Id,
                 video.Author.UserName!,
                 video.ViewCount,
                 video.Tags.Select(tag => tag.Value).ToList(),
-                video.Visibility.ToString(),
-                video.ProcessingProgress.ToString(),
+                video.Visibility,
+                video.ProcessingProgress,
                 video.UploadDate.DateTime,
                 video.EditDate.DateTime,
                 video.Duration);
@@ -106,5 +109,64 @@ namespace YouTubeV2.Application.Services.VideoServices
             vid.Duration = formattedTime;
             await _context.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task<VideoListDto> GetAllUserVideos(string userId, CancellationToken cancellationToken = default)
+        {
+            List<VideoMetadataDto> videos = await _context
+                .Videos
+                .Include(video => video.Author)
+                .Include(video => video.Tags)
+                .Where(video => video.Author.Id == userId)
+                .OrderByDescending(video => video.UploadDate)
+                .ToVideoMetadataDto(_blobImageService)
+                .ToListAsync(cancellationToken);
+
+            return new VideoListDto(videos);
+        }
+
+        public async Task<VideoListDto> GetAllAvailableUserVideos(string userId, CancellationToken cancellationToken = default)
+        {
+            List<VideoMetadataDto> videos = await _context
+                .Videos
+                .Include(video => video.Author)
+                .Include(video => video.Tags)
+                .Where(video => video.Author.Id == userId
+                    && video.Visibility == Visibility.Public
+                    && video.ProcessingProgress == ProcessingProgress.Ready)
+                .OrderByDescending(video => video.UploadDate)
+                .ToVideoMetadataDto(_blobImageService)
+                .ToListAsync(cancellationToken);
+
+            return new VideoListDto(videos);
+        }
+
+        public async Task<VideoListDto> GetVideosFromSubscriptionsAsync(string userId, CancellationToken cancellationToken = default)
+        {
+            List<VideoMetadataDto> videos = await _context
+                .Subscriptions
+                .Include(subscription => subscription.Subscribee)
+                .ThenInclude(subscribee => subscribee.Videos)
+                .ThenInclude(video => video.Tags)
+                .Where(subscription => subscription.SubscriberId == userId)
+                .SelectMany(subscription => subscription.Subscribee.Videos)
+                .Where(video => video.Visibility == Visibility.Public && video.ProcessingProgress == ProcessingProgress.Ready)
+                .OrderByDescending(video => video.UploadDate)
+                .ToVideoMetadataDto(_blobImageService)
+                .ToListAsync(cancellationToken);
+
+            return new VideoListDto(videos);
+        }
+
+        public async Task DeleteVideoAsync(Video video, CancellationToken cancellationToken = default)
+        {
+            _context.Videos.Remove(video);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            await _blobImageService.DeleteThumbnailAsync(video.Id.ToString(), cancellationToken);
+        }
+
+        public async Task<int> GetVideoCountAsync(User user, CancellationToken cancellationToken = default) => 
+            await _context.Videos.CountAsync(video => video.Author == user, cancellationToken);
+
     }
 }
