@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Newtonsoft.Json;
 using System.Net;
 using System.Text;
@@ -14,7 +13,6 @@ using YouTubeV2.Application;
 using YouTubeV2.Application.DTO.ReactionDTOS;
 using YouTubeV2.Application.Enums;
 using YouTubeV2.Application.Model;
-using YouTubeV2.Application.Providers;
 
 namespace YouTubeV2.Api.Tests.ReactionControllerTests
 {

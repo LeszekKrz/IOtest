@@ -39,5 +39,20 @@ namespace YouTubeV2.Api.Controllers
             await _reactionService.AddOrUpdateReactionAsync(addReactionDto.value, video, user, cancellationToken);
             return Ok();
         }
+
+        [HttpGet]
+        public async Task<ActionResult<ReactionsDto>> GetReactionsAsync([FromQuery][Required] Guid id, CancellationToken cancellationToken)
+        {
+            string? userId = GetUserId();
+            if (userId is null) return Forbid();
+
+            Video? video = await _videoService.GetVideoByIdAsync(id, cancellationToken);
+            if (video == null) return NotFound($"Video with id {id} not found");
+
+            User? user = await _userService.GetByIdAsync(userId);
+            if (user == null) return NotFound($"User with id {id} not found");
+
+            return await _reactionService.GetReactionsAsync(video, user, cancellationToken);
+        }
     }
 }

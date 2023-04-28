@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using YouTubeV2.Application.DTO.ReactionDTOS;
 using YouTubeV2.Application.Enums;
 using YouTubeV2.Application.Model;
 
@@ -35,6 +36,25 @@ namespace YouTubeV2.Application.Services
             if (reactionType == ReactionType.None) _context.Reactions.Remove(reaction);
             else reaction.ReactionType = reactionType;
             await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<ReactionsDto> GetReactionsAsync(Video video, User user, CancellationToken cancellationToken = default)
+        {
+            var result = await _context.Reactions
+                .Where(reaction => reaction.Video.Id == video.Id)
+                .GroupBy(reaction => reaction.ReactionType)
+                .Select(reactionGrouped => new
+                {
+                    ReactionType = reactionGrouped.Key,
+                    Count = reactionGrouped.Count(),
+                    UserReaction = reactionGrouped.Any(r => r.User.Id == user.Id)
+                })
+                .ToListAsync();
+
+            return new ReactionsDto(
+                result.FirstOrDefault(r => r.ReactionType == ReactionType.Positive)?.Count ?? 0,
+                result.FirstOrDefault(r => r.ReactionType == ReactionType.Negative)?.Count ?? 0,
+                result.FirstOrDefault(r => r.UserReaction)?.ReactionType ?? ReactionType.None);
         }
     }
 }
