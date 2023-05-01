@@ -221,14 +221,14 @@ namespace YouTubeV2.Application.Services
 
         private async Task VerifyEmailUniqueAsync(User user)
         {
-            var userFound = await _userManager.FindByEmailAsync(user.Email);
+            var userFound = await _userManager.FindByEmailAsync(user.Email!);
             if (userFound != null && userFound != user)
                 throw new BadRequestException("User with this email already exists");
         }
 
         private async Task VerifyNameUniqueAsync(User user)
         {
-            var userFound = await _userManager.FindByNameAsync(user!.UserName);
+            var userFound = await _userManager.FindByNameAsync(user.UserName!);
             if (userFound != null && userFound != user)
                 throw new BadRequestException("User with this nickname already exists");
         }
