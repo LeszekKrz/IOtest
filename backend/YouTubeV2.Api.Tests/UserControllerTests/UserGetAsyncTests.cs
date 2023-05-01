@@ -75,7 +75,7 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
             responseDto!.email.Should().Be(userSimpleHim.Email);
             responseDto!.nickname.Should().Be(userSimpleHim.UserName);
             responseDto!.accountBalance.Should().BeNull();
-            responseDto!.subscriptionsCount.Should().BeNull();
+            responseDto!.subscriptionsCount.Should().Be(0);
         }
 
         [TestMethod]

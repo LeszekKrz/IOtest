@@ -10,58 +10,16 @@
   width: 7em;
 }
 
-.avatarImage {
-    max-width: 80px;
-    max-height: 80px;
-    width: auto;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-}
-
-.video {
-    max-width: 200px;
-    max-height: 200px;
-    width: auto;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-}
-
-.userProfile {
-    display: flex;
-    align-items: flex-start;
-    padding: 5px;
-}
-
-.avatar, .userInfo, .subscription {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-right: 10px;
-  }
-
-.name {
-    font-size: 20px;
-    font-weight: bold;
+.avatar-image {
+  width: 3em;
+  height: 3em;
+  border-radius: 50%;
 }
 
 .container {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-}
-
-.row {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.column {
-    width: 30%;
-    padding: 10px;
 }
 
 .image-container {
@@ -107,7 +65,7 @@
 }
 
 .thumbnail {
-    width: 99%; /* Set thumbnail image width to 90% of the parent */
-    max-width: 100%; /* Ensure the image doesn't exceed its container */
-    height: auto; /* Maintain aspect ratio */
-  }
+  width: 99%;
+  max-width: 100%;
+  height: auto;
+}

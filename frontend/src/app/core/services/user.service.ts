@@ -38,7 +38,7 @@ export class UserService {
 
   getUser(id: string | null): Observable<UserDTO> {
     let params = new HttpParams()
-    
+
     if (id !== null)
       params = params.set('id', id);
 
@@ -46,16 +46,12 @@ export class UserService {
       params: params,
       headers: getHttpOptionsWithAuthenticationHeader().headers
     };
-    
+
     return this.httpClient.get<UserDTO>(`${this.registrationPageWebAPIUrl}/user`, httpOptions);
   }
 
   editUser(id: string, updateUserDTO: UpdateUserDTO): Observable<void>{
     let params = new HttpParams().set('id', id);
-    const httpOptions = {
-      params: params,
-      headers: getHttpOptionsWithAuthenticationHeader().headers
-    };
 
     const httpOptions = {
       params: params,

@@ -24,25 +24,35 @@
             </p-button>
           </div>
         </div>
-        <div class="userProfile">
-          <div class="avatar">
-            <img [src] = "author.avatarImage" class="avatarImage">
-          </div>
-          <div class="userInfo">
-            <div class="p-col">
+        <div class="flex flex-wrap justify-content-between">
+          <div class="flex">
+            <img [src] = "author.avatarImage" class="avatar-image mr-2">
+            <div class="flex flex-column">
               <label>{{ author.nickname }}</label>
-            </div>
-            <div class="p-col">
               <label>{{ author.subscriptionsCount }} subscribers</label>
             </div>
+            <p-button label="Subscribe" class="ml-2"></p-button>
           </div>
-          <div class="flex font-bold text-white border-round m-2">
-            <div class="p-col">
-              <p-button label="Subscribe"></p-button>
-            </div>
+          <div class="flex align-content-center">
+            <span class="p-buttonset">
+              <button
+                pButton
+                pRipple
+                [label]="reactions.positiveCount.toString()"
+                [icon]="reactions.currentUserReaction === positiveReaction ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'"
+                (click)="handlePositiveReactionOnClick()">
+              </button>
+              <button
+                pButton
+                pRipple
+                [label]="reactions.negativeCount.toString()"
+                [icon]="reactions.currentUserReaction === negativeReaction ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'"
+                (click)="handleNegativeReactionOnClick()">
+              </button>
+          </span>
           </div>
         </div>
-        <div class="videoDescription">
+        <div class="videoDescription mt-1">
           {{ videoMetadata.viewCount }} views, uploaded {{ getTimeAgo(videoMetadata.uploadDate) }} ago
           <br>
           {{ videoMetadata.description }}
