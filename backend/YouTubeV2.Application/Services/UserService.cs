@@ -186,7 +186,7 @@ namespace YouTubeV2.Application.Services
             var imageUri = _blobImageService.GetProfilePicture(user.Id);
             var roleName = await GetRoleForUserAsync(user);
             decimal? accountBallance = getAllData ? user.AccountBalance : null;
-            int? subscriptionsCount = getAllData ?
+            int? subscriptionsCount = await _userManager.IsInRoleAsync(user, Role.Creator) ?
                 await _subscriptionService.GetSubscriptionCountAsync(user.Id, cancellationToken) : null;
 
             return new UserDto(new Guid(user.Id), user.Email!, user.UserName!, user.Name!, user.Surname!, accountBallance,

@@ -38,17 +38,33 @@
 </div>
 
 <ul *ngIf="searchResults">
-    <div *ngFor="let user of searchResults.users">
-      <div class="userContainer">
+  <h2 *ngIf="searchResults.users.length != 0">Users:</h2>
+  <div *ngFor="let user of searchResults.users">
+    <div class="userContainer" (click)="goToUserProfile(user.id)">
       <div class="image-container">
         <img [src] = "user.avatarImage" class="avatarImage">
       </div>
       <div>
-      <h3 class="noPadding" (click)="goToUserProfile(user.id)">{{ user.nickname }}</h3>
-      <p class="noPadding">{{ user.name }} {{ user.surname }}</p>
-      <p class="noPadding">{{ user.subscriptionsCount }} subscribers</p>
-    </div>
+        <h3 class="noPadding">{{ user.nickname }}</h3>
+        <p class="noPadding">{{ user.name }} {{ user.surname }}</p>
+        <p class="noPadding">{{ user.subscriptionsCount }} subscribers</p>
+      </div>
     </div>
   </div>
+  <h2 *ngIf="searchResults.videos.length != 0">Videos:</h2>
+  <div *ngFor="let video of searchResults.videos">
+    <div class="m-2 video" *ngFor="let video of searchResults.videos" (click)="goToVideo(video.id)">
+      <div class="thumbnail-container">
+        <img [src] = "video.thumbnail" class="thumbnail">
+        <span class="video-length">{{ video.duration }}</span>
+      </div>
+      <strong class="video-title">{{ video.title }}</strong>
+      <div>
+        {{ video.viewCount }} views, {{ getTimeAgo(video) }} ago
+      </div>
+    </div>
+  </div>
+
 </ul>
+
 </p-panel>

@@ -57,11 +57,6 @@ export class UserService {
       headers: getHttpOptionsWithAuthenticationHeader().headers
     };
 
-    const httpOptions = {
-      params: params,
-      headers: getHttpOptionsWithAuthenticationHeader().headers
-    };
-
     return this.httpClient.put<void>(`${this.registrationPageWebAPIUrl}/user`, updateUserDTO, httpOptions);
   }
 
