@@ -53,6 +53,11 @@ export class UserService {
   editUser(id: string, updateUserDTO: UpdateUserDTO): Observable<void>{
     let params = new HttpParams().set('id', id);
 
+    const httpOptions = {
+      params: params,
+      headers: getHttpOptionsWithAuthenticationHeader().headers
+    };
+
     return this.httpClient.put<void>(`${this.registrationPageWebAPIUrl}/user`, updateUserDTO, httpOptions);
   }
 
