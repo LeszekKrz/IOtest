@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getToken } from 'src/app/core/functions/get-token';
 import { UserDTO } from 'src/app/core/models/user-dto';
@@ -10,19 +10,26 @@ import { switchMap, tap } from 'rxjs/operators';
 import { Subscription, forkJoin } from 'rxjs';
 import { MenuItem } from 'primeng/api';
 import { Location } from '@angular/common';
+import { ReactionsDTO } from './models/reactions-dto';
+import { ReactionsService } from './services/reactions.service';
+import { AddReactionDTO } from './models/add-reaction-dto';
 
 @Component({
   selector: 'app-video',
   templateUrl: './video.component.html',
   styleUrls: ['./video.component.scss']
 })
-export class VideoComponent implements OnDestroy {
+export class VideoComponent implements OnInit, OnDestroy {
   videoId: string;
   videoUrl: string;
   videoMetadata!: VideoMetadataDto;
   author!: UserDTO;
   videos: VideoMetadataDto[] = [];
+  reactions!: ReactionsDTO;
   subscriptions: Subscription[] = [];
+  positiveReaction = 'Positive';
+  negativeReaction = 'Negative';
+  noneReaction = 'None';
   videoMenuModel: MenuItem[] = [
     {
       label: 'Delete',
@@ -41,12 +48,15 @@ export class VideoComponent implements OnDestroy {
     private userService: UserService,
     private router: Router,
     private videoService: VideoService,
-    private location: Location
+    private location: Location,
+    private reactionsService: ReactionsService
   ) {
     this.videoId = this.route.snapshot.params['videoId'];
     this.videoUrl = `${environment.webApiUrl}/video/${this.videoId}?access_token=${getToken()}`;
+  }
 
-    this.subscriptions.push(videoService
+  ngOnInit(): void {
+    this.subscriptions.push(this.videoService
       .getVideoMetadata(this.videoId)
       .pipe(
         switchMap(videoMetadata => {
@@ -62,12 +72,18 @@ export class VideoComponent implements OnDestroy {
         this.author = user;
         this.videos = userVideos.videos;
       }));
+
+    this.getReactions();
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscription => {
       subscription.unsubscribe();
     });
+  }
+
+  private getReactions(): void {
+    this.subscriptions.push(this.reactionsService.getReactions(this.videoId).subscribe(reactions => this.reactions = reactions));
   }
 
   private deleteVideo(): void {
@@ -89,6 +105,32 @@ export class VideoComponent implements OnDestroy {
 
   public goToVideo(id: string): void {
     this.router.navigate(['videos/' + id]);
+  }
+
+  handlePositiveReactionOnClick(): void {
+    const addReaction: AddReactionDTO = this.reactions.currentUserReaction === this.positiveReaction
+      ? { value: this.noneReaction }
+      : { value: this.positiveReaction };
+
+    this.addOrUpdateReaction(addReaction);
+  }
+
+  handleNegativeReactionOnClick(): void {
+    const addReaction: AddReactionDTO = this.reactions.currentUserReaction === this.negativeReaction
+      ? { value: this.noneReaction }
+      : { value: this.negativeReaction };
+
+    this.addOrUpdateReaction(addReaction);
+  }
+
+  private addOrUpdateReaction(addReaction: AddReactionDTO): void {
+    const getReactions$ = this.reactionsService.addOrUpdateReaction(this.videoId, addReaction).pipe(
+      tap(() => {
+        this.getReactions();
+      }),
+    );
+
+    this.subscriptions.push(getReactions$.subscribe());
   }
 
   public getTimeAgo(value: Date): string {

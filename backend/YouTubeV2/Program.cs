@@ -79,6 +79,7 @@ builder.Services.AddSingleton<IBlobImageService, BlobImageService>();
 builder.Services.AddSingleton<IBlobVideoService, BlobVideoService>();
 builder.Services.AddTransient<IVideoService, VideoService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
+builder.Services.AddTransient<IReactionService, ReactionService>();
 builder.Services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 builder.Services.AddTransient<ISearchService, SearchService>();
 
