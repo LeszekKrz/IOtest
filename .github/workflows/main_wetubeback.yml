@@ -25,6 +25,12 @@ jobs:
         with:
           dotnet-version: '7.x'
           include-prerelease: true
+      - name: Change variables
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: '${{ github.workspace }}/backend/YouTubeV2/appsettings.json'
+        env:
+          ConnectionStrings.Db: ${{ secrets.DATABASE_CONNECTION_STRING }}
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
