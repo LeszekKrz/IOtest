@@ -42,4 +42,8 @@ export class PlaylistService {
 
     return this.httpClient.get<PlaylistVideosDto>(`${this.videoPageWebAPIUrl}/playlist/video`, httpOptions);
   }
+
+  getRecommended(): Observable<PlaylistVideosDto>{
+    return this.httpClient.get<PlaylistVideosDto>(`${this.videoPageWebAPIUrl}/playlist/recommended`, getHttpOptionsWithAuthenticationHeader());
+  }
 }

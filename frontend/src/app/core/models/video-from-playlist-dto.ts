@@ -4,6 +4,6 @@ export interface VideoFromPlaylistDto {
     duration: string;
     thumbnail: string;
     description: string;
-    uploadDate: string;
+    uploadDate: Date;
     viewCount: number;
   }

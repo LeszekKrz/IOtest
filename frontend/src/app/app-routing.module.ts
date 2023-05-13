@@ -11,19 +11,20 @@ import { HomeComponent } from './pages/home/home.component';
 import { PlaylistComponent } from './pages/playlist/playlist.component';
 import { UserPlaylistsComponent } from './pages/user-playlists/user-playlists.component';
 import { SubscriptionsVideosComponent } from './pages/subscriptions-videos/subscriptions-videos.component'
+import { AuthGuard } from './core/guard/auth.guard';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'register', component: RegistrationComponent },
-  { path: 'creator/:id', component: CreatorComponent },
-  { path: 'videos/:videoId', component: VideoComponent },
+  { path: 'creator/:id', component: CreatorComponent, canActivate: [AuthGuard]  },
+  { path: 'videos/:videoId', component: VideoComponent, canActivate: [AuthGuard]  },
   { path: 'login', component: LoginComponent },
-  { path: 'search', component: SearchComponent },
-  { path: 'user', component: UserComponent } ,
-  { path: 'add-video', component: AddVideoComponent },
-  { path: 'playlist/:id', component: PlaylistComponent },
-  { path: 'playlists', component: UserPlaylistsComponent },
-  { path: 'subscriptions-videos', component: SubscriptionsVideosComponent },
+  { path: 'search', component: SearchComponent, canActivate: [AuthGuard]  },
+  { path: 'user', component: UserComponent, canActivate: [AuthGuard]  } ,
+  { path: 'add-video', component: AddVideoComponent, canActivate: [AuthGuard]  },
+  { path: 'playlist/:id', component: PlaylistComponent, canActivate: [AuthGuard]  },
+  { path: 'playlists', component: UserPlaylistsComponent, canActivate: [AuthGuard]  },
+  { path: 'subscriptions-videos', component: SubscriptionsVideosComponent, canActivate: [AuthGuard]  },
 ];
 
 @NgModule({

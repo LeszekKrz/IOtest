@@ -8,6 +8,7 @@ namespace YouTubeV2.Application.Services.BlobServices
 {
     public class BlobImageService : IBlobImageService
     {
+        private const string _defaultImage = "default.png";
         private readonly BlobServiceClient _blobServiceClient;
         private readonly BlobStorageImagesConfig _blobStorageConfig;
 
@@ -36,6 +37,8 @@ namespace YouTubeV2.Application.Services.BlobServices
         private Uri GetImageUrl(string fileName, string blobContainerName)
         {
             BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(blobContainerName);
+            if (blobContainerClient.GetBlobClient(fileName.ToLower()).Exists().Value is false)
+                return blobContainerClient.GetBlobClient(_defaultImage).Uri;
 
             return blobContainerClient.GetBlobClient(fileName.ToLower()).Uri;
         }
