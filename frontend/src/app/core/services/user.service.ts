@@ -7,6 +7,7 @@ import { UserDTO } from "../models/user-dto";
 import { UserForLoginDTO } from "src/app/authentication/models/user-login-dto";
 import { UpdateUserDTO } from "../models/update-user-dto";
 import { getHttpOptionsWithAuthenticationHeader } from "../functions/get-http-options-with-authorization-header";
+import { AuthenticationResponseDTO } from "src/app/authentication/models/authentication-response-dto";
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,7 @@ export class UserService {
 
   logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     this.sendAuthenticationStateChangedNotification(false);
   }
 
@@ -61,7 +63,7 @@ export class UserService {
     return this.httpClient.put<void>(`${this.registrationPageWebAPIUrl}/user`, updateUserDTO, httpOptions);
   }
 
-  loginUser(userForLogin: UserForLoginDTO): Observable<string> {
-    return this.httpClient.post<string>(`${this.registrationPageWebAPIUrl}/login`, userForLogin);
+  loginUser(userForLogin: UserForLoginDTO): Observable<AuthenticationResponseDTO> {
+    return this.httpClient.post<AuthenticationResponseDTO>(`${this.registrationPageWebAPIUrl}/login`, userForLogin);
   }
 }

@@ -10,7 +10,7 @@
       <p-card
         styleClass="p-card-style shadow-7">
         <div class="flex justify-content-between">
-          <h2 class="mt-0">{{ videoMetadata.title }}</h2>
+          <h2 id="title" class="mt-0">{{ videoMetadata.title }}</h2>
           <div>
             <p-menu
               #videoMenu
@@ -28,7 +28,7 @@
           <div class="flex">
             <img [src] = "author.avatarImage" class="avatar-image mr-2">
             <div class="flex flex-column">
-              <label>{{ author.nickname }}</label>
+              <label id="author-nickname">{{ author.nickname }}</label>
               <label>{{ author.subscriptionsCount }} subscribers</label>
             </div>
             <p-button label="Subscribe" class="ml-2"></p-button>
