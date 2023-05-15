@@ -4,6 +4,8 @@ import { SearchService } from 'src/app/core/services/search.service';
 import { SortingTypes } from 'src/app/core/models/enums/sorting-types';
 import { SortingDirections } from 'src/app/core/models/enums/sorting-directions';
 import { Router } from '@angular/router';
+import { VideoMetadataDto } from 'src/app/core/models/video-metadata-dto';
+import { getTimeAgo } from 'src/app/core/functions/get-time-ago';
 import { finalize, Observable, of, Subscription, switchMap } from 'rxjs';
 
 interface SortTypeOption {
@@ -83,7 +85,7 @@ export class SearchComponent {
     }
 
   searchResultsNone() {
-    return this.searchResults !== undefined && this.searchResults.users.length === 0; 
+    return this.searchResults !== undefined && this.searchResults.users.length === 0 && this.searchResults.videos.length === 0; 
   }
 
   doWithLoading(observable$: Observable<any>): Observable<any> {
@@ -95,5 +97,13 @@ export class SearchComponent {
 
   goToUserProfile(id: string): void {
     this.router.navigate(['creator/' + id]);
+  }
+
+  goToVideo(id: string): void {
+    this.router.navigate(['videos/' +id]);
+  }
+
+  public getTimeAgo(video: VideoMetadataDto): string {
+    return getTimeAgo(video.uploadDate);
   }
 }

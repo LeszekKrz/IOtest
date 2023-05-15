@@ -177,7 +177,8 @@ namespace YouTubeV2.Application.Services
             var imageUri = _blobImageService.GetProfilePicture(user.Id);
             var roleName = await GetRoleForUserAsync(user);
             decimal? accountBallance = getAllData ? user.AccountBalance : null;
-            int? subscriptionsCount = await _subscriptionService.GetSubscriptionCountAsync(user.Id, cancellationToken);
+            int? subscriptionsCount = await _userManager.IsInRoleAsync(user, Role.Creator) ?
+                await _subscriptionService.GetSubscriptionCountAsync(user.Id, cancellationToken) : null;
 
             return new UserDto(new Guid(user.Id), user.Email!, user.UserName!, user.Name!, user.Surname!, accountBallance,
                 roleName, imageUri.ToString(), subscriptionsCount);
@@ -211,14 +212,14 @@ namespace YouTubeV2.Application.Services
 
         private async Task VerifyEmailUniqueAsync(User user)
         {
-            var userFound = await _userManager.FindByEmailAsync(user.Email);
+            var userFound = await _userManager.FindByEmailAsync(user.Email!);
             if (userFound != null && userFound != user)
                 throw new BadRequestException("User with this email already exists");
         }
 
         private async Task VerifyNameUniqueAsync(User user)
         {
-            var userFound = await _userManager.FindByNameAsync(user!.UserName);
+            var userFound = await _userManager.FindByNameAsync(user.UserName!);
             if (userFound != null && userFound != user)
                 throw new BadRequestException("User with this nickname already exists");
         }

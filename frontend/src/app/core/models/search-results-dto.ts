@@ -1,5 +1,7 @@
 import {UserDTO} from './user-dto'
+import { VideoMetadataDto } from './video-metadata-dto'
 
 export interface SearchResultsDTO {
-    users: UserDTO [],    
+    videos: VideoMetadataDto [],
+    users: UserDTO []
 }
