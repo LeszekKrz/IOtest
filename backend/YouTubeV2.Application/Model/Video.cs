@@ -13,14 +13,14 @@ namespace YouTubeV2.Application.Model
 
         [MinLength(1)]
         [MaxLength(VideoConstants.titleMaxLength)]
-        public string Title { get; init; } = null!;
+        public string Title { get; set; } = null!;
 
         [MinLength(1)]
         [MaxLength(VideoConstants.descriptionMaxLength)]
-        public string Description { get; init; } = null!;
+        public string Description { get; set; } = null!;
 
         [Required]
-        public Visibility Visibility { get; init; }
+        public Visibility Visibility { get; set; }
 
         [Required]
         [Range(0, int.MaxValue)]
@@ -41,7 +41,7 @@ namespace YouTubeV2.Application.Model
 
         public virtual User Author { get; init; }
 
-        public virtual IReadOnlyCollection<Tag> Tags { get; init; }
+        public virtual IReadOnlyCollection<Tag> Tags { get; set; }
 
         public virtual IReadOnlyCollection<Comment> Comments { get; init; }
 
@@ -51,7 +51,7 @@ namespace YouTubeV2.Application.Model
 
         public Video() { }
 
-        public static Video FromDTO(VideoMetadataPostDto videoMetadata, User author, DateTimeOffset now) =>
+        public static Video FromDTO(VideoMetadataAddOrUpdateDto videoMetadata, User author, DateTimeOffset now) =>
             new (videoMetadata.title, videoMetadata.description, videoMetadata.visibility, videoMetadata.tags, author, now);
 
         public Video(string title, string description, Visibility visibility, IReadOnlyCollection<string> tags, User author, DateTimeOffset now)

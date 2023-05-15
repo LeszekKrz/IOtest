@@ -11,7 +11,7 @@ namespace YouTubeV2.Application.Services.VideoServices
                 video.Id,
                 video.Title,
                 video.Description,
-                blobImageService.GetVideoThumbnail(video.Id.ToString()),
+                blobImageService.GetVideoThumbnailUrl(video.Id.ToString()),
                 video.Author.Id,
                 video.Author.UserName!,
                 video.ViewCount,

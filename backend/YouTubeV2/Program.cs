@@ -71,6 +71,8 @@ string connectionString = builder.Configuration.GetConnectionString("Db")!;
 builder.Services.AddDbContext<YTContext>(
     options => options.UseSqlServer(connectionString));
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddSingleton(x => new BlobServiceClient(Environment.GetEnvironmentVariable("AZURE_BLOB_STORAGE_CONNECTION_STRING")));
 builder.Services.AddTransient<ISubscriptionService, SubscriptionService>();

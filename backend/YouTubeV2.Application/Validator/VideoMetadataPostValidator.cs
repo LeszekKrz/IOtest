@@ -5,7 +5,7 @@ using YouTubeV2.Application.Utils;
 
 namespace YouTubeV2.Application.Validator
 {
-    public class VideoMetadataPostValidator : AbstractValidator<VideoMetadataPostDto>
+    public class VideoMetadataPostValidator : AbstractValidator<VideoMetadataAddOrUpdateDto>
     {
         public VideoMetadataPostValidator()
         {

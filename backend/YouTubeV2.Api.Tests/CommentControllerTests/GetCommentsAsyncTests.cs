@@ -139,7 +139,7 @@ namespace YouTubeV2.Api.Tests.CommentControllerTests
         [TestInitialize]
         public async Task Initialize()
         {
-            _blobImageServiceMock.Setup(x => x.GetProfilePicture(It.IsAny<string>())).Returns<string>(fileName => new Uri($"{_profilePicuteDomain}{fileName}"));
+            _blobImageServiceMock.Setup(x => x.GetProfilePictureUrl(It.IsAny<string>())).Returns<string>(fileName => new Uri($"{_profilePicuteDomain}{fileName}"));
             _webApplicationFactory = Setup.GetWebApplicationFactory(_blobImageServiceMock.Object);
             var config = _webApplicationFactory.Services.GetService<IConfiguration>();
             var connection = config!.GetConnectionString("Db");

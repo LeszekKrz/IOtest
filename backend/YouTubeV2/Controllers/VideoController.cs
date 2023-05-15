@@ -54,7 +54,7 @@ namespace YouTubeV2.Api.Controllers
 
         [HttpPost("video-metadata")]
         [Roles(Role.Creator)]
-        public async Task<ActionResult<VideoMetadataPostResponseDto>> AddVideoMetadataAsync([FromBody] VideoMetadataPostDto videoMetadata, CancellationToken cancellationToken)
+        public async Task<ActionResult<VideoMetadataPostResponseDto>> AddVideoMetadataAsync([FromBody] VideoMetadataAddOrUpdateDto videoMetadata, CancellationToken cancellationToken)
         {
             string? userId = GetUserId();
             if (userId is null) return Forbid();
@@ -64,6 +64,23 @@ namespace YouTubeV2.Api.Controllers
 
             Guid id = await _videoService.AddVideoMetadataAsync(videoMetadata, user, cancellationToken);
             return Ok(new VideoMetadataPostResponseDto(id.ToString()));
+        }
+
+        [HttpPut("video-metadata")]
+        [Roles(Role.Creator)]
+        public async Task<ActionResult> UpdateVideoMetadataAsync([FromQuery][Required] Guid id, [FromBody] VideoMetadataAddOrUpdateDto videoMetadata, CancellationToken cancellationToken)
+        {
+            string? userId = GetUserId();
+            if (userId is null) return Forbid();
+
+            Video? video = await _videoService.GetVideoByIdAsync(id, cancellationToken, video => video.Author, video => video.Tags);
+            if (video is null) return NotFound($"Video with id {id} not found");
+
+            if (userId != video.Author.Id) return Forbid("You are not the owner of the video");
+
+            await _videoService.UpdateVideoMetadataAsync(videoMetadata, video, cancellationToken);
+
+            return Ok();
         }
 
         [HttpPost("video/{id:guid}")]

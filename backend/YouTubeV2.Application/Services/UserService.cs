@@ -174,7 +174,7 @@ namespace YouTubeV2.Application.Services
 
         public async Task<UserDto> GetDTOForUser(User user, bool getAllData = false, CancellationToken cancellationToken = default)
         {
-            var imageUri = _blobImageService.GetProfilePicture(user.Id);
+            var imageUri = _blobImageService.GetProfilePictureUrl(user.Id);
             var roleName = await GetRoleForUserAsync(user);
             decimal? accountBallance = getAllData ? user.AccountBalance : null;
             int? subscriptionsCount = await _userManager.IsInRoleAsync(user, Role.Creator) ?

@@ -26,7 +26,7 @@ namespace YouTubeV2.Application.Services
                  .Subscriptions
                  .Include(subscribtion => subscribtion.Subscribee)
                  .Where(s => s.SubscriberId == id)
-                 .Select(s => new SubscriptionDto(s.SubscribeeId, _blobImageService.GetProfilePicture(s.Subscribee.Id), s.Subscribee.UserName!))
+                 .Select(s => new SubscriptionDto(s.SubscribeeId, _blobImageService.GetProfilePictureUrl(s.Subscribee.Id), s.Subscribee.UserName!))
                  .ToArrayAsync(cancellationToken));
 
         public async Task<int> GetSubscriptionCountAsync(string id, CancellationToken cancellationToken = default) =>

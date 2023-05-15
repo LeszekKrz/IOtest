@@ -40,7 +40,7 @@ namespace YouTubeV2.Application.Services
                     comment.Id,
                     comment.Author.Id,
                     comment.Content,
-                    _blobImageService.GetProfilePicture(comment.Author.Id),
+                    _blobImageService.GetProfilePictureUrl(comment.Author.Id),
                     comment.Author.UserName!,
                     comment.Responses.Any()))
                 .ToListAsync(cancellationToken);
@@ -81,7 +81,7 @@ namespace YouTubeV2.Application.Services
                     response.Id,
                     response.Author.Id,
                     response.Content,
-                    _blobImageService.GetProfilePicture(response.Author.Id),
+                    _blobImageService.GetProfilePictureUrl(response.Author.Id),
                     response.Author.UserName!,
                     false))
                 .ToArrayAsync(cancellationToken);

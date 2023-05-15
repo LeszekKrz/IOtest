@@ -81,7 +81,7 @@ namespace YouTubeV2.Application.Services
                         v.Id.ToString(),
                         v.Title,
                         v.Duration,
-                        _blobImageService.GetVideoThumbnail(v.Id.ToString()).ToString(),
+                        _blobImageService.GetVideoThumbnailUrl(v.Id.ToString()).ToString(),
                         v.Description,
                         v.UploadDate.ToString(),
                         v.ViewCount)
@@ -107,7 +107,7 @@ namespace YouTubeV2.Application.Services
                         v.Id.ToString(),
                         v.Title,
                         v.Duration,
-                        _blobImageService.GetVideoThumbnail(v.Id.ToString()).ToString(),
+                        _blobImageService.GetVideoThumbnailUrl(v.Id.ToString()).ToString(),
                         v.Description,
                         v.UploadDate.ToString(),
                         v.ViewCount)
@@ -218,7 +218,7 @@ namespace YouTubeV2.Application.Services
                 playlist.Creator.Surname,
                 decimal.Zero,
                 roles[0],
-                _blobImageService.GetProfilePicture(playlist.Creator.Id).ToString(),
+                _blobImageService.GetProfilePictureUrl(playlist.Creator.Id).ToString(),
                 playlist.Creator.Subscriptions.Count);
             return result;
         }

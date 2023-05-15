@@ -53,8 +53,8 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
         public async Task AddVideoMetadataAsync_ValidInput_ReturnsOk()
         {
             // ARRANGE
-            VideoMetadataPostDto videoMetadata = new(
-            "Test Video Title",
+            VideoMetadataAddOrUpdateDto videoMetadata = new(
+                "Test Video Title",
                 "Test Video Description",
                 "data:image/png;base64,iVBORw0KGg==",
                 new[] { "test tag1", "test tag2" },
@@ -106,7 +106,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
         public async Task AddVideoMetadataAsyncBeingSimpleUser_ReturnsForbidden()
         {
             // ARRANGE
-            VideoMetadataPostDto videoMetadata = new(
+            VideoMetadataAddOrUpdateDto videoMetadata = new(
             "Test Video Title",
                 "Test Video Description",
                 "data:image/png;base64,iVBORw0KGg==",
@@ -134,7 +134,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
         public async Task AddVideoMetadataAsyncWithoutBeingAuthorized_ReturnsUnauthorized()
         {
             // ARRANGE
-            VideoMetadataPostDto videoMetadata = new(
+            VideoMetadataAddOrUpdateDto videoMetadata = new(
             "Test Video Title",
                 "Test Video Description",
                 "data:image/png;base64,iVBORw0KGg==",

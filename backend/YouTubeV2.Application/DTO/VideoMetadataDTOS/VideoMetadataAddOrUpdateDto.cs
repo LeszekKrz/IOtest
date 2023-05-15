@@ -2,7 +2,7 @@
 
 namespace YouTubeV2.Application.DTO.VideoMetadataDTOS
 {
-    public record VideoMetadataPostDto(
+    public record VideoMetadataAddOrUpdateDto(
         string title,
         string description,
         string thumbnail,

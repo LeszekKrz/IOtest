@@ -122,7 +122,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
         [TestInitialize]
         public async Task Initialize()
         {
-            _blobImageServiceMock.Setup(x => x.GetVideoThumbnail(It.IsAny<string>())).Returns<string>(fileName => new Uri($"{_videoThumbnailDomain}{fileName.ToLower()}"));
+            _blobImageServiceMock.Setup(x => x.GetVideoThumbnailUrl(It.IsAny<string>())).Returns<string>(fileName => new Uri($"{_videoThumbnailDomain}{fileName.ToLower()}"));
             _webApplicationFactory = Setup.GetWebApplicationFactory(_blobImageServiceMock.Object);
             var config = _webApplicationFactory.Services.GetService<IConfiguration>();
             var connection = config!.GetConnectionString("Db");
