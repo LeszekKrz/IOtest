@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using YouTubeV2.Api.Attributes;
-using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services.BlobServices;
 
 namespace YouTubeV2.Api.Controllers

@@ -10,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using FluentAssertions;
 using System.Net;
 using YouTubeV2.Api.Tests.Providers;
-using YouTubeV2.Application.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace YouTubeV2.Api.Tests.VideoControllerTests

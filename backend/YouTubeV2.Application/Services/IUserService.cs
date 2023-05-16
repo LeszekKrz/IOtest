@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.DTO.UserDTOS;
 using YouTubeV2.Application.Model;
 
@@ -22,7 +21,5 @@ namespace YouTubeV2.Application.Services
         Task<User?> GetByIdAsync(string id);
 
         ClaimsPrincipal? ValidateToken(string token);
-
-        static string GetTokenFromTokenWithBearerPrefix(string tokenWithBearerPrefix) => tokenWithBearerPrefix["Bearer ".Length..];
     }
 }

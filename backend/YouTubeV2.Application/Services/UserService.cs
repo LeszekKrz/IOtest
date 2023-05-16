@@ -6,7 +6,6 @@ using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.DTO.UserDTOS;
 using YouTubeV2.Application.Exceptions;
 using YouTubeV2.Application.Model;
-using YouTubeV2.Application.Providers;
 using YouTubeV2.Application.Services.BlobServices;
 using YouTubeV2.Application.Services.JwtFeatures;
 using YouTubeV2.Application.Services.VideoServices;
@@ -22,14 +21,17 @@ namespace YouTubeV2.Application.Services
         private readonly UpdateUserDTOValidator _updateUserDTOValidator;
         private readonly LoginDtoValidator _loginDtoValidator;
         private readonly JwtHandler _jwtHandler;
-        private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ISubscriptionService _subscriptionService;
         private readonly IVideoService _videoService;
 
-        public UserService(UserManager<User> userManager, IBlobImageService blobImageService,
-            RegisterDtoValidator registerDtoValidator, LoginDtoValidator loginDtoValidator, 
-            JwtHandler jwtHandler, IDateTimeProvider dateTimeProvider, 
-            ISubscriptionService subscriptionService, UpdateUserDTOValidator updateUserDTOValidator,
+        public UserService(
+            UserManager<User> userManager,
+            IBlobImageService blobImageService,
+            RegisterDtoValidator registerDtoValidator,
+            LoginDtoValidator loginDtoValidator, 
+            JwtHandler jwtHandler,
+            ISubscriptionService subscriptionService,
+            UpdateUserDTOValidator updateUserDTOValidator,
             IVideoService videoService)
         {
             _userManager = userManager;
@@ -37,7 +39,6 @@ namespace YouTubeV2.Application.Services
             _registerDtoValidator = registerDtoValidator;
             _loginDtoValidator = loginDtoValidator;
             _jwtHandler = jwtHandler;
-            _dateTimeProvider = dateTimeProvider;
             _subscriptionService = subscriptionService;
             _updateUserDTOValidator = updateUserDTOValidator;
             _videoService = videoService;
@@ -53,7 +54,7 @@ namespace YouTubeV2.Application.Services
             if (!await _userManager.CheckPasswordAsync(user, loginDto.password))
                 throw new UnauthorizedException("Provided password is invalid");
 
-            return new LoginResponseDto($"Bearer {await _jwtHandler.GenerateTokenAsync(user)}");
+            return new LoginResponseDto(await _jwtHandler.GenerateTokenAsync(user));
         }
 
         public async Task<string> RegisterAsync(RegisterDto registerDto, CancellationToken cancellationToken)
@@ -169,8 +170,6 @@ namespace YouTubeV2.Application.Services
         public async Task<User?> GetByIdAsync(string id) => await _userManager.FindByIdAsync(id);
 
         public ClaimsPrincipal? ValidateToken(string token) => _jwtHandler.ValidateToken(token);
-
-        public static string GetTokenFromTokenWithBearerPrefix(string tokenWithBearerPrefix) => tokenWithBearerPrefix["Bearer ".Length..];
 
         public async Task<UserDto> GetDTOForUser(User user, bool getAllData = false, CancellationToken cancellationToken = default)
         {

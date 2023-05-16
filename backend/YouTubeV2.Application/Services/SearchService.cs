@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
 using YouTubeV2.Api.Enums;
 using YouTubeV2.Application.DTO.SearchDTOS;
 using YouTubeV2.Application.DTO.UserDTOS;

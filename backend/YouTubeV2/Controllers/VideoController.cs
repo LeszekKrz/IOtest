@@ -9,6 +9,7 @@ using YouTubeV2.Application.Jobs;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services;
 using YouTubeV2.Application.Services.BlobServices;
+using YouTubeV2.Application.Services.JwtFeatures;
 using YouTubeV2.Application.Services.VideoServices;
 
 namespace YouTubeV2.Api.Controllers
@@ -37,8 +38,7 @@ namespace YouTubeV2.Api.Controllers
         [HttpGet("video/{id:guid}")]
         public async Task<IActionResult> GetVideoAsync(Guid id, [FromQuery] string access_token, CancellationToken cancellationToken)
         {
-            string token = UserService.GetTokenFromTokenWithBearerPrefix(access_token);
-            ClaimsPrincipal? claimsPrincipal = _userService.ValidateToken(token);
+            ClaimsPrincipal? claimsPrincipal = _userService.ValidateToken(access_token);
             if (claimsPrincipal is null) return Unauthorized();
 
             if (!claimsPrincipal.IsInRole(Role.Simple) && !claimsPrincipal.IsInRole(Role.Creator) && !claimsPrincipal.IsInRole(Role.Administrator))

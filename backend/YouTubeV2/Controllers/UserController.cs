@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata.Ecma335;
 using YouTubeV2.Api.Attributes;
-using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.DTO.UserDTOS;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services;

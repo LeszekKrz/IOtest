@@ -2,9 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using YouTubeV2.Application.Model;
-using YouTubeV2.Application.Providers;
 using YouTubeV2.Application.Services.BlobServices;
-using YouTubeV2.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +12,6 @@ using YouTubeV2.Application.DTO.VideoMetadataDTOS;
 using YouTubeV2.Api.Tests.Providers;
 using Newtonsoft.Json;
 using System.Text;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore;
 using FluentAssertions;
 using System.Net;
