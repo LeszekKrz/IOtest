@@ -39,9 +39,9 @@ namespace YouTubeV2.Api.Tests.SearchTests
         [TestInitialize]
         public async Task Initialize()
         {
-            _blobImageServiceMock.Setup(x => x.GetVideoThumbnail(It.IsAny<string>()))
+            _blobImageServiceMock.Setup(x => x.GetVideoThumbnailUrl(It.IsAny<string>()))
                 .Returns<string>(fileName => new Uri(_pictureDomain));
-            _blobImageServiceMock.Setup(x => x.GetProfilePicture(It.IsAny<string>()))
+            _blobImageServiceMock.Setup(x => x.GetProfilePictureUrl(It.IsAny<string>()))
                 .Returns<string>(fileName => new Uri(_pictureDomain));
             _webApplicationFactory = Setup.GetWebApplicationFactory(_blobImageServiceMock.Object);
             var config = _webApplicationFactory.Services.GetService<IConfiguration>();

@@ -28,12 +28,12 @@ namespace YouTubeV2.Api.Controllers
         }        
 
         [HttpPost]
-        public async Task<IActionResult> PostSubscriptionsAsync([FromQuery][Required] Guid subId, CancellationToken cancellationToken)
+        public async Task<IActionResult> PostSubscriptionsAsync([FromQuery][Required] Guid creatorId, CancellationToken cancellationToken)
         {
             string? subscriberId = GetUserId();
             if (subscriberId is null) return Forbid();
 
-            await _subscriptionsService.AddSubscriptionAsync(subId.ToString(), subscriberId, cancellationToken);
+            await _subscriptionsService.AddSubscriptionAsync(creatorId.ToString(), subscriberId, cancellationToken);
             return Ok();
         }
 
