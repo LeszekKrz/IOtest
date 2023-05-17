@@ -36,7 +36,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             Visibility = Visibility.Public,
             UploadDate = DateTimeOffset.UtcNow,
             EditDate = DateTimeOffset.UtcNow,
-            User = _user,
+            Author = _user,
         };
 
         [TestInitialize]
@@ -148,7 +148,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                 Visibility = Visibility.Public,
                 UploadDate = DateTimeOffset.UtcNow,
                 EditDate = DateTimeOffset.UtcNow,
-                User = _user,
+                Author = _user,
                 ProcessingProgress = ProcessingProgress.Ready,
             };
 
@@ -157,7 +157,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                 {
                     var video = await context.Videos.AddAsync(videoToAdd);
                     videoId = video.Entity.Id;
-                    userId = video.Entity.User.Id;
+                    userId = video.Entity.Author.Id;
                     await context.SaveChangesAsync();
                 });
 
@@ -194,7 +194,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                 {
                     var video = await context.Videos.AddAsync(_video);
                     videoId = video.Entity.Id;
-                    userId = video.Entity.User.Id;
+                    userId = video.Entity.Author.Id;
                     await context.SaveChangesAsync();
                 });
 

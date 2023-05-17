@@ -1,0 +1,70 @@
+<div class="progress-spinner" *ngIf="isProgressSpinnerVisible">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+
+<p-panel>
+  <div class="searchGroup">
+    <div class="searchItem">
+    <div class="p-field">
+      <p-calendar id="begin-date" [(ngModel)]="beginDate" [showIcon]="true" placeholder="Begin date"></p-calendar>
+      <small class="p-error" *ngIf="!areDatesValid()">
+        Begin date has to be smaller than end date
+      </small>
+    </div>
+  </div>
+  <div class="searchItem">
+    <div class="p-field">
+      <p-calendar id="end-date" [(ngModel)]="endDate" [showIcon]="true" placeholder="End date"></p-calendar>
+      <small class="p-error" *ngIf="!areDatesValid()">
+        Begin date has to be smaller than end date
+      </small>
+    </div>
+  </div>
+  
+  <div class="searchItem">
+    <p-dropdown [options]="sortingTypes" [(ngModel)]="sortingType" optionLabel="label" placeholder="Sorting type"></p-dropdown>
+  </div>
+  <div class="searchItem">
+    <p-dropdown [options]="sortingDirections" [(ngModel)]="sortingDirection" optionLabel="label" placeholder="Soring direction"></p-dropdown>
+  </div>
+  </div>
+<div class="p-inputgroup" style="width: 50%">
+  <input type="text" pInputText placeholder="Search..." [(ngModel)]="query">
+  <button pButton type="button" (click)="onSearchButtonClick()" [disabled]="isQueryEmpty()" label="Search"></button>
+</div>
+
+<div *ngIf="searchResultsNone()">
+  <h1>No results found.</h1>
+</div>
+
+<ul *ngIf="searchResults">
+  <h2 *ngIf="searchResults.users.length != 0">Users:</h2>
+  <div *ngFor="let user of searchResults.users">
+    <div class="userContainer" (click)="goToUserProfile(user.id)">
+      <div class="image-container">
+        <img [src] = "user.avatarImage" class="avatarImage">
+      </div>
+      <div>
+        <h3 class="noPadding">{{ user.nickname }}</h3>
+        <p class="noPadding">{{ user.name }} {{ user.surname }}</p>
+        <p class="noPadding">{{ user.subscriptionsCount }} subscribers</p>
+      </div>
+    </div>
+  </div>
+  <h2 *ngIf="searchResults.videos.length != 0">Videos:</h2>
+  <div *ngFor="let video of searchResults.videos">
+    <div class="m-2 video" *ngFor="let video of searchResults.videos" (click)="goToVideo(video.id)">
+      <div class="thumbnail-container">
+        <img [src] = "video.thumbnail" class="thumbnail">
+        <span class="video-length">{{ video.duration }}</span>
+      </div>
+      <strong class="video-title">{{ video.title }}</strong>
+      <div>
+        {{ video.viewCount }} views, {{ getTimeAgo(video) }} ago
+      </div>
+    </div>
+  </div>
+
+</ul>
+
+</p-panel>

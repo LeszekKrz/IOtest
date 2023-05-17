@@ -10,6 +10,40 @@
         class="p-button-secondary p-button-text"
         (click)="homeButtonOnClick()">
       </button>
+      <button
+        id="playlists-button"
+        pButton
+        pRipple
+        type="playlists"
+        label="Playlists"
+        class="p-button-secondary p-button-text"
+        (click)="playlistsButtonOnClick()">
+      </button>
+      <button
+        id="subscriptions-videos-button"
+        pButton
+        pRipple
+        type="subscriptions"
+        label="Subscriptions"
+        class="p-button-secondary p-button-text"
+        (click)="subscriptionsVideosButtonOnClick()">
+      </button>
+      <button
+        *ngIf="role == 'Creator'"
+        id="add-video-button"
+        pButton
+        pRipple
+        type="add-video"
+        label="Add-video"
+        class="p-button-secondary p-button-text"
+        (click)="addVideoButtonOnClick()">
+      </button>
+    </div>
+    <div *ngIf="isUserAuthenticated">
+      <div class="p-inputgroup">
+        <input id="search-input" type="text" pInputText placeholder="Search..." [(ngModel)]="query">
+        <button id="search-button" pButton type="button" (click)="searchButtonOnClick()" [disabled]="isQueryEmpty()" label="Search"></button>
+      </div>
     </div>
     <div style="margin-left: auto;">
       <button
@@ -32,6 +66,16 @@
         class="p-button-secondary p-button-text"
         (click)="registerButtonOnClick()">
       </button>
+      <button
+      *ngIf="isUserAuthenticated"
+      id="account-button"
+      pButton
+      pRipple
+      type="account"
+      label="Account"
+      class="p-button-secondary p-button-text"
+      (click)="accountButtonOnClick()">
+    </button>
       <button
         *ngIf="isUserAuthenticated"
         id="logout-button"

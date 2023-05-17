@@ -1,16 +1,19 @@
-﻿namespace YouTubeV2.Application.DTO.VideoMetadataDTOS
+﻿using YouTubeV2.Api.Enums;
+using YouTubeV2.Application.Enums;
+
+namespace YouTubeV2.Application.DTO.VideoMetadataDTOS
 {
     public record VideoMetadataDto(
-        string id,
+        Guid id,
         string title,
         string description,
-        string thumbnail,
+        Uri thumbnail,
         string authorId,
         string authorNickname,
         int viewCount,
         IReadOnlyCollection<string> tags,
-        string visibility,
-        string processingProgress,
+        Visibility visibility,
+        ProcessingProgress processingProgress,
         DateTime uploadDate,
         DateTime editDate,
         string duration);

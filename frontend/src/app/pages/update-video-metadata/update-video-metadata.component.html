@@ -1,0 +1,137 @@
+<div class="progress-spinner" *ngIf="isProgressSpinnerVisible">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+
+<p-card
+  header="Update video metadata"
+  styleClass="p-card-style shadow-7">
+  <form [formGroup]="updateVideoMetadataForm" (ngSubmit)="onSubmit()">
+    <div class="p-fluid">
+      <label for="title-input" class="field-label">
+        <p class="required">Title</p>
+      </label>
+      <input
+        autofocus="true"
+        id="title-input"
+        type="text"
+        formControlName="title"
+        pInputText
+        [ngClass]="{
+          'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('title')
+        }"
+        placeholder="Title" />
+      <small class="p-error" *ngIf="isInputTouchedOrDirtyAndEmpty('title'); else tooLongTitleMessage">
+        This field is required
+      </small>
+      <ng-template #tooLongTitleMessage>
+        <small class="p-error" *ngIf="isInputTouchedOrDirtyAndTooLong('title')">
+          Title must be at most {{ this.titleMaxLength }} characters long
+        </small>
+      </ng-template>
+    </div>
+    <div class="p-fluid">
+      <label for="description-input" class="field-label">
+        <p class="required">Description</p>
+      </label>
+      <textarea
+        id="description-input"
+        type="text"
+        formControlName="description"
+        pInputTextarea
+        [autoResize]="true"
+        [ngClass]="{
+          'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('title')
+        }"
+        placeholder="Description">
+      </textarea>
+      <small class="p-error" *ngIf="isInputTouchedOrDirtyAndEmpty('description'); else tooLongDescriptionMessage">
+        This field is required
+      </small>
+      <ng-template #tooLongDescriptionMessage>
+        <small class="p-error" *ngIf="isInputTouchedOrDirtyAndTooLong('description')">
+          Description must be at most {{ this.descriptionMaxLength }} characters long
+        </small>
+      </ng-template>
+    </div>
+    <div>
+      <label for="thumbnail-input" class="field-label">
+        <p class="required">Thumbnail</p>
+      </label>
+      <p-fileUpload
+        #thumbnailUpload
+        name="thumbnail[]"
+        accept="image/png, image/jpeg"
+        [fileLimit]="1"
+        invalidFileTypeMessageSummary="Allowed file type is .png/.jpeg"
+        invalidFileTypeMessageDetail=""
+        [showUploadButton]="false"
+        [showCancelButton]="false"
+        (onSelect)="handleOnThumbnailSelect($event)"
+        styleClass="p-fileupload-style">
+
+        <ng-template pTemplate="content" let-files>
+          <div *ngIf="updateVideoMetadataForm.get('thumbnail')!.value == ''">
+            <div class="flex flex-column justify-content-center">
+              <i class="flex justify-content-center pi pi-download download-icon"></i>
+              <div class="flex justify-content-center">
+                Drop or&nbsp;
+                <span class="browse-button" (click)="thumbnailUpload.choose()">
+                  browse
+                </span>
+                &nbsp;thumbnail
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="file" let-file>
+          <div class="flex justify-content-evenly flex align-items-center flex-wrap">
+            <img [src]="file.objectURL" [width]=100>
+            {{file.name}}
+            <button
+              pButton
+              pRipple
+              type="button"
+              icon="pi pi-times"
+              class="p-button-rounded p-button-danger p-button-remove"
+              (click)="handleOnThumbnailRemove()">
+            </button>
+          </div>
+        </ng-template>
+      </p-fileUpload>
+      <small class="p-error" *ngIf="isInputInvalidAndTouchedOrDirty('thumbnail')">
+        This field is required
+      </small>
+    </div>
+    <div class="p-fluid">
+      <label for="tags-input" class="field-label">
+        <p>Tags</p>
+      </label>
+      <p-chips
+        id="tags-input"
+        formControlName="tags"
+        placeholder="Enter separated tags">
+      </p-chips>
+    </div>
+    <div class="p-fluid">
+      <label for="visibility-dropdown" class="field-label">
+        <p class="required">Visibility</p>
+      </label>
+      <div class="width: 100%">
+        <p-dropdown
+          id="visibility-dropdown"
+          formControlName="visibility"
+          [options]="visibilityOptions"
+          placeholder="Select video visibility"
+          [ngClass]="{
+            'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('visibility')
+          }">
+        </p-dropdown>
+      </div>
+      <small class="p-error" *ngIf="isInputInvalidAndTouchedOrDirty('visibility')">
+        This field is required
+      </small>
+    </div>
+    <button pButton pRipple type="submit" class="p-button-style" label="Update video metadata"></button>
+  </form>
+</p-card>

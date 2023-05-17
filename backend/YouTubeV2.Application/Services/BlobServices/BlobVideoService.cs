@@ -19,7 +19,7 @@ namespace YouTubeV2.Application.Services.BlobServices
         public async Task<Stream> GetVideoAsync(string fileName, CancellationToken cancellationToken = default)
         {
             BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(_blobStorageConfig.VideosContainerName);
-            BlobClient blobClient = blobContainerClient.GetBlobClient(fileName);
+            BlobClient blobClient = blobContainerClient.GetBlobClient(fileName.ToLower());
 
             if (!(await blobClient.ExistsAsync(cancellationToken)).Value)
                 throw new FileNotFoundException($"There is no video with fileName {fileName}");
@@ -30,7 +30,7 @@ namespace YouTubeV2.Application.Services.BlobServices
         public async Task UploadVideoAsync(string fileName, Stream videoStream, CancellationToken cancellationToken = default)
         {
             BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(_blobStorageConfig.VideosContainerName);
-            BlobClient blobClient = blobContainerClient.GetBlobClient(fileName);
+            BlobClient blobClient = blobContainerClient.GetBlobClient(fileName.ToLower());
             await blobClient.UploadAsync(
                 videoStream,
                 new BlobUploadOptions { HttpHeaders = new BlobHttpHeaders { ContentType = "video/mp4" } },

@@ -1,11 +1,12 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { finalize, Observable, of, Subscription, switchMap, tap } from 'rxjs';
+import { finalize, map, Observable, of, Subscription, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserForLoginDTO } from 'src/app/authentication/models/user-login-dto';
 import { UserService } from 'src/app/core/services/user.service';
 import { AuthenticationResponseDTO } from 'src/app/authentication/models/authentication-response-dto';
+import { UserDTO } from 'src/app/core/models/user-dto';
 
 @Component({
   selector: 'app-login',
@@ -52,16 +53,26 @@ export class LoginComponent implements OnDestroy {
           detail: 'Login successful'
         });
       }),
-    );
-    this.subscriptions.push(this.doWithLoading(login$).subscribe({
-      next: (authenticationResponse: AuthenticationResponseDTO) => {
+      switchMap((authenticationResponse: AuthenticationResponseDTO) => {
         localStorage.setItem('token', authenticationResponse.token);
-      },
-      complete: () => {
-        this.userService.sendAuthenticationStateChangedNotification(true);
-        this.router.navigate(['']);
-      }
-    }));
+    
+        return this.userService.getUser(null).pipe(
+          map((userDTO: UserDTO) => ({ userDTO }))
+        );
+      })
+    );
+    
+    this.subscriptions.push(
+      this.doWithLoading(login$).subscribe({
+        next: ({ userDTO }: { userDTO: UserDTO }) => {
+          localStorage.setItem('role', userDTO.userType);
+        },
+        complete: () => {
+          this.userService.sendAuthenticationStateChangedNotification(true);
+          this.router.navigate(['']);
+        }
+      })
+    );
   }
 
   private doWithLoading(observable$: Observable<any>): Observable<any> {

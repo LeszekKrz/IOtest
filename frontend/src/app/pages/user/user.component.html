@@ -1,0 +1,92 @@
+
+
+<div class="progress-spinner" *ngIf="isProgressSpinnerVisible">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+  <p-card
+    header="Account info"
+    styleClass="p-card-style shadow-7">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+      <div class="p-fluid">
+        <label for="name-input" class="field-label">
+          <p class="required">Name</p>
+        </label>
+        <input
+          autofocus="true"
+          id="name-input"
+          type="text"
+          formControlName="name"
+          pInputText
+          [ngClass]="{
+            'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('name')
+          }"
+          placeholder="Name" />
+        <small class="p-error" *ngIf="isInputInvalidAndTouchedOrDirty('name')">
+          This field is required
+        </small>
+      </div>
+      <div class="p-fluid">
+        <label for="surname-input" class="field-label">
+          <p class="required">Surname</p>
+        </label>
+        <input
+          id="surname-input"
+          type="text"
+          formControlName="surname"
+          pInputText
+          [ngClass]="{
+            'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('surname')
+          }"
+          placeholder="Surname" />
+        <small class="p-error" *ngIf="isInputInvalidAndTouchedOrDirty('surname')">
+          This field is required
+        </small>
+      </div>
+      <div class="p-fluid">
+        <label for="nickname-input" class="field-label">
+          <p class="required">Nickname</p>
+        </label>
+        <input
+          id="nickname-input"
+          type="text"
+          formControlName="nickname"
+          pInputText
+          [ngClass]="{
+            'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('nickname')
+          }"
+          placeholder="Nickname" />
+        <small class="p-error" *ngIf="isInputInvalidAndTouchedOrDirty('nickname')">
+          This field is required
+        </small>
+      </div>
+      <div class="p-fluid">
+        <label for="userType-input" class="field-label">
+          <p>Creator</p>
+        </label>
+        <p-inputSwitch id="userType-input" formControlName="userType"/>
+      </div>
+      <div class="p-fluid">
+        <label for="email-input" class="field-label">
+          <p class="required">Email</p>
+        </label>
+        <input
+          id="email-input"
+          type="text"
+          formControlName="email"
+          pInputText
+          placeholder="Email" />
+      </div>
+      <div class="p-fluid">
+        <label for="ballance-input" class="field-label">
+          <p class="required">Ballance</p>
+        </label>
+        <input
+          id="ballance-display"
+          type="number"
+          formControlName="accountBallance"
+          pInputText
+          placeholder="Ballance" />
+      </div>
+      <p-button type="submit" styleClass="p-button-style" label="Edit"></p-button>
+    </form>
+  </p-card>

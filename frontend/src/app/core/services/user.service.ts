@@ -5,6 +5,9 @@ import { environment } from "../../../environments/environment";
 import { UserForRegistrationDTO } from "../../authentication/models/user-for-registration-dto";
 import { UserDTO } from "../models/user-dto";
 import { UserForLoginDTO } from "src/app/authentication/models/user-login-dto";
+import { UpdateUserDTO } from "../models/update-user-dto";
+import { getHttpOptionsWithAuthenticationHeader } from "../functions/get-http-options-with-authorization-header";
+import { AuthenticationResponseDTO } from "src/app/authentication/models/authentication-response-dto";
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +25,7 @@ export class UserService {
 
   logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     this.sendAuthenticationStateChangedNotification(false);
   }
 
@@ -34,13 +38,32 @@ export class UserService {
     return this.httpClient.post<void>(`${this.registrationPageWebAPIUrl}/register`, userForRegistration);
   }
 
-  getUser(id: string): Observable<UserDTO> {
-    let params = new HttpParams().set('id', id);
+  getUser(id: string | null): Observable<UserDTO> {
+    let params = new HttpParams()
 
-    return this.httpClient.get<UserDTO>(`${this.registrationPageWebAPIUrl}/user`, { params: params });
+    if (id !== null)
+      params = params.set('id', id);
+
+    const httpOptions = {
+      params: params,
+      headers: getHttpOptionsWithAuthenticationHeader().headers
+    };
+
+    return this.httpClient.get<UserDTO>(`${this.registrationPageWebAPIUrl}/user`, httpOptions);
   }
 
-  loginUser(userForLogin: UserForLoginDTO): Observable<string> {
-    return this.httpClient.post<string>(`${this.registrationPageWebAPIUrl}/login`, userForLogin);
+  editUser(id: string, updateUserDTO: UpdateUserDTO): Observable<void>{
+    let params = new HttpParams().set('id', id);
+
+    const httpOptions = {
+      params: params,
+      headers: getHttpOptionsWithAuthenticationHeader().headers
+    };
+
+    return this.httpClient.put<void>(`${this.registrationPageWebAPIUrl}/user`, updateUserDTO, httpOptions);
+  }
+
+  loginUser(userForLogin: UserForLoginDTO): Observable<AuthenticationResponseDTO> {
+    return this.httpClient.post<AuthenticationResponseDTO>(`${this.registrationPageWebAPIUrl}/login`, userForLogin);
   }
 }
