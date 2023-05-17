@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using Microsoft.IdentityModel.Tokens;
+using System.Text.RegularExpressions;
 
 namespace YouTubeV2.Application.Utils
 {
@@ -10,7 +11,7 @@ namespace YouTubeV2.Application.Utils
             return regex.IsMatch(input);
         }
 
-        public static bool IsValidBase64ImageOrEmpty(this string input) => input == string.Empty || IsValidBase64Image(input);
+        public static bool IsValidBase64ImageOrNullOrEmpty(this string? input) => input.IsNullOrEmpty() || IsValidBase64Image(input);
 
         public static string GetImageFormat(this string base64Input)
         {

@@ -1,0 +1,30 @@
+<div class="progress-spinner" *ngIf="isProgressSpinnerVisible">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+
+<p-card
+  styleClass="p-card-style shadow-7"
+  header="Subscriptions">
+  <div class="mt-4">
+    <div *ngIf="videos !== null && videos.length !== 0; else noVideos">
+      <div class="grid">
+        <div class="m-2 video" *ngFor="let video of videos" (click)="goToVideo(video.id)">
+          <div class="thumbnail-container">
+            <img [src] = "video.thumbnail" class="thumbnail">
+            <span class="video-length">{{ video.duration }}</span>
+          </div>
+          <strong class="video-title">{{ video.title }}</strong>
+          <span (click)="goToCreator(video.authorId)" class="video-author">{{ video.authorNickname }}</span>
+          <div>
+            {{ video.viewCount }} views, {{ getTimeAgo(video) }} ago
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noVideos>
+      <div style="text-align: center;">
+        Users you subscribe does not have any videos
+      </div>
+    </ng-template>
+  </div>
+</p-card>
