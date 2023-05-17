@@ -83,6 +83,7 @@ builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<IReactionService, ReactionService>();
 builder.Services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 builder.Services.AddTransient<ISearchService, SearchService>();
+builder.Services.AddTransient<IDonationService, DonationService>();
 
 builder.Services.AddSingleton<IVideoProcessingService, VideoProcessingService>();
 builder.Services.AddHostedService(serviceProvider => (VideoProcessingService)serviceProvider.GetRequiredService<IVideoProcessingService>());
