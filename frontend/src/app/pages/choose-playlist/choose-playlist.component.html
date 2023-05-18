@@ -29,7 +29,7 @@
 <!-- src/app/app.component.html -->
 
   <div class="grid">
-    <div class="playlist" (click)="goToPlaylist(playlist.id)" *ngFor="let playlist of userPlaylists">
+    <div class="playlist" (click)="choosePlaylist(playlist.id)" *ngFor="let playlist of userPlaylists">
       <strong class="playlist-title">{{ playlist.name }}</strong>
       <p >Count: {{ playlist.count }}</p>
     </div>
