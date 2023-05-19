@@ -1,12 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YouTubeV2.Api.Enums;
-using YouTubeV2.Application.DTO.UserDTOS;
+﻿using YouTubeV2.Api.Enums;
 
 namespace YouTubeV2.Application.Model
 {

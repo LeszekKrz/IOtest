@@ -7,6 +7,5 @@
         public const int MaxUserEmailLength = 30;
         public const int MaxUserNicknameLength = 20;
         public const int MaxUserPasswordLength = 50;
-        public const int MinUserPasswordLength = 8;
     }
 }

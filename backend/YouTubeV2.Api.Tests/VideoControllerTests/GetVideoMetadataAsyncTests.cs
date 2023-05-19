@@ -8,10 +8,7 @@ using YouTubeV2.Application;
 using Microsoft.AspNetCore.Identity;
 using YouTubeV2.Api.Enums;
 using Newtonsoft.Json;
-using System.Net.Http;
 using System.Net;
-using System.Text;
-using System.Web;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
@@ -74,7 +71,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             videoResponseDto.title.Should().Be(video.Title);
             videoResponseDto.description.Should().Be(video.Description);
-            videoResponseDto.visibility.Should().Be(video.Visibility.ToString());
+            videoResponseDto.visibility.Should().Be(video.Visibility);
             videoResponseDto.tags.Should().BeEquivalentTo(video.Tags.Select(tag => tag.Value));
             videoResponseDto.uploadDate.Should().Be(video.UploadDate.DateTime);
         }

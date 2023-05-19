@@ -3,7 +3,7 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { MessageService } from 'primeng/api';
 import { catchError, Observable } from 'rxjs';
 import { ErrorResponseDTO } from '../models/error-response-dto';
-import { insuficcientAccessMessage, internalServerErrorMessage } from '../messages';
+import { insuficcientAccessMessage, internalServerErrorMessage, notFoundMessage, unauthorizedMessage } from '../messages';
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
@@ -19,9 +19,20 @@ export class HttpErrorInterceptor implements HttpInterceptor {
               this.messageService.add({severity: 'error', summary: 'Error', detail: e.errorMessage});
             });
             break;
+          case 401:
+            if (errorResponse.error.errorMessage) {
+              this.messageService.add({severity: 'error', summary: 'Error', detail: errorResponse.error.errorMessage});
+            }
+            else {
+              this.messageService.add({severity: 'error', summary: 'Error', detail: unauthorizedMessage});
+            }
+            break;
           case 403:
             this.messageService.add({severity: 'error', summary: 'Error', detail: insuficcientAccessMessage})
             break;
+          case 404:
+              this.messageService.add({severity: 'error', summary: 'Error', detail: notFoundMessage})
+              break;
           case 422:
             this.messageService.add({severity: 'error', summary: 'Error', detail: errorResponse.error.title});
             break;

@@ -1,0 +1,81 @@
+/* Modify the content-container class */
+.content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Change to flex-start to align items to the top */
+  height: 100%;
+  padding-top: 20px; /* Add padding to the top */
+}
+
+.label-container {
+  text-align: center; /* Center the text within the label container */
+}
+
+.button-container {
+  display: flex; /* Use flex to align buttons */
+  flex-direction: column; /* Set the flex direction to column to stack buttons vertically */
+  justify-content: center; /* Center the buttons vertically */
+  align-items: center; /* Center the buttons horizontally */
+  padding-top: 20px; /* Add padding between labels and buttons */
+  gap: 10px; /* Add a gap between buttons */
+}
+
+/* Existing styles */
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.left-column {
+  width: 30%;
+  background-color: #f0f0f0;
+  padding: 20px;
+}
+
+.right-column {
+  width: 70%;
+  background-color: #e0e0e0;
+  overflow-y: scroll;
+  height: 100%;
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.video {
+  max-width: 200px;
+  max-height: 200px;
+  width: auto;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.image-label {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 5px 10px;
+  z-index: 1;
+}
+
+.noPadding {
+  padding: 0px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start; /* Align items to the left */
+}
+
+.videoCol {
+  /* Add any additional styles for the column, such as width or margin */
+  margin: 0 20px 20px 0; /* Adjust the margin as needed */
+}

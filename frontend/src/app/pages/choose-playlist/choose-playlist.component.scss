@@ -1,0 +1,26 @@
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Align items to the left */
+    display: block;
+}
+
+.playlist {
+    display: inline-flex;
+    width: auto;
+    margin: 1em;
+    padding: 2em;
+    background: #ffffff;
+    color: #495057;
+    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+    border-radius: 6px;
+    float: left;
+  }
+
+  .playlist:hover {
+    cursor: pointer;
+  }
+
+  .playlist-title {
+    margin: 1em;
+  }

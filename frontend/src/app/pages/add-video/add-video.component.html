@@ -59,6 +59,7 @@
       </label>
       <p-fileUpload
         #thumbnailUpload
+        id="thumbnail-file-upload"
         name="thumbnail[]"
         accept="image/png, image/jpeg"
         [fileLimit]="1"
@@ -137,6 +138,7 @@
       </label>
       <p-fileUpload
         #videoUpload
+        id="video-file-upload"
         name="video[]"
         [accept]="supportedVideoTypes.join(', ')"
         [fileLimit]="1"
@@ -179,6 +181,6 @@
         This field is required
       </small>
     </div>
-    <button pButton pRipple type="submit" class="p-button-style" label="Add video"></button>
+    <button id="submit-video-button" pButton pRipple type="submit" class="p-button-style" label="Add video"></button>
   </form>
 </p-card>

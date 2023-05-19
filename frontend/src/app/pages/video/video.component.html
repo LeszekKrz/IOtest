@@ -8,31 +8,61 @@
     </div>
     <div>
       <p-card
-        header="{{ videoMetadata.title }}"
         styleClass="p-card-style shadow-7">
-        <div class="userProfile">
-          <div class="avatar">
-            <img [src] = "author.avatarImage" class="avatarImage">
+        <div class="flex justify-content-between">
+          <h2 id="title" class="mt-0">{{ videoMetadata.title }}</h2>
+          <div>
+            <p-menu
+              #videoMenu
+              [model]="videoMenuModel"
+              [popup]="true">
+            </p-menu>
+            <p-button
+              icon="pi pi-ellipsis-v"
+              styleClass="p-button-rounded p-button-text p-button-secondary"
+              (click)="videoMenu.toggle($event)">
+            </p-button>
           </div>
-          <div class="userInfo">
-            <div class="p-col">
-              <label>{{ author.nickname }}</label>
-            </div>
-            <div class="p-col">
-              <label>{{ author.subscriptionsCount }} subscribers</label> 
-            </div>
-          </div>
-          <div class="flex font-bold text-white border-round m-2">
-            <div class="p-col">
-              <p-button label="Subscribe"></p-button>
-            </div>
-          </div>   
         </div>
-        <div class="videoDescription">
+        <div class="flex flex-wrap justify-content-between">
+          <div class="flex">
+            <img [src] = "author.avatarImage" class="avatar-image mr-2">
+            <div class="flex flex-column">
+              <label id="author-nickname">{{ author.nickname }}</label>
+              <label>{{ author.subscriptionsCount }} subscribers</label>
+            </div>
+            <ng-container *ngIf="isAuthorSubscribed; else isNotSubscribed">
+              <p-button class="ml-2" icon="pi pi-times" label="Unsubscribe" styleClass="p-button-danger" (click)="handleSubscribtionOnClick()"></p-button>
+            </ng-container>
+            <ng-template #isNotSubscribed>
+              <p-button class="ml-2" icon="pi pi-check" label="Subscribe" (click)="handleSubscribtionOnClick()"></p-button>
+            </ng-template>            
+          </div>
+          <div class="flex align-content-center">
+            <span class="p-buttonset">
+              <button
+                pButton
+                pRipple
+                [label]="reactions.positiveCount.toString()"
+                [icon]="reactions.currentUserReaction === positiveReaction ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'"
+                (click)="handlePositiveReactionOnClick()">
+              </button>
+              <button
+                pButton
+                pRipple
+                [label]="reactions.negativeCount.toString()"
+                [icon]="reactions.currentUserReaction === negativeReaction ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'"
+                (click)="handleNegativeReactionOnClick()">
+              </button>
+          </span>
+          </div>
+        </div>
+        <div class="videoDescription mt-1">
           {{ videoMetadata.viewCount }} views, uploaded {{ getTimeAgo(videoMetadata.uploadDate) }} ago
           <br>
           {{ videoMetadata.description }}
         </div>
+        <app-comments [videoId]="videoId"></app-comments>
       </p-card>
     </div>
   </div>
@@ -49,7 +79,7 @@
           <p class="noPadding">{{ video.viewCount }} views</p>
         </div>
       </div>
-    </div>    
+    </div>
   </div>
 </div>
 

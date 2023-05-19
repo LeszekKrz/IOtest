@@ -1,1 +1,45 @@
-<p>home works!</p>
+<p-card
+  styleClass="p-card-style shadow-7">
+  <div class="container">
+    <div class="left-column">
+        <p-card header = "Subscriptions">
+            <ul *ngIf="userSubscriptions">
+                <div class="grid">
+                    <div class="videoCol" *ngFor="let sub of userSubscriptions">
+                        <div class="image-container">
+                            <img [src] = "sub.avatarImage" class="avatarImage" (click)="goToCreator(sub.id)">
+                            <span class="image-label">{{ sub.nickname }}</span>
+                        </div>
+                    </div>
+                </div>
+            </ul>
+        </p-card>
+    </div>
+    <div class="right-column">
+        <p-card header = "Recommended">
+            <div class="mt-4">
+                <div *ngIf="videos !== null && videos.length !== 0; else noVideos">
+                  <div class="grid">
+                    <div class="m-2 video" *ngFor="let video of videos" (click)="goToVideo(video.id)">
+                      <div class="thumbnail-container">
+                        <img [src] = "video.thumbnail" class="thumbnail">
+                        <span class="video-length">{{ video.duration }}</span>
+                      </div>
+                      <strong class="video-title">{{ video.title }}</strong>
+                      <div>
+                        {{ video.viewCount }} views, {{ getTimeAgo(video) }} ago
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <ng-template #noVideos>
+                  <div style="text-align: center;">
+                    No videos to recommend
+                  </div>
+                </ng-template>
+              </div>
+        </p-card>      
+    </div>
+</div>
+
+</p-card>

@@ -17,5 +17,10 @@ namespace YouTubeV2.Application.Model
             Id = Guid.NewGuid();
             Value = value;
         }
+
+        public Tag(string value, Video video): this(value)
+        {
+            Video = video;
+        }
     }
 }

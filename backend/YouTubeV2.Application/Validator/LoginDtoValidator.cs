@@ -13,9 +13,7 @@ namespace YouTubeV2.Application.Validator
             RuleFor(x => x.email)
               .NotNull()
               .Length(1, UserConstants.MaxUserEmailLength)
-              .EmailAddress()
-              .MustAsync(async (email, cancellationToken) => await userManager.FindByEmailAsync(email) != null)
-              .WithMessage(x => $"User with email {x.email} does not exist");
+              .EmailAddress();
 
             RuleFor(x => x.password)
                 .NotNull();

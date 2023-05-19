@@ -6,6 +6,7 @@ import { VideoMedatadataDTO } from './models/video-metadata-dto';
 import { AddVideoService } from './services/add-video.service';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
+import { descriptionMaxLength, titleMaxLength, visibilityOptions } from '../../core/constants/video-constants';
 
 @Component({
   selector: 'app-add-video',
@@ -13,9 +14,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./add-video.component.scss']
 })
 export class AddVideoComponent implements OnDestroy {
-  titleMaxLength = 100;
-  descriptionMaxLength = 1000;
-  visibilityOptions = ['Public', 'Private'];
+  titleMaxLength = titleMaxLength;
+  descriptionMaxLength = descriptionMaxLength;
+  visibilityOptions = visibilityOptions;
   addVideoForm = new FormGroup({
     title: new FormControl('', [Validators.required, Validators.maxLength(this.titleMaxLength)]),
     description: new FormControl('', [Validators.required, Validators.maxLength(this.descriptionMaxLength)]),
