@@ -21,6 +21,7 @@ import { UserPlaylistsModule } from './pages/user-playlists/user-playlists.modul
 import { CommentsModule } from './pages/video/components/comments/comments.module';
 import { SubscriptionsVideosModule } from './pages/subscriptions-videos/subscriptions-videos.module';
 import { UpdateVideoMetadataModule } from './pages/update-video-metadata/update-video-metadata.module';
+import { ChoosePlaylistModule } from './pages/choose-playlist/choose-playlist.module';
 
 @NgModule({
     declarations: [
@@ -55,6 +56,7 @@ import { UpdateVideoMetadataModule } from './pages/update-video-metadata/update-
         CommentsModule,
         SubscriptionsVideosModule,
         UpdateVideoMetadataModule,
+        ChoosePlaylistModule
     ]
 })
 export class AppModule { }

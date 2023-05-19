@@ -3,9 +3,9 @@
     flex-wrap: wrap;
     justify-content: flex-start; /* Align items to the left */
     display: block;
-  }
+}
 
-  .playlist {
+.playlist {
     display: inline-flex;
     width: auto;
     margin: 1em;
@@ -21,6 +21,6 @@
     cursor: pointer;
   }
 
-.playlist-title {
-  margin: 1em;
-}
+  .playlist-title {
+    margin: 1em;
+  }

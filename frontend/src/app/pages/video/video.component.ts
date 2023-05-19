@@ -35,6 +35,11 @@ export class VideoComponent implements OnInit, OnDestroy {
   noneReaction = 'None';
   videoMenuModel: MenuItem[] = [
     {
+      label: 'Add to playlist',
+      icon: 'pi pi-list',
+      command: () => this.addToPlaylist(),
+    },
+    {
       label: 'Delete',
       icon: 'pi pi-trash',
       command: () => this.deleteVideo(),
@@ -125,6 +130,10 @@ export class VideoComponent implements OnInit, OnDestroy {
       }),
     );
     this.subscriptions.push(deleteVideo$.subscribe());
+  }
+
+  private addToPlaylist(): void {
+    this.router.navigate(['choose-playlist/' + this.videoId]);
   }
 
   private reportVideo(): void {
