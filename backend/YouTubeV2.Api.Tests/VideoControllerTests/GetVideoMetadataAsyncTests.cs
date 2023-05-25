@@ -61,7 +61,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, user.Id)).CreateClient();
 
             // ACT
-            var response = await httpClient.GetAsync($"video-metadata?id={video.Id}");
+            var response = await httpClient.GetAsync($"api/video-metadata?id={video.Id}");
 
             var content = await response.Content.ReadAsStringAsync();
             var videoResponseDto = JsonConvert.DeserializeObject<VideoMetadataDto>(content);

@@ -8,7 +8,7 @@ using YouTubeV2.Application.Services;
 namespace YouTubeV2.Api.Controllers
 {
     [ApiController]
-    [Route("subscriptions")]
+    [Route("api/subscriptions")]
     [Roles(Role.Simple, Role.Creator, Role.Administrator)]
     public class SubscriptionsController : IdentityControllerBase
 	{

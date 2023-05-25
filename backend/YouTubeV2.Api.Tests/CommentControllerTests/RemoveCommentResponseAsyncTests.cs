@@ -116,7 +116,7 @@ namespace YouTubeV2.Api.Tests.CommentControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, _commentsOwner.Id)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.DeleteAsync($"comment/response?id={_commentResponse1Id}");
+            var httpResponseMessage = await httpClient.DeleteAsync($"api/comment/response?id={_commentResponse1Id}");
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -147,7 +147,7 @@ namespace YouTubeV2.Api.Tests.CommentControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Administrator, _otherUser.Id)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.DeleteAsync($"comment/response?id={_commentResponse1.Id}");
+            var httpResponseMessage = await httpClient.DeleteAsync($"api/comment/response?id={_commentResponse1.Id}");
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -178,7 +178,7 @@ namespace YouTubeV2.Api.Tests.CommentControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Simple, _otherUser.Id)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.DeleteAsync($"comment/response?id={_commentResponse1Id}");
+            var httpResponseMessage = await httpClient.DeleteAsync($"api/comment/response?id={_commentResponse1Id}");
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.Forbidden);

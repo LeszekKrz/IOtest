@@ -60,7 +60,7 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
                 { "id", hisUserID }
             };
 
-            var path = QueryHelpers.AddQueryString("/user", query);
+            var path = QueryHelpers.AddQueryString("/api/user", query);
             HttpResponseMessage response = await httpClient.GetAsync(path);
 
             var content = await response.Content.ReadAsStringAsync();
@@ -110,7 +110,7 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
                 { "id", hisUserID }
             };
 
-            var path = QueryHelpers.AddQueryString("/user", query);
+            var path = QueryHelpers.AddQueryString("/api/user", query);
             HttpResponseMessage response = await httpClient.GetAsync(path);
 
             var content = await response.Content.ReadAsStringAsync();
@@ -150,7 +150,7 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
                 ClaimsProvider.WithRoleAccessAndUserId(Role.Simple, userID)).CreateClient();
 
             // Act
-            var path = "/user";
+            var path = "/api/user";
             HttpResponseMessage response = await httpClient.GetAsync(path);
 
             var content = await response.Content.ReadAsStringAsync();
@@ -194,7 +194,7 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
                 { "id", Guid.NewGuid().ToString() }
             };
 
-            var path = QueryHelpers.AddQueryString("/user", query);
+            var path = QueryHelpers.AddQueryString("/api/user", query);
             HttpResponseMessage response = await httpClient.GetAsync(path);
 
             // Assert

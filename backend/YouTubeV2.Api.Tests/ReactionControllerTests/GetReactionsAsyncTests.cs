@@ -89,7 +89,7 @@ namespace YouTubeV2.Api.Tests.ReactionControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, _userId)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.GetAsync($"video-reaction?id={_videoId}");
+            var httpResponseMessage = await httpClient.GetAsync($"api/video-reaction?id={_videoId}");
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -131,7 +131,7 @@ namespace YouTubeV2.Api.Tests.ReactionControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, _userId)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.GetAsync($"video-reaction?id={_videoId}");
+            var httpResponseMessage = await httpClient.GetAsync($"api/video-reaction?id={_videoId}");
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);

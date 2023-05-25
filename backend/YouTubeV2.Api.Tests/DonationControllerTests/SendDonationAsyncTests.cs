@@ -59,7 +59,7 @@ namespace YouTubeV2.Api.Tests.DonationControllerTests
                 { "id", recieverId },
                 { "amount", "10" }
             };
-            var path = QueryHelpers.AddQueryString("donate/send", query);
+            var path = QueryHelpers.AddQueryString("api/donate/send", query);
             var response = await httpClient.PostAsync(path, null);
 
             // ASSERT
@@ -110,7 +110,7 @@ namespace YouTubeV2.Api.Tests.DonationControllerTests
                 { "id", recieverId },
                 { "amount", "-10" }
             };
-            var path = QueryHelpers.AddQueryString("donate/send", query);
+            var path = QueryHelpers.AddQueryString("api/donate/send", query);
             var response = await httpClient.PostAsync(path, null);
 
             // ASSERT
@@ -151,7 +151,7 @@ namespace YouTubeV2.Api.Tests.DonationControllerTests
                 { "id", recieverId },
                 { "amount", "30" }
             };
-            var path = QueryHelpers.AddQueryString("donate/send", query);
+            var path = QueryHelpers.AddQueryString("api/donate/send", query);
             var response = await httpClient.PostAsync(path, null);
 
             // ASSERT
@@ -192,7 +192,7 @@ namespace YouTubeV2.Api.Tests.DonationControllerTests
                 { "id", recieverId },
                 { "amount", "10" }
             };
-            var path = QueryHelpers.AddQueryString("donate/send", query);
+            var path = QueryHelpers.AddQueryString("api/donate/send", query);
             var response = await httpClient.PostAsync(path, null);
 
             // ASSERT

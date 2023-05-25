@@ -9,7 +9,7 @@ using YouTubeV2.Application.Services.VideoServices;
 namespace YouTubeV2.Api.Controllers
 {
     [ApiController]
-    [Route("comment")]
+    [Route("api/comment")]
     public class CommentController : IdentityControllerBase
     {
         private readonly IVideoService _videoService;

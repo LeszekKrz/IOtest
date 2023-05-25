@@ -89,7 +89,7 @@ namespace YouTubeV2.Api.Tests.SearchTests
                 { "sortingCriterion", SortingTypes.Alphabetical.ToString() },
                 { "sortingType", SortingDirections.Descending.ToString() }
             };
-            var path = QueryHelpers.AddQueryString("search", querys);
+            var path = QueryHelpers.AddQueryString("api/search", querys);
             HttpResponseMessage response = await httpClient.GetAsync(path);
 
             // ASSERT
@@ -206,7 +206,7 @@ namespace YouTubeV2.Api.Tests.SearchTests
                 { "beginDate", DateTimeOffset.UtcNow.AddDays(2).ToString(CultureInfo.InvariantCulture) },
                 { "endDate", DateTimeOffset.UtcNow.AddDays(7).ToString(CultureInfo.InvariantCulture) }
             };
-            var path = QueryHelpers.AddQueryString("search", querys);
+            var path = QueryHelpers.AddQueryString("api/search", querys);
             HttpResponseMessage response = await httpClient.GetAsync(path);
 
             // ASSERT
