@@ -7,7 +7,7 @@ using YouTubeV2.Application.Services;
 namespace YouTubeV2.Api.Controllers
 {
     [ApiController]
-    [Route("donate")]
+    [Route("api/donate")]
     public class DonationController : IdentityControllerBase
     {
         private readonly IDonationService _donationService;

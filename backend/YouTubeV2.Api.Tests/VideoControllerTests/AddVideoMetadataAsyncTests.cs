@@ -71,7 +71,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, userId)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.PostAsync("video-metadata", new StringContent(JsonConvert.SerializeObject(videoMetadata), Encoding.UTF8, "application/json"));
+            var httpResponseMessage = await httpClient.PostAsync("api/video-metadata", new StringContent(JsonConvert.SerializeObject(videoMetadata), Encoding.UTF8, "application/json"));
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -124,7 +124,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Simple, userId)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.PostAsync("video-metadata", new StringContent(JsonConvert.SerializeObject(videoMetadata), Encoding.UTF8, "application/json"));
+            var httpResponseMessage = await httpClient.PostAsync("api/video-metadata", new StringContent(JsonConvert.SerializeObject(videoMetadata), Encoding.UTF8, "application/json"));
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.Forbidden);
@@ -152,7 +152,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             using HttpClient httpClient = _webApplicationFactory.CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.PostAsync("video-metadata", new StringContent(JsonConvert.SerializeObject(videoMetadata), Encoding.UTF8, "application/json"));
+            var httpResponseMessage = await httpClient.PostAsync("api/video-metadata", new StringContent(JsonConvert.SerializeObject(videoMetadata), Encoding.UTF8, "application/json"));
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.Unauthorized);

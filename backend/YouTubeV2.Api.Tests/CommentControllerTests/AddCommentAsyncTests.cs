@@ -86,7 +86,7 @@ namespace YouTubeV2.Api.Tests.CommentControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, _commentAuthorId)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.PostAsync($"comment?id={_videoId}", new StringContent(commentContent, Encoding.UTF8, "text/plain"));
+            var httpResponseMessage = await httpClient.PostAsync($"api/comment?id={_videoId}", new StringContent(commentContent, Encoding.UTF8, "text/plain"));
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -116,7 +116,7 @@ namespace YouTubeV2.Api.Tests.CommentControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccess(Role.Creator)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.PostAsync($"comment?id={_videoId}", new StringContent(commentContent, Encoding.UTF8, "text/plain"));
+            var httpResponseMessage = await httpClient.PostAsync($"api/comment?id={_videoId}", new StringContent(commentContent, Encoding.UTF8, "text/plain"));
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.BadRequest);

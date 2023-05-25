@@ -23,7 +23,7 @@ export class PlaylistService {
 
   addToPlaylist(playlistId: string, videoId: string): Observable<void>
   {
-    return this.httpClient.post<void>(`${this.videoPageWebAPIUrl}/playlist/${playlistId}/${videoId}`,getHttpOptionsWithAuthenticationHeader());
+    return this.httpClient.post<void>(`${this.videoPageWebAPIUrl}/playlist/${playlistId}/${videoId}`, null, getHttpOptionsWithAuthenticationHeader());
   }
   
   updatePlalist(id: string, updatePlaylist: PostPlaylistDto): Observable<void>{

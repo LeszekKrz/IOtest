@@ -10,7 +10,7 @@ namespace YouTubeV2.Api.Controllers
 {
     [Roles(Role.Simple, Role.Creator, Role.Administrator)]
     [ApiController]
-    [Route("playlist")]
+    [Route("api/playlist")]
     public class PlaylistsController : IdentityControllerBase
     {
         private readonly IPlaylistService _playlistsService;
