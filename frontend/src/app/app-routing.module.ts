@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
 import { RegistrationComponent } from '../app/pages/registration/registration.component';
 import { CreatorComponent } from './pages/creator/creator.component';
 import { LoginComponent } from '../app/pages/login/login.component';
@@ -14,6 +14,7 @@ import { SubscriptionsVideosComponent } from './pages/subscriptions-videos/subsc
 import { AuthGuard } from './core/guard/auth.guard';
 import { UpdateVideoMetadataComponent } from './pages/update-video-metadata/update-video-metadata.component';
 import { ChoosePlaylistComponent } from './pages/choose-playlist/choose-playlist.component';
+import { CustomRouteReuseStrategy } from './core/route-reuse-strategies/custom-route-reuse-strategy';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
@@ -33,6 +34,12 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  providers: [
+    {
+      provide: RouteReuseStrategy,
+      useClass: CustomRouteReuseStrategy,
+    },
+  ],
+  exports: [RouterModule],
 })
 export class AppRoutingModule { }

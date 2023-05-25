@@ -103,7 +103,7 @@ export class VideoComponent implements OnInit, OnDestroy {
   }
 
   private checkIfAuthorIsSubscribed(): void {
-    this.subscriptions.push(this.subscriptionService.getSubscriptions().subscribe(subscriptions => 
+    this.subscriptions.push(this.subscriptionService.getSubscriptions().subscribe(subscriptions =>
         this.isAuthorSubscribed = this.isThisAuthorSubscribed(subscriptions)
       ));
   }

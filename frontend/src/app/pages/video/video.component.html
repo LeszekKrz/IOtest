@@ -25,18 +25,20 @@
           </div>
         </div>
         <div class="flex flex-wrap justify-content-between">
-          <div class="flex">
-            <img [src] = "author.avatarImage" class="avatar-image mr-2">
-            <div class="flex flex-column">
-              <label id="author-nickname">{{ author.nickname }}</label>
-              <label>{{ author.subscriptionsCount }} subscribers</label>
+          <div class="flex" (click)="goToUserProfile(author.id)">
+            <div class="flex video-author-info">
+              <img [src] = "author.avatarImage" class="avatar-image mr-2">
+              <div class="flex flex-column">
+                <label id="author-nickname" class="video-author">{{ author.nickname }}</label>
+                <label>{{ author.subscriptionsCount }} subscribers</label>
+              </div>
             </div>
             <ng-container *ngIf="isAuthorSubscribed; else isNotSubscribed">
               <p-button class="ml-2" icon="pi pi-times" label="Unsubscribe" styleClass="p-button-danger" (click)="handleSubscribtionOnClick()"></p-button>
             </ng-container>
             <ng-template #isNotSubscribed>
               <p-button class="ml-2" icon="pi pi-check" label="Subscribe" (click)="handleSubscribtionOnClick()"></p-button>
-            </ng-template>            
+            </ng-template>
           </div>
           <div class="flex align-content-center">
             <span class="p-buttonset">
@@ -70,13 +72,15 @@
     <div *ngIf="videos">
       <div class="grid">
         <div class="col" *ngFor="let video of videos">
+          <div class="rec-video" (click)="goToVideo(video.id)">
           <div class="image-container">
-            <img [src]="video.thumbnail" class="thumbnail" (click)="goToVideo(video.id)">
+            <img [src]="video.thumbnail" class="thumbnail">
             <span class="image-label">{{ video.duration }}</span>
           </div>
           <h3 class="noPadding">{{ video.title }}</h3>
-          <p class="noPadding" (click)="goToUserProfile(video.authorId)">{{ video.authorNickname }}</p>
+          <p class="noPadding rec-video-author" (click)="goToUserProfile(video.authorId)">{{ video.authorNickname }}</p>
           <p class="noPadding">{{ video.viewCount }} views</p>
+          </div>
         </div>
       </div>
     </div>

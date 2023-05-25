@@ -57,3 +57,21 @@
 .video:hover {
   cursor: pointer;
 }
+
+::ng-deep .p-tabview-nav {
+  display: flex;
+}
+
+::ng-deep .p-tabview-nav li {
+  flex: 1;
+}
+
+::ng-deep .p-tabview-nav-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.playlist:hover {
+  cursor: pointer;
+}

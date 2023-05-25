@@ -12,29 +12,52 @@
       </ng-container>
       <ng-template #isNotSubscribed>
         <p-button class="ml-2" icon="pi pi-check" label="Subscribe" (click)="handleSubscribtionOnClick()"></p-button>
-      </ng-template>  
+      </ng-template>
     </div>
   </div>
 
-  <div class="mt-4">
-    <div *ngIf="videos !== null && videos.length !== 0; else noVideos">
-      <div class="grid">
-        <div class="m-2 video" *ngFor="let video of videos" (click)="goToVideo(video.id)">
-          <div class="thumbnail-container">
-            <img [src] = "video.thumbnail" class="thumbnail">
-            <span class="video-length">{{ video.duration }}</span>
-          </div>
-          <strong class="video-title">{{ video.title }}</strong>
-          <div>
-            {{ video.viewCount }} views, {{ getTimeAgo(video) }} ago
+  <p-tabView>
+    <p-tabPanel header="Videos">
+      <div class="mt-4">
+        <div *ngIf="videos !== null && videos.length !== 0; else noVideos">
+          <div class="grid">
+            <div class="m-2 video" *ngFor="let video of videos" (click)="goToVideo(video.id)">
+              <div class="thumbnail-container">
+                <img [src] = "video.thumbnail" class="thumbnail">
+                <span class="video-length">{{ video.duration }}</span>
+              </div>
+              <strong class="video-title">{{ video.title }}</strong>
+              <div>
+                {{ video.viewCount }} views, {{ getTimeAgo(video) }} ago
+              </div>
+            </div>
           </div>
         </div>
+        <ng-template #noVideos>
+          <div style="text-align: center;">
+            This user does not have videos
+          </div>
+        </ng-template>
       </div>
-    </div>
-    <ng-template #noVideos>
-      <div style="text-align: center;">
-        This user does not have videos
+    </p-tabPanel>
+    <p-tabPanel header="Playlists">
+      <div class="mt-4">
+        <div *ngIf="playlists !== null && playlists.length !== 0; else noPlaylists">
+          <div class="grid">
+            <div class="m-2" *ngFor="let playlist of playlists">
+              <p-card class="playlist" styleClass="shadow-4 hover:shadow-7" (click)="goToPlaylist(playlist.id)">
+                <strong class="playlist-title">{{ playlist.name }}</strong>
+                <p>Videos: {{ playlist.count }}</p>
+              </p-card>
+            </div>
+          </div>
+        </div>
+        <ng-template #noPlaylists>
+          <div style="text-align: center;">
+            This user does not have playlists
+          </div>
+        </ng-template>
       </div>
-    </ng-template>
-  </div>
+    </p-tabPanel>
+  </p-tabView>
 </p-card>

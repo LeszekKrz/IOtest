@@ -11,6 +11,7 @@ import { AutoFocusModule } from 'primeng/autofocus';
 import {InputSwitchModule} from 'primeng/inputswitch';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { FileUploadModule } from 'primeng/fileupload';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { CardModule } from 'primeng/card';
     ProgressSpinnerModule,
     AutoFocusModule,
     InputSwitchModule,
-    CardModule
+    CardModule,
+    FileUploadModule,
   ]
 })
 export class UserModule { }

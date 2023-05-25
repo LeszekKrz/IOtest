@@ -55,7 +55,12 @@
 }
 
 .videos {
-    width: 20%;
+  width: 20%;
+  color: rgb(73, 80, 87);
+}
+
+.rec-video:hover {
+  cursor: pointer;
 }
 
 .grid {
@@ -68,4 +73,16 @@
   width: 99%;
   max-width: 100%;
   height: auto;
+}
+
+.video-author-info:hover, .video-author-info *:hover {
+  cursor: pointer;
+}
+
+.video-author-info:hover .video-author {
+  color: black;
+}
+
+.rec-video-author:hover {
+  color: black;
 }
