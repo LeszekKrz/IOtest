@@ -58,7 +58,7 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
                 { "id", myUserID }
             };
 
-            var path = QueryHelpers.AddQueryString("/user", query);
+            var path = QueryHelpers.AddQueryString("/api/user", query);
             HttpResponseMessage response = await httpClient.PutAsync(path, stringContent);
 
             // Assert
@@ -99,7 +99,7 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
             var stringContent = new StringContent(JsonConvert.SerializeObject(updateUserDto), Encoding.UTF8, "application/json");
 
             // Act
-            var path = "/user";
+            var path = "/api/user";
             HttpResponseMessage response = await httpClient.PutAsync(path, stringContent);
 
             // Assert
@@ -151,7 +151,7 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
                 { "id", hisUserID }
             };
 
-            var path = QueryHelpers.AddQueryString("/user", query);
+            var path = QueryHelpers.AddQueryString("/api/user", query);
             HttpResponseMessage response = await httpClient.PutAsync(path, stringContent);
 
             // Assert

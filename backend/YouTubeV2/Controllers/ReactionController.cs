@@ -9,7 +9,7 @@ using YouTubeV2.Application.Services.VideoServices;
 namespace YouTubeV2.Api.Controllers
 {
     [ApiController]
-    [Route("video-reaction")]
+    [Route("api/video-reaction")]
     [Roles(Role.Simple, Role.Creator, Role.Administrator)]
     public class ReactionController : IdentityControllerBase
     {

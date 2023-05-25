@@ -117,7 +117,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, _authorId)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.DeleteAsync($"video?id={_videoId}");
+            var httpResponseMessage = await httpClient.DeleteAsync($"api/video?id={_videoId}");
 
             // ARRANGE
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -148,7 +148,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Administrator, "not author id")).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.DeleteAsync($"video?id={_videoId}");
+            var httpResponseMessage = await httpClient.DeleteAsync($"api/video?id={_videoId}");
 
             // ARRANGE
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);

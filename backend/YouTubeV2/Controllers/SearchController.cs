@@ -18,7 +18,7 @@ namespace YouTubeV2.Api.Controllers
             _searchService = searchService;
         }
 
-        [HttpGet("search")]
+        [HttpGet("api/search")]
         [Roles(Role.Simple, Role.Creator, Role.Administrator)]
         public async Task<ActionResult<SearchResultsDto>> SearchAsync([FromQuery][Required] string query, 
             [FromQuery][Required] SortingTypes sortingCriterion, [FromQuery][Required] SortingDirections sortingType,
