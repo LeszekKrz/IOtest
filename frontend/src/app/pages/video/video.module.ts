@@ -5,6 +5,8 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { CommentsModule } from './components/comments/comments.module';
 import { MenuModule } from 'primeng/menu';
+import { FormsModule } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
 
 
 
@@ -18,6 +20,8 @@ import { MenuModule } from 'primeng/menu';
     CardModule,
     CommentsModule,
     MenuModule,
+    FormsModule,
+    DialogModule
   ]
 })
 export class VideoModule { }

@@ -12,7 +12,8 @@
       </ng-container>
       <ng-template #isNotSubscribed>
         <p-button class="ml-2" icon="pi pi-check" label="Subscribe" (click)="handleSubscribtionOnClick()"></p-button>
-      </ng-template>
+      </ng-template>  
+      <app-report-button [targetId]="user.id"></app-report-button>
     </div>
   </div>
 

@@ -9,7 +9,6 @@ using YouTubeV2.Application.Jobs;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services;
 using YouTubeV2.Application.Services.BlobServices;
-using YouTubeV2.Application.Services.JwtFeatures;
 using YouTubeV2.Application.Services.VideoServices;
 
 namespace YouTubeV2.Api.Controllers

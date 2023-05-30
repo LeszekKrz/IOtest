@@ -15,6 +15,8 @@ import { ReactionsDTO } from './models/reactions-dto';
 import { ReactionsService } from './services/reactions.service';
 import { AddReactionDTO } from './models/add-reaction-dto';
 import { userSubscriptionListDto } from 'src/app/core/models/user-subscription-list-dto';
+import { SubmitTicketDto } from 'src/app/core/models/tickets/submit-ticket-dto';
+import { TicketService } from 'src/app/core/services/ticket.service';
 
 @Component({
   selector: 'app-video',
@@ -55,6 +57,9 @@ export class VideoComponent implements OnInit, OnDestroy {
       command: () => this.editMetadata(),
     },
   ];
+  showReportDialog = false;
+  reportReason = ''
+  targetId = ''
 
   constructor(
     private route: ActivatedRoute,
@@ -63,7 +68,8 @@ export class VideoComponent implements OnInit, OnDestroy {
     private videoService: VideoService,
     private location: Location,
     private reactionsService: ReactionsService,
-    private subscriptionService: SubscriptionService
+    private subscriptionService: SubscriptionService,
+    private ticketService: TicketService
   ) {
     this.videoId = this.route.snapshot.params['videoId'];
     this.videoUrl = `${environment.webApiUrl}/video/${this.videoId}?access_token=${getToken()}`;
@@ -137,7 +143,8 @@ export class VideoComponent implements OnInit, OnDestroy {
   }
 
   private reportVideo(): void {
-    // REPORT VIDEO LOGIC HERE
+    this.targetId = this.videoId;
+    this.showReportDialog = true;
   }
 
   private editMetadata(): void {
@@ -219,5 +226,21 @@ export class VideoComponent implements OnInit, OnDestroy {
       const roundedMinutes = Math.max(1, minutes);
       return roundedMinutes + (roundedMinutes === 1 ? ' minute' : ' minutes');
     }
+  }
+
+  report() {
+    this.showReportDialog = false;  // close the dialog
+    
+    if(this.targetId && this.reportReason) {
+      const dto: SubmitTicketDto = {
+        targetId: this.targetId,
+        reason: this.reportReason
+      };
+      this.ticketService.submitTicket(dto).subscribe(
+        response => console.log(response),  // replace with actual response handling
+        error => console.error(error)  // replace with actual error handling
+      );
+    }
+    this.reportReason = '';  // reset the reason
   }
 }

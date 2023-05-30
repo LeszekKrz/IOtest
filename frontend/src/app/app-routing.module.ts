@@ -14,6 +14,7 @@ import { SubscriptionsVideosComponent } from './pages/subscriptions-videos/subsc
 import { AuthGuard } from './core/guard/auth.guard';
 import { UpdateVideoMetadataComponent } from './pages/update-video-metadata/update-video-metadata.component';
 import { ChoosePlaylistComponent } from './pages/choose-playlist/choose-playlist.component';
+import { TicketComponent } from './pages/ticket/ticket.component';
 import { CustomRouteReuseStrategy } from './core/route-reuse-strategies/custom-route-reuse-strategy';
 
 const routes: Routes = [
@@ -30,6 +31,7 @@ const routes: Routes = [
   { path: 'subscriptions-videos', component: SubscriptionsVideosComponent, canActivate: [AuthGuard]  },
   { path: 'update-video-metadata/:videoId', component: UpdateVideoMetadataComponent, canActivate: [AuthGuard] },
   { path: 'choose-playlist/:videoId', component: ChoosePlaylistComponent, canActivate: [AuthGuard] },
+  { path: 'tickets', component: TicketComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({

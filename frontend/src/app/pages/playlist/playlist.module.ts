@@ -7,6 +7,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { FormsModule } from '@angular/forms';
+import { ReportButtonModule } from 'src/app/core/components/report-button/report-button.module';
 
 
 
@@ -24,7 +25,8 @@ import { FormsModule } from '@angular/forms';
     ButtonModule,
     DialogModule,
     InputTextModule,
-    InputSwitchModule
+    InputSwitchModule,
+    ReportButtonModule
   ]
 })
 export class PlaylistModule { }
