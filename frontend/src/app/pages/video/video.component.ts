@@ -8,8 +8,8 @@ import { VideoService } from 'src/app/core/services/video.service';
 import { SubscriptionService } from 'src/app/core/services/subscription.service';
 import { environment } from 'src/environments/environment';
 import { switchMap, tap } from 'rxjs/operators';
-import { Subscription, forkJoin } from 'rxjs';
-import { MenuItem } from 'primeng/api';
+import { Observable, of, Subscription, finalize, forkJoin } from 'rxjs';
+import { MenuItem, MessageService } from 'primeng/api';
 import { Location } from '@angular/common';
 import { ReactionsDTO } from './models/reactions-dto';
 import { ReactionsService } from './services/reactions.service';
@@ -17,6 +17,8 @@ import { AddReactionDTO } from './models/add-reaction-dto';
 import { userSubscriptionListDto } from 'src/app/core/models/user-subscription-list-dto';
 import { SubmitTicketDto } from 'src/app/core/models/tickets/submit-ticket-dto';
 import { TicketService } from 'src/app/core/services/ticket.service';
+import { UserPlaylistsDto } from 'src/app/core/models/user-playlists-dto';
+import { PlaylistService } from 'src/app/core/services/playlist.service';
 
 @Component({
   selector: 'app-video',
@@ -58,6 +60,9 @@ export class VideoComponent implements OnInit, OnDestroy {
     },
   ];
   showReportDialog = false;
+  showPlaylistDialog = false;
+  userPlaylists!: UserPlaylistsDto[];
+  isProgressSpinnerVisible = false;
   reportReason = ''
   targetId = ''
 
@@ -69,7 +74,9 @@ export class VideoComponent implements OnInit, OnDestroy {
     private location: Location,
     private reactionsService: ReactionsService,
     private subscriptionService: SubscriptionService,
-    private ticketService: TicketService
+    private ticketService: TicketService,
+    private playlistService : PlaylistService,
+    private messageService : MessageService
   ) {
     this.videoId = this.route.snapshot.params['videoId'];
     this.videoUrl = `${environment.webApiUrl}/video/${this.videoId}?access_token=${getToken()}`;
@@ -139,7 +146,42 @@ export class VideoComponent implements OnInit, OnDestroy {
   }
 
   private addToPlaylist(): void {
-    this.router.navigate(['choose-playlist/' + this.videoId]);
+    if (this.userPlaylists == null)
+    {
+      this.getOwnPlaylists();
+    }
+    this.showPlaylistDialog = true;
+  }
+
+  choosePlaylist(id: string)
+  {
+    const playlist$ = this.playlistService.addToPlaylist(id, this.videoId).pipe(
+        tap(() => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Video added to playlist'
+          })
+          this.getOwnPlaylists();
+        })
+      );
+      this.subscriptions.push(this.doWithLoading(playlist$).subscribe()); 
+    this.showPlaylistDialog = false;
+  }
+  
+  private doWithLoading(observable$: Observable<any>): Observable<any> {
+    return of(this.isProgressSpinnerVisible = true).pipe(
+      switchMap(() => observable$),
+      finalize(() => this.isProgressSpinnerVisible = false)
+    );
+  }
+
+  getOwnPlaylists() {
+    this.playlistService.getOwnPlaylists().subscribe(
+      (userPlaylists) => {
+        this.userPlaylists = userPlaylists;
+      }
+    );
   }
 
   private reportVideo(): void {

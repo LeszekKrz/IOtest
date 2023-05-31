@@ -94,3 +94,11 @@
   </p-footer>
 </p-dialog>
 
+<p-dialog header="Choose Playlist" [(visible)]="showPlaylistDialog" [modal]="true" [style]="{width: '300px'}">
+  <div class="grid">
+    <div class="playlist" (click)="choosePlaylist(playlist.id)" *ngFor="let playlist of userPlaylists">
+      <strong class="playlist-title">{{ playlist.name }}</strong>
+    </div>
+  </div>
+</p-dialog>
+
