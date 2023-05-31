@@ -8,6 +8,8 @@ import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/fo
 import { finalize, Observable, of, Subscription, switchMap, tap } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
+import { DonationService } from 'src/app/core/services/donation.service';
+
 
 @Component({
   selector: 'app-user',
@@ -27,12 +29,17 @@ export class UserComponent implements OnInit, OnDestroy {
   });
   subscriptions: Subscription[] = [];
   isProgressSpinnerVisible = false;
+  ableToWithdraw = false;
+  showWithdrawDialog = false;
+  withdrawAmount = 0;
+  withdrawMax = 0;
   @ViewChild('avatarImageUpload') avatarImageUpload!: FileUpload;
 
   constructor(
     private userService: UserService,
     private router: Router,
     private messageService: MessageService,
+    private donationService: DonationService
   ) { }
 
   private fillFormGroup(userDTO: UserDTO): void {
@@ -44,6 +51,11 @@ export class UserComponent implements OnInit, OnDestroy {
       email: userDTO.email,
       accountBalance: userDTO.accountBalance,
     });
+    this.ableToWithdraw = (userDTO.userType == 'Creator');
+    if (userDTO.accountBalance != null)
+    {
+      this.withdrawMax = userDTO.accountBalance as number;
+    }
   }
 
   ngOnInit(): void {
@@ -149,5 +161,67 @@ export class UserComponent implements OnInit, OnDestroy {
       switchMap(() => observable$),
       finalize(() => this.isProgressSpinnerVisible = false)
     );
+  }
+
+  startWithdraw(): void {
+    this.showWithdrawDialog = true;
+  }
+
+  isWithdrawalImpossible(): boolean {
+    return this.withdrawAmount > this.withdrawMax;
+  }
+
+  withdraw(): void {
+    if (!this.isWithdrawalImpossible())
+    {
+
+      const edit$ = this.donationService.withdraw(this.withdrawAmount).pipe(
+        tap(() => {
+          this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Money was withdrawn'
+        })
+      })
+      );
+      this.subscriptions.push(this.doWithLoading(edit$).subscribe({
+        complete: () => {
+          this.refreshInfo();
+       }
+      }));
+
+      this.showWithdrawDialog = false;
+      this.withdrawAmount = 0;
+    }
+  }
+
+  refreshInfo(): void {
+    const getUserData$ = this.userService.getUser(null).pipe(
+      switchMap((userDTO: UserDTO) => {
+        this.id = userDTO.id;
+        this.fillFormGroup(userDTO);
+        if (!userDTO.avatarImage) return of(null);
+        return this.userService.downloadFileImage(userDTO.avatarImage).pipe(
+          tap((blob: Blob) => {
+            const file = new File([blob], 'avatarImage', { type: blob.type });
+
+            let fileList: FileList = {
+              0: file,
+              length: 1,
+              item: (_: number) => file,
+            };
+
+            let event = {
+              type: 'change',
+              target: {
+                files: fileList,
+              },
+            };
+            this.avatarImageUpload.onFileSelect(event);
+          }),
+        );
+      }),
+    );
+    this.subscriptions.push(this.doWithLoading(getUserData$).subscribe());
   }
 }

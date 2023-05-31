@@ -7,6 +7,7 @@ import { CommentsModule } from './components/comments/comments.module';
 import { MenuModule } from 'primeng/menu';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
 
 
 
@@ -21,7 +22,8 @@ import { DialogModule } from 'primeng/dialog';
     CommentsModule,
     MenuModule,
     FormsModule,
-    DialogModule
+    DialogModule,
+    InputTextModule
   ]
 })
 export class VideoModule { }

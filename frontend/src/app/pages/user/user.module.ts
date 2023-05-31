@@ -8,10 +8,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { AutoFocusModule } from 'primeng/autofocus';
-import {InputSwitchModule} from 'primeng/inputswitch';
+import { InputSwitchModule} from 'primeng/inputswitch';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { FileUploadModule } from 'primeng/fileupload';
+import { DialogModule } from 'primeng/dialog';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { FileUploadModule } from 'primeng/fileupload';
     InputSwitchModule,
     CardModule,
     FileUploadModule,
+    DialogModule
   ]
 })
 export class UserModule { }

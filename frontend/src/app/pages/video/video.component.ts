@@ -17,6 +17,7 @@ import { AddReactionDTO } from './models/add-reaction-dto';
 import { userSubscriptionListDto } from 'src/app/core/models/user-subscription-list-dto';
 import { SubmitTicketDto } from 'src/app/core/models/tickets/submit-ticket-dto';
 import { TicketService } from 'src/app/core/services/ticket.service';
+import { DonationService } from 'src/app/core/services/donation.service';
 import { UserPlaylistsDto } from 'src/app/core/models/user-playlists-dto';
 import { PlaylistService } from 'src/app/core/services/playlist.service';
 
@@ -60,9 +61,13 @@ export class VideoComponent implements OnInit, OnDestroy {
     },
   ];
   showReportDialog = false;
+  showDonateDialog = false;
+  isProgressSpinnerVisible = false;
+  maxDonate = 0;
+  id = '';
+  donateAmount = 0;
   showPlaylistDialog = false;
   userPlaylists!: UserPlaylistsDto[];
-  isProgressSpinnerVisible = false;
   reportReason = ''
   targetId = ''
 
@@ -75,6 +80,7 @@ export class VideoComponent implements OnInit, OnDestroy {
     private reactionsService: ReactionsService,
     private subscriptionService: SubscriptionService,
     private ticketService: TicketService,
+    private donationService: DonationService,
     private playlistService : PlaylistService,
     private messageService : MessageService
   ) {
@@ -101,7 +107,7 @@ export class VideoComponent implements OnInit, OnDestroy {
         this.videos = userVideos.videos;
         this.isAuthorSubscribed = this.isThisAuthorSubscribed(subscriptionList);
       }));
-
+    this.getBalance();
     this.getReactions();
   }
 
@@ -284,5 +290,52 @@ export class VideoComponent implements OnInit, OnDestroy {
       );
     }
     this.reportReason = '';  // reset the reason
+  }
+
+  startDonate() {
+    this.showDonateDialog = true;
+  }
+
+  donate() {
+    if (!this.isDonateImpossible())
+    {
+      const donate$ = this.donationService.sendDonation(this.author.id, this.donateAmount).pipe(
+        tap(() => {
+          this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Money was donated'
+        })
+      })
+      );
+      this.subscriptions.push(this.doWithLoading(donate$).subscribe({
+        complete: () => {
+          this.getBalance();
+       }
+      }));
+      this.showDonateDialog = false;
+    } 
+  }
+
+  isDonateImpossible() : boolean {
+    return this.donateAmount > this.maxDonate;
+  }
+
+  getBalance() {
+    const getUserData$ = this.userService.getUser(null).pipe(
+      switchMap((userDTO: UserDTO) => {
+        this.maxDonate = userDTO.accountBalance as number;
+        this.id = userDTO.id;
+        return of(null);
+      }),
+    );
+    this.subscriptions.push(this.doWithLoading(getUserData$).subscribe());
+  }
+
+  private doWithLoading(observable$: Observable<any>): Observable<any> {
+    return of(this.isProgressSpinnerVisible = true).pipe(
+      switchMap(() => observable$),
+      finalize(() => this.isProgressSpinnerVisible = false)
+    );
   }
 }

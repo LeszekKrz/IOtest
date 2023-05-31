@@ -86,6 +86,9 @@
         pInputText
         placeholder="Ballance" />
     </div>
+    <div class="withdrawContainer">
+      <p-button *ngIf="ableToWithdraw" (click)="startWithdraw()" styleClass="p-button-style p-button-secondary" label="Withdraw"></p-button>
+    </div>
     <div>
       <label for="avatarImage-input" class="field-label">
         <p>Avatar Image</p>
@@ -133,6 +136,19 @@
         </ng-template>
       </p-fileUpload>
     </div>
-    <p-button type="submit" styleClass="p-button-style" label="Edit"></p-button>
+    <p-button type="submit" styleClass="p-button-style" label="Submit"></p-button>
   </form>
 </p-card>
+
+<p-dialog header="Withdraw" [(visible)]="showWithdrawDialog" [modal]="true" [style]="{width: '50vw'}">
+  <div class="p-fluid">
+    <input [(ngModel)]="withdrawAmount" pInputText type="number" placeholder="Enter amount" 
+    [ngClass]="{
+      'ng-invalid ng-dirty': isWithdrawalImpossible()
+    }">
+    <small class="p-error" *ngIf="isWithdrawalImpossible()">Cannot withdraw more than account balance</small>
+  </div>
+  <p-footer>
+    <button pButton type="text" label="Submit" (click)="withdraw()"></button>
+  </p-footer>
+</p-dialog>
