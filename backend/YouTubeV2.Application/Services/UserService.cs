@@ -102,7 +102,10 @@ namespace YouTubeV2.Application.Services
             return await GetDTOForUser(userToGet, getAllData, cancellationToken);
         }
 
-        public async Task EditAsync(string callerID, string userQueryID, UpdateUserDto updateUserDTO, 
+        public async Task EditAsync(
+            string callerID,
+            string userQueryID,
+            UpdateUserDto updateUserDTO, 
             CancellationToken cancellationToken)
         {
             var userToEdit = await VerifyAccessAndGetUserToModify(callerID, userQueryID);

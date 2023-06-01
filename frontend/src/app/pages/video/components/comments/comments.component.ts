@@ -5,6 +5,8 @@ import { MenuItem } from 'primeng/api';
 import { CommentsService } from './services/comments.service';
 import { Subscription, tap } from 'rxjs';
 import { CommentsDTO } from './models/comments-dto';
+import { TicketService } from 'src/app/core/services/ticket.service';
+import { SubmitTicketDto } from 'src/app/core/models/tickets/submit-ticket-dto';
 
 @Component({
   selector: 'app-comments',
@@ -17,8 +19,13 @@ export class CommentsComponent implements OnInit, OnDestroy {
   newComment = new FormControl('', Validators.required);
   subscriptions: Subscription[] = [];
   isProgressSpinnerVisible = false;
+  showReportDialog = false;
+  reportReason = ''
+  targetId = ''
 
-  constructor(private commentService: CommentsService) { }
+  constructor(
+    private commentService: CommentsService,
+    private ticketService: TicketService) { }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscription => {
@@ -109,7 +116,8 @@ export class CommentsComponent implements OnInit, OnDestroy {
   }
 
   reportComment(commentIndex: number): void {
-    // REPORT COMMENT LOGIC HERE
+    this.targetId = this.comments[commentIndex].id;
+    this.showReportDialog = true;
   }
 
   handleOnHideResponsesClick(comment: Comment): void {
@@ -132,7 +140,8 @@ export class CommentsComponent implements OnInit, OnDestroy {
   }
 
   reportCommentResponse(comment: Comment, responseIndex: number): void {
-    // REPORT COMMENT RESPONSE LOGIC HERE
+    this.targetId = comment.responses![responseIndex].id;
+    this.showReportDialog = true;
   }
 
   handleOnAddResponseClick(comment: Comment): void {
@@ -191,5 +200,21 @@ export class CommentsComponent implements OnInit, OnDestroy {
         command: () => this.reportCommentResponse(comment, responseIndex),
       },
     ];
+  }
+
+  report() {
+    this.showReportDialog = false;  // close the dialog
+    
+    if(this.targetId && this.reportReason) {
+      const dto: SubmitTicketDto = {
+        targetId: this.targetId,
+        reason: this.reportReason
+      };
+      this.ticketService.submitTicket(dto).subscribe(
+        response => console.log(response),  // replace with actual response handling
+        error => console.error(error)  // replace with actual error handling
+      );
+    }
+    this.reportReason = '';  // reset the reason
   }
 }

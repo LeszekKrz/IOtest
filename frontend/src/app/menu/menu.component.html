@@ -38,6 +38,16 @@
         class="p-button-secondary p-button-text"
         (click)="addVideoButtonOnClick()">
       </button>
+      <button
+        *ngIf="role == 'Administrator'"
+        id="tickets-button"
+        pButton
+        pRipple
+        type="tickets"
+        label="Tickets"
+        class="p-button-secondary p-button-text"
+        (click)="ticketsButtonOnClick()">
+      </button>
     </div>
     <div *ngIf="isUserAuthenticated">
       <div class="p-inputgroup">

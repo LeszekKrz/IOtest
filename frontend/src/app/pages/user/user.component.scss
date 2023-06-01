@@ -1,0 +1,82 @@
+@import '../../core/styles/progress-spinner.scss';
+
+:host ::ng-deep .p-card-style.p-card {
+  border-radius: 1rem;
+  width: 40%;
+  margin: 1rem auto;
+  .p-card-title {
+    text-align: center;
+    margin: 0 auto;
+  }
+  .p-card-content {
+    padding: 0 0;
+  }
+}
+
+.field-label {
+  font-weight: 700;
+  p {
+    margin-bottom: 0.5em;
+  }
+}
+
+.required:after {
+  content: " *";
+  color: red;
+}
+
+small {
+  display: block;
+  margin-top: 0.375rem;
+  margin-left: 0.375rem;
+}
+
+:host ::ng-deep .p-fileupload-style.p-fileupload {
+  margin-top: 1em;
+  .p-progressbar {
+    display: none;
+  }
+
+  .p-fileupload-buttonbar {
+    display: none;
+  }
+
+  .p-fileupload-content {
+    border: 3px dashed #e4e8ed;
+    border-radius: 1em;
+    padding: 1em;
+  }
+}
+
+.download-icon {
+  margin-bottom: 0.5em;
+  font-size: 1.5em;
+}
+
+.browse-button {
+  color: #3366cc;
+  cursor: pointer;
+}
+
+:host ::ng-deep .p-button-remove {
+  width: 25px;
+  height: 25px !important;
+  padding: 0;
+  line-height: 25px;
+}
+
+:host ::ng-deep .p-button-remove .pi {
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+:host ::ng-deep .p-button-style.p-button {
+  margin-top: 1em;
+  width: 100%;
+  border-radius: 2em;
+}
+
+.withdrawContainer
+{
+  width: 50%;
+}

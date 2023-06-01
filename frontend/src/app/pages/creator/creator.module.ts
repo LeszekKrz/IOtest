@@ -4,6 +4,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { ReportButtonModule } from 'src/app/core/components/report-button/report-button.module';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { CardModule } from 'primeng/card';
     CommonModule,
     ButtonModule,
     CardModule,
+    ReportButtonModule
   ]
 })
 export class CreatorModule { }
