@@ -39,12 +39,12 @@ namespace YouTubeV2.Api.Controllers
         }
 
         [HttpDelete("details")]
-        public async Task<IActionResult> DeletePlaylist([FromQuery][Required] Guid playlistId, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeletePlaylist([FromQuery][Required] Guid id, CancellationToken cancellationToken)
         {
             string? userId = GetUserId();
             if (userId is null) return Forbid();
 
-            await _playlistsService.DeletePlaylist(userId, playlistId, cancellationToken);
+            await _playlistsService.DeletePlaylist(userId, id, cancellationToken);
 
             return Ok();
         }

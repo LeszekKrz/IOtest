@@ -59,4 +59,20 @@ export class PlaylistService {
   getRecommended(): Observable<PlaylistVideosDto>{
     return this.httpClient.get<PlaylistVideosDto>(`${this.videoPageWebAPIUrl}/playlist/recommended`, getHttpOptionsWithAuthenticationHeader());
   }
+
+  deletePlaylist(playlistId: string): Observable<void> {
+    const url = `${this.videoPageWebAPIUrl}/playlist/details`;
+    const httpOptions = {
+      params: new HttpParams().set('id', playlistId),
+      headers: getHttpOptionsWithAuthenticationHeader().headers
+    };
+
+    return this.httpClient.delete<void>(url, httpOptions);
+  }
+
+  deleteVideoFromPlaylist(playlistId: string, videoId: string): Observable<void> {
+    const url = `${this.videoPageWebAPIUrl}/playlist/${playlistId}/${videoId}`;
+
+    return this.httpClient.delete<void>(url, getHttpOptionsWithAuthenticationHeader());
+  }
 }

@@ -99,7 +99,7 @@
 <p-dialog header="Donate" [(visible)]="showDonateDialog" [modal]="true" [style]="{width: '50vw'}">
   <div class="p-fluid">
     <small>Your account balance: {{ maxDonate }}</small>
-    <input [(ngModel)]="donateAmount" pInputText type="number" placeholder="Enter amount" 
+    <input [(ngModel)]="donateAmount" pInputText type="number" placeholder="Enter amount"
     [ngClass]="{
       'ng-invalid ng-dirty': isDonateImpossible()
     }">
@@ -109,7 +109,8 @@
     <button pButton type="text" label="Submit" (click)="donate()"></button>
   </p-footer>
 </p-dialog>
- 
+
+
 <p-dialog header="Choose Playlist" [(visible)]="showPlaylistDialog" [modal]="true" [style]="{width: '300px'}">
   <div class="grid">
     <div class="playlist" (click)="choosePlaylist(playlist.id)" *ngFor="let playlist of userPlaylists">

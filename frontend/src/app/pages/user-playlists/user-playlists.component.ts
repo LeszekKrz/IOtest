@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Observable, Subscription, finalize, of, switchMap, tap } from 'rxjs';
 import { PlaylistService } from 'src/app/core/services/playlist.service';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { UserPlaylistsDto } from 'src/app/core/models/user-playlists-dto';
 import { Router } from '@angular/router';
 
@@ -21,7 +21,8 @@ export class UserPlaylistsComponent {
   constructor(
     private playlistService: PlaylistService,
     private messageService: MessageService,
-    private router: Router) { 
+    private router: Router,
+    private confirmationService: ConfirmationService) {
       this.getOwnPlaylists();
     }
 
@@ -71,5 +72,25 @@ export class UserPlaylistsComponent {
       })
     );
     this.subscriptions.push(this.doWithLoading(playlist$).subscribe());
+  }
+
+  showDeletePlaylistPopUp(playlist: UserPlaylistsDto, target: EventTarget): void {
+    this.confirmationService.confirm({
+      target: target,
+      message:  'Are you sure you want to delete this playlist?',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        const deletePlaylist$ = this.playlistService.deletePlaylist(playlist.id).pipe(
+          finalize(() => {
+            const index = this.userPlaylists.findIndex(userPlaylist => userPlaylist.id === playlist.id);
+            if (index > -1) {
+              this.userPlaylists.splice(index, 1);
+            }
+          })
+        )
+
+        this.subscriptions.push(this.doWithLoading(deletePlaylist$).subscribe());
+      }
+    });
   }
 }

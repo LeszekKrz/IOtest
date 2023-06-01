@@ -1,27 +1,25 @@
-/* Modify the content-container class */
 .content-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* Change to flex-start to align items to the top */
+  justify-content: flex-start;
   height: 100%;
-  padding-top: 20px; /* Add padding to the top */
+  padding-top: 20px;
 }
 
 .label-container {
-  text-align: center; /* Center the text within the label container */
+  text-align: center;
 }
 
 .button-container {
-  display: flex; /* Use flex to align buttons */
-  flex-direction: column; /* Set the flex direction to column to stack buttons vertically */
-  justify-content: center; /* Center the buttons vertically */
-  align-items: center; /* Center the buttons horizontally */
-  padding-top: 20px; /* Add padding between labels and buttons */
-  gap: 10px; /* Add a gap between buttons */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 20px;
+  gap: 10px;
 }
 
-/* Existing styles */
 .container {
   display: flex;
   height: 100vh;
@@ -69,13 +67,47 @@
   margin-bottom: 0;
 }
 
-.grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start; /* Align items to the left */
+.videoCol {
+  margin: 0 20px 20px 0;
 }
 
-.videoCol {
-  /* Add any additional styles for the column, such as width or margin */
-  margin: 0 20px 20px 0; /* Adjust the margin as needed */
+.video-in-playlist {
+  width: 16em;
+}
+
+.video-in-playlist:hover {
+  cursor: pointer;
+}
+
+.thumbnail-container {
+  overflow: hidden;
+  position: relative;
+  height: 9em;
+  width: 16em;
+}
+
+.thumbnail {
+  display: block;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.video-length {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 5px 10px;
+  z-index: 1;
+}
+
+.video-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 3em;
+  line-height: 1.5;
 }
