@@ -331,11 +331,4 @@ export class VideoComponent implements OnInit, OnDestroy {
     );
     this.subscriptions.push(this.doWithLoading(getUserData$).subscribe());
   }
-
-  private doWithLoading(observable$: Observable<any>): Observable<any> {
-    return of(this.isProgressSpinnerVisible = true).pipe(
-      switchMap(() => observable$),
-      finalize(() => this.isProgressSpinnerVisible = false)
-    );
-  }
 }
