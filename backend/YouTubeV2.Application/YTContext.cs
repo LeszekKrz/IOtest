@@ -15,6 +15,7 @@ namespace YouTubeV2.Application
         public DbSet<Comment> Comments { get; set; }
         public DbSet<CommentResponse> CommentResponses { get; set; }
         public DbSet<Reaction> Reactions { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
 
         public YTContext(DbContextOptions<YTContext> options) : base(options) { }
 

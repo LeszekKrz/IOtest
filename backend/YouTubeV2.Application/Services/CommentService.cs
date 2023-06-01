@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using YouTubeV2.Application.DTO.CommentsDTO;
+using YouTubeV2.Application.Exceptions;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Providers;
 using YouTubeV2.Application.Services.BlobServices;
+using static YouTubeV2.Application.DTO.CommentsDTO.CommentsDTO;
 
 namespace YouTubeV2.Application.Services
 {
@@ -103,6 +106,34 @@ namespace YouTubeV2.Application.Services
         {
             _context.CommentResponses.Remove(commentResponse);
             await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<CommentDTO> GetCommentDTOByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var comment = await GetCommentByIdAsync(id, cancellationToken, comment => comment.Author);
+
+            if (comment is null) throw new NotFoundException($"Comment with id {id} not found");
+
+            return new CommentDTO(comment.Id,
+                    comment.Author.Id,
+                    comment.Content,
+                    _blobImageService.GetProfilePictureUrl(comment.Author.Id),
+                    comment.Author.UserName!,
+                    false);
+        }
+
+        public async Task<CommentDTO> GetCommentResponseDTOByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var response = await GetCommentResponseByIdAsync(id, cancellationToken, comment => comment.Author);
+
+            if (response is null) throw new NotFoundException($"Comment response with id {id} not found");
+
+            return new CommentDTO(response.Id,
+                response.Author.Id,
+                response.Content,
+                _blobImageService.GetProfilePictureUrl(response.Author.Id),
+                response.Author.UserName!,
+                false);
         }
     }
 }

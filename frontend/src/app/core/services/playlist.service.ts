@@ -25,7 +25,7 @@ export class PlaylistService {
   {
     return this.httpClient.post<void>(`${this.videoPageWebAPIUrl}/playlist/${playlistId}/${videoId}`, null, getHttpOptionsWithAuthenticationHeader());
   }
-  
+
   updatePlalist(id: string, updatePlaylist: PostPlaylistDto): Observable<void>{
     const httpOptions = {
       params: new HttpParams().set('id', id),
@@ -37,6 +37,14 @@ export class PlaylistService {
 
   getOwnPlaylists(): Observable<UserPlaylistsDto[]>{
     return this.httpClient.get<UserPlaylistsDto[]>(`${this.videoPageWebAPIUrl}/playlist/user`, getHttpOptionsWithAuthenticationHeader());
+  }
+
+  getUserPlaylists(id: string): Observable<UserPlaylistsDto[]>{
+    const httpOptions = {
+      params: new HttpParams().set('id', id),
+      headers: getHttpOptionsWithAuthenticationHeader().headers
+    };
+    return this.httpClient.get<UserPlaylistsDto[]>(`${this.videoPageWebAPIUrl}/playlist/user`, httpOptions);
   }
 
   getPlaylistVideos(playlistId: string): Observable<PlaylistVideosDto>{

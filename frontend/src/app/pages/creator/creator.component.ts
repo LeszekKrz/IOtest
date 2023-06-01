@@ -8,6 +8,8 @@ import { UserService } from 'src/app/core/services/user.service';
 import { VideoService } from 'src/app/core/services/video.service';
 import { SubscriptionService } from 'src/app/core/services/subscription.service';
 import { userSubscriptionListDto } from 'src/app/core/models/user-subscription-list-dto';
+import { PlaylistService } from 'src/app/core/services/playlist.service';
+import { UserPlaylistsDto } from 'src/app/core/models/user-playlists-dto';
 
 @Component({
   selector: 'app-creator',
@@ -20,13 +22,15 @@ export class CreatorComponent implements OnInit, OnDestroy {
   videos!: VideoMetadataDto[];
   isCreatorSubscribed!: boolean;
   subscriptions: Subscription[] = [];
+  playlists!: UserPlaylistsDto[];
 
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
     private router: Router,
     private videoService: VideoService,
-    private subscriptionService: SubscriptionService
+    private subscriptionService: SubscriptionService,
+    private playlistService: PlaylistService,
     ) {
     this.id = this.route.snapshot.paramMap.get('id')!;
   }
@@ -35,16 +39,20 @@ export class CreatorComponent implements OnInit, OnDestroy {
     const getUser$ = this.userService.getUser(this.id);
     const getVideos$ = this.videoService.getUserVideos(this.id);
     const getSubList$ = this.subscriptionService.getSubscriptions();
+    const getPlaylists$ = this.playlistService.getUserPlaylists(this.id);
 
-    this.subscriptions.push(forkJoin([getUser$, getVideos$, getSubList$]).subscribe(([user, videosList, subscriptionList]) => {
+    this.subscriptions.push(
+      forkJoin([getUser$, getVideos$, getSubList$, getPlaylists$])
+      .subscribe(([user, videosList, subscriptionList, playlists]) => {
       this.user = user;
       this.videos = videosList.videos;
       this.isCreatorSubscribed = this.isThisCreatorSubscribed(subscriptionList);
+      this.playlists = playlists;
     }));
   }
 
   private checkIfCreatorIsSubscribed(): void {
-    this.subscriptions.push(this.subscriptionService.getSubscriptions().subscribe(subscriptions => 
+    this.subscriptions.push(this.subscriptionService.getSubscriptions().subscribe(subscriptions =>
         this.isCreatorSubscribed = this.isThisCreatorSubscribed(subscriptions)
       ));
   }
@@ -92,6 +100,10 @@ export class CreatorComponent implements OnInit, OnDestroy {
 
   public goToUserProfile(id: string): void {
     this.router.navigate(['creator/' + id]);
+  }
+
+  public goToPlaylist(id: string): void {
+    this.router.navigate(['playlist', id]);
   }
 
   public getTimeAgo(video: VideoMetadataDto): string {

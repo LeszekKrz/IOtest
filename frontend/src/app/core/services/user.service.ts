@@ -66,4 +66,8 @@ export class UserService {
   loginUser(userForLogin: UserForLoginDTO): Observable<AuthenticationResponseDTO> {
     return this.httpClient.post<AuthenticationResponseDTO>(`${this.registrationPageWebAPIUrl}/login`, userForLogin);
   }
+
+  downloadFileImage(url: string): Observable<Blob> {
+    return this.httpClient.get(url, {responseType: 'blob'});
+  }
 }

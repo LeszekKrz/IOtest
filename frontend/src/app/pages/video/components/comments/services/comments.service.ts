@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { getHttpOptionsWithAuthenticationHeader } from 'src/app/core/functions/get-http-options-with-authorization-header';
 import { Observable } from 'rxjs';
 import { CommentsDTO } from '../models/comments-dto';
+import { CommentDTO } from '../models/comment-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -66,5 +67,23 @@ export class CommentsService {
     };
 
     return this.httpClient.delete<void>(`${this.commentResponseWebAPIUrl}`, httpOptions);
+  }
+
+  getCommentByIdAsync(commentId: string): Observable<CommentDTO> {
+    const httpOptions = {
+      params: new HttpParams().set('id', commentId),
+      headers: getHttpOptionsWithAuthenticationHeader().headers,
+    };
+
+    return this.httpClient.get<CommentDTO>(`${this.commentWebAPIUrl}/commentById`, httpOptions);
+  }
+
+  getCommentResponseByIdAsync(commentId: string): Observable<CommentDTO> {
+    const httpOptions = {
+      params: new HttpParams().set('id', commentId),
+      headers: getHttpOptionsWithAuthenticationHeader().headers,
+    };
+
+    return this.httpClient.get<CommentDTO>(`${this.commentResponseWebAPIUrl}/commentById`, httpOptions);
   }
 }
