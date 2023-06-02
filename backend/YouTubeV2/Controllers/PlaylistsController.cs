@@ -69,7 +69,7 @@ namespace YouTubeV2.Api.Controllers
             string? userId = GetUserId();
             if (userId is null) return Forbid();
 
-            return Ok(await _playlistsService.GetPlaylistVideos(GetUserId(), id, cancellationToken));
+            return Ok(await _playlistsService.GetPlaylistVideos(userId, id, cancellationToken));
         }
 
         [HttpPost("{id}/{videoId}")]

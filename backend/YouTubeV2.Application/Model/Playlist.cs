@@ -9,5 +9,6 @@ namespace YouTubeV2.Application.Model
         public string Name { get; set; } = null!;
         public Visibility Visibility { get; set; }
         public virtual ICollection<Video> Videos { get; set; } = null!;
+        public DateTimeOffset CreationDate { get; init; }
     }
 }
