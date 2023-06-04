@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { environment } from "../../../environments/environment";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { PostPlaylistDto } from '../models/post-playlist-dto';
 import { getHttpOptionsWithAuthenticationHeader } from "../functions/get-http-options-with-authorization-header";
 import { UserPlaylistsDto } from '../models/user-playlists-dto';
 import { Observable } from 'rxjs';
 import { PlaylistVideosDto } from '../models/playlist-videos-dto';
+import { getApiUrl } from '../functions/get-api-url';
 
 
 
@@ -13,17 +13,15 @@ import { PlaylistVideosDto } from '../models/playlist-videos-dto';
   providedIn: 'root'
 })
 export class PlaylistService {
-  private readonly videoPageWebAPIUrl: string = `${environment.webApiUrl}`;
-
   constructor(private httpClient: HttpClient) { }
 
   postPlalist(postPlaylist: PostPlaylistDto): Observable<void>{
-    return this.httpClient.post<void>(`${this.videoPageWebAPIUrl}/playlist/details`, postPlaylist, getHttpOptionsWithAuthenticationHeader());
+    return this.httpClient.post<void>(`${getApiUrl()}/playlist/details`, postPlaylist, getHttpOptionsWithAuthenticationHeader());
   }
 
   addToPlaylist(playlistId: string, videoId: string): Observable<void>
   {
-    return this.httpClient.post<void>(`${this.videoPageWebAPIUrl}/playlist/${playlistId}/${videoId}`, null, getHttpOptionsWithAuthenticationHeader());
+    return this.httpClient.post<void>(`${getApiUrl()}/playlist/${playlistId}/${videoId}`, null, getHttpOptionsWithAuthenticationHeader());
   }
 
   updatePlalist(id: string, updatePlaylist: PostPlaylistDto): Observable<void>{
@@ -32,11 +30,11 @@ export class PlaylistService {
       headers: getHttpOptionsWithAuthenticationHeader().headers
     };
 
-    return this.httpClient.put<void>(`${this.videoPageWebAPIUrl}/playlist/details`, updatePlaylist, httpOptions);
+    return this.httpClient.put<void>(`${getApiUrl()}/playlist/details`, updatePlaylist, httpOptions);
   }
 
   getOwnPlaylists(): Observable<UserPlaylistsDto[]>{
-    return this.httpClient.get<UserPlaylistsDto[]>(`${this.videoPageWebAPIUrl}/playlist/user`, getHttpOptionsWithAuthenticationHeader());
+    return this.httpClient.get<UserPlaylistsDto[]>(`${getApiUrl()}/playlist/user`, getHttpOptionsWithAuthenticationHeader());
   }
 
   getUserPlaylists(id: string): Observable<UserPlaylistsDto[]>{
@@ -44,7 +42,7 @@ export class PlaylistService {
       params: new HttpParams().set('id', id),
       headers: getHttpOptionsWithAuthenticationHeader().headers
     };
-    return this.httpClient.get<UserPlaylistsDto[]>(`${this.videoPageWebAPIUrl}/playlist/user`, httpOptions);
+    return this.httpClient.get<UserPlaylistsDto[]>(`${getApiUrl()}/playlist/user`, httpOptions);
   }
 
   getPlaylistVideos(playlistId: string): Observable<PlaylistVideosDto>{
@@ -53,15 +51,15 @@ export class PlaylistService {
       headers: getHttpOptionsWithAuthenticationHeader().headers
     };
 
-    return this.httpClient.get<PlaylistVideosDto>(`${this.videoPageWebAPIUrl}/playlist/video`, httpOptions);
+    return this.httpClient.get<PlaylistVideosDto>(`${getApiUrl()}/playlist/video`, httpOptions);
   }
 
   getRecommended(): Observable<PlaylistVideosDto>{
-    return this.httpClient.get<PlaylistVideosDto>(`${this.videoPageWebAPIUrl}/playlist/recommended`, getHttpOptionsWithAuthenticationHeader());
+    return this.httpClient.get<PlaylistVideosDto>(`${getApiUrl()}/playlist/recommended`, getHttpOptionsWithAuthenticationHeader());
   }
 
   deletePlaylist(playlistId: string): Observable<void> {
-    const url = `${this.videoPageWebAPIUrl}/playlist/details`;
+    const url = `${getApiUrl()}/playlist/details`;
     const httpOptions = {
       params: new HttpParams().set('id', playlistId),
       headers: getHttpOptionsWithAuthenticationHeader().headers
@@ -71,7 +69,7 @@ export class PlaylistService {
   }
 
   deleteVideoFromPlaylist(playlistId: string, videoId: string): Observable<void> {
-    const url = `${this.videoPageWebAPIUrl}/playlist/${playlistId}/${videoId}`;
+    const url = `${getApiUrl()}/playlist/${playlistId}/${videoId}`;
 
     return this.httpClient.delete<void>(url, getHttpOptionsWithAuthenticationHeader());
   }

@@ -33,6 +33,10 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.router.navigate(['']);
   }
 
+  backendSelectionButtonOnClick(): void {
+    this.router.navigate(['backend-selection']);
+  }
+
   searchButtonOnClick(): void {
     this.router.navigate(['search'], {state: {query: this.query}});
   }

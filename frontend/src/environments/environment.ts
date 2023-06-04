@@ -4,8 +4,11 @@
 
 export const environment = {
     production: false,
-    webApiUrl: 'https://wetubeback.azurewebsites.net/api',
-    webUrl: 'https://wetubeback.azurewebsites.net/api',
+    group10WebApiUrl: 'https://mojewidelo.pl/api',
+    //group11WebApiUrl: 'https://localhost:7133/api',
+    group11WebApiUrl: 'https://wetubeback.azurewebsites.net/api',
+    group12WebApiUrl: 'https://videoserviceapi.azurewebsites.net/api',
+    group13WebApiUrl: 'https://io2.azurewebsites.net/api',
   };
 
   /*

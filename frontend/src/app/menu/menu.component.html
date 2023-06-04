@@ -58,6 +58,16 @@
     <div style="margin-left: auto;">
       <button
         *ngIf="!isUserAuthenticated"
+        id="backend-selection-button"
+        pButton
+        pRipple
+        type="backend-selection"
+        label="Select BE"
+        class="p-button-secondary p-button-text"
+        (click)="backendSelectionButtonOnClick()">
+      </button>
+      <button
+        *ngIf="!isUserAuthenticated"
         id="login-button"
         pButton
         pRipple

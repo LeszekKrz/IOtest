@@ -1,0 +1,9 @@
+<div class="center-content">
+    <p-card>
+      <div *ngFor="let group of groups" class="group-item">
+        <p-radioButton name="group" [value]="group" [(ngModel)]="selectedGroup" (onClick)="onButtonClick(group)"></p-radioButton>
+        <label class="group-label">{{group.name}}</label>
+      </div>
+    </p-card>
+  </div>
+  

@@ -2,16 +2,14 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { getHttpOptionsWithAuthenticationHeader } from 'src/app/core/functions/get-http-options-with-authorization-header';
-import { environment } from 'src/environments/environment';
 import { AddReactionDTO } from '../models/add-reaction-dto';
 import { ReactionsDTO } from '../models/reactions-dto';
+import { getApiUrl } from 'src/app/core/functions/get-api-url';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReactionsService {
-  private readonly reactionWebAPIUrl = `${environment.webApiUrl}/video-reaction`;
-
   constructor(private httpClient: HttpClient) { }
 
   addOrUpdateReaction(videoId: string, addReactionDTO: AddReactionDTO): Observable<void> {
@@ -20,7 +18,7 @@ export class ReactionsService {
       headers: getHttpOptionsWithAuthenticationHeader().headers,
     };
 
-    return this.httpClient.post<void>(`${this.reactionWebAPIUrl}`, addReactionDTO, httpOptions);
+    return this.httpClient.post<void>(`${getApiUrl()}/video-reaction`, addReactionDTO, httpOptions);
   }
 
   getReactions(videoId: string): Observable<ReactionsDTO> {
@@ -29,6 +27,6 @@ export class ReactionsService {
       headers: getHttpOptionsWithAuthenticationHeader().headers,
     };
 
-    return this.httpClient.get<ReactionsDTO>(`${this.reactionWebAPIUrl}`, httpOptions);
+    return this.httpClient.get<ReactionsDTO>(`${getApiUrl()}/video-reaction`, httpOptions);
   }
 }

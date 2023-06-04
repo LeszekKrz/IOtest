@@ -23,6 +23,8 @@ import { SubscriptionsVideosModule } from './pages/subscriptions-videos/subscrip
 import { UpdateVideoMetadataModule } from './pages/update-video-metadata/update-video-metadata.module';
 import { TicketModule } from './pages/ticket/ticket.module';
 import { ReportButtonModule } from './core/components/report-button/report-button.module';
+import { BackendSelectionComponent } from './pages/backend-selection/backend-selection.component';
+import { BackendSelectionModule } from './pages/backend-selection/backend-selection.module';
 
 @NgModule({
     declarations: [
@@ -59,7 +61,8 @@ import { ReportButtonModule } from './core/components/report-button/report-butto
         SubscriptionsVideosModule,
         UpdateVideoMetadataModule,
         TicketModule,
-        ReportButtonModule
+        ReportButtonModule,
+        BackendSelectionModule
     ]
 })
 export class AppModule { }

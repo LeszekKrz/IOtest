@@ -6,7 +6,6 @@ import { VideoMetadataDto } from 'src/app/core/models/video-metadata-dto';
 import { UserService } from 'src/app/core/services/user.service';
 import { VideoService } from 'src/app/core/services/video.service';
 import { SubscriptionService } from 'src/app/core/services/subscription.service';
-import { environment } from 'src/environments/environment';
 import { switchMap, tap } from 'rxjs/operators';
 import { Observable, of, Subscription, finalize, forkJoin } from 'rxjs';
 import { MenuItem, MessageService } from 'primeng/api';
@@ -20,6 +19,7 @@ import { TicketService } from 'src/app/core/services/ticket.service';
 import { DonationService } from 'src/app/core/services/donation.service';
 import { UserPlaylistsDto } from 'src/app/core/models/user-playlists-dto';
 import { PlaylistService } from 'src/app/core/services/playlist.service';
+import { getApiUrl } from 'src/app/core/functions/get-api-url';
 
 @Component({
   selector: 'app-video',
@@ -28,7 +28,6 @@ import { PlaylistService } from 'src/app/core/services/playlist.service';
 })
 export class VideoComponent implements OnInit, OnDestroy {
   videoId: string;
-  videoUrl: string;
   videoMetadata!: VideoMetadataDto;
   author!: UserDTO;
   isAuthorSubscribed!: boolean;
@@ -85,7 +84,6 @@ export class VideoComponent implements OnInit, OnDestroy {
     private messageService : MessageService
   ) {
     this.videoId = this.route.snapshot.params['videoId'];
-    this.videoUrl = `${environment.webApiUrl}/video/${this.videoId}?access_token=${getToken()}`;
   }
 
   ngOnInit(): void {
@@ -115,6 +113,10 @@ export class VideoComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(subscription => {
       subscription.unsubscribe();
     });
+  }
+
+  public get videoUrl(): string {
+    return `${getApiUrl()}/video/${this.videoId}?access_token=${getToken()}`;
   }
 
   private getReactions(): void {

@@ -1,17 +1,15 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { environment } from "../../../environments/environment";
 import { VideoListDto } from "../models/video-list-dto";
 import { VideoMetadataDto } from "../models/video-metadata-dto";
 import { getHttpOptionsWithAuthenticationHeader } from "../functions/get-http-options-with-authorization-header";
+import { getApiUrl } from "../functions/get-api-url";
 
 @Injectable({
   providedIn: 'root'
 })
 export class VideoService {
-  private readonly videoPageWebAPIUrl: string = `${environment.webApiUrl}`;
-
   constructor(private httpClient: HttpClient) {}
 
   getUserVideos(id: string): Observable<VideoListDto> {
@@ -21,7 +19,7 @@ export class VideoService {
       headers: getHttpOptionsWithAuthenticationHeader().headers
     };
 
-    return this.httpClient.get<VideoListDto>(`${this.videoPageWebAPIUrl}/user/videos`, httpOptions);
+    return this.httpClient.get<VideoListDto>(`${getApiUrl()}/user/videos`, httpOptions);
   }
 
   getVideoMetadata(id: string): Observable<VideoMetadataDto> {
@@ -31,7 +29,7 @@ export class VideoService {
       headers: getHttpOptionsWithAuthenticationHeader().headers
     };
 
-    return this.httpClient.get<VideoMetadataDto>(`${this.videoPageWebAPIUrl}/video-metadata`, httpOptions);
+    return this.httpClient.get<VideoMetadataDto>(`${getApiUrl()}/video-metadata`, httpOptions);
   }
 
   deleteVideo(id: string): Observable<void> {
@@ -41,6 +39,6 @@ export class VideoService {
       headers: getHttpOptionsWithAuthenticationHeader().headers
     };
 
-    return this.httpClient.delete<void>(`${this.videoPageWebAPIUrl}/video`, httpOptions);
+    return this.httpClient.delete<void>(`${getApiUrl()}/video`, httpOptions);
   }
 }

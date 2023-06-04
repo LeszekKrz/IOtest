@@ -2,15 +2,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { VideoMetadataUpdateDTO } from '../../add-video/models/video-metadata-dto';
-import { environment } from 'src/environments/environment';
 import { getHttpOptionsWithAuthenticationHeader } from 'src/app/core/functions/get-http-options-with-authorization-header';
+import { getApiUrl } from 'src/app/core/functions/get-api-url';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UpdateVideoMetadataService {
-  private readonly updateVideoMetadataPageWebAPIUrl: string = `${environment.webApiUrl}/video-metadata`;
-
   constructor(private httpClient: HttpClient) { }
 
   downloadFileImage(url: string): Observable<Blob> {
@@ -18,7 +16,7 @@ export class UpdateVideoMetadataService {
   }
 
   updateVideoMetadata(videoMetadataDTO: VideoMetadataUpdateDTO, videoId: string): Observable<void> {
-    const putVideoMetadataWebAPIUrl: string = this.updateVideoMetadataPageWebAPIUrl;
+    const putVideoMetadataWebAPIUrl: string = `${getApiUrl()}/video-metadata}`;
     const httpOptions = {
       params: new HttpParams().set('id', videoId),
       headers: getHttpOptionsWithAuthenticationHeader().headers,

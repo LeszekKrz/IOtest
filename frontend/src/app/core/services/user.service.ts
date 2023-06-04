@@ -1,19 +1,18 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, Subject } from "rxjs";
-import { environment } from "../../../environments/environment";
 import { UserForRegistrationDTO } from "../../authentication/models/user-for-registration-dto";
 import { UserDTO } from "../models/user-dto";
 import { UserForLoginDTO } from "src/app/authentication/models/user-login-dto";
 import { UpdateUserDTO } from "../models/update-user-dto";
 import { getHttpOptionsWithAuthenticationHeader } from "../functions/get-http-options-with-authorization-header";
 import { AuthenticationResponseDTO } from "src/app/authentication/models/authentication-response-dto";
+import { getApiUrl } from "../functions/get-api-url";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private readonly registrationPageWebAPIUrl: string = `${environment.webApiUrl}`;
   private authenticationStateChangeSubject = new Subject<boolean>();
   public authenticationStateChanged = this.authenticationStateChangeSubject.asObservable();
 
@@ -35,7 +34,7 @@ export class UserService {
   }
 
   registerUser(userForRegistration: UserForRegistrationDTO): Observable<void> {
-    return this.httpClient.post<void>(`${this.registrationPageWebAPIUrl}/register`, userForRegistration);
+    return this.httpClient.post<void>(`${getApiUrl()}/register`, userForRegistration);
   }
 
   getUser(id: string | null): Observable<UserDTO> {
@@ -49,7 +48,7 @@ export class UserService {
       headers: getHttpOptionsWithAuthenticationHeader().headers
     };
 
-    return this.httpClient.get<UserDTO>(`${this.registrationPageWebAPIUrl}/user`, httpOptions);
+    return this.httpClient.get<UserDTO>(`${getApiUrl()}/user`, httpOptions);
   }
 
   editUser(id: string, updateUserDTO: UpdateUserDTO): Observable<void>{
@@ -60,11 +59,11 @@ export class UserService {
       headers: getHttpOptionsWithAuthenticationHeader().headers
     };
 
-    return this.httpClient.put<void>(`${this.registrationPageWebAPIUrl}/user`, updateUserDTO, httpOptions);
+    return this.httpClient.put<void>(`${getApiUrl()}/user`, updateUserDTO, httpOptions);
   }
 
   loginUser(userForLogin: UserForLoginDTO): Observable<AuthenticationResponseDTO> {
-    return this.httpClient.post<AuthenticationResponseDTO>(`${this.registrationPageWebAPIUrl}/login`, userForLogin);
+    return this.httpClient.post<AuthenticationResponseDTO>(`${getApiUrl()}/login`, userForLogin);
   }
 
   downloadFileImage(url: string): Observable<Blob> {

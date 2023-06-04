@@ -1,18 +1,15 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
 import { getHttpOptionsWithAuthenticationHeader } from 'src/app/core/functions/get-http-options-with-authorization-header';
 import { Observable } from 'rxjs';
 import { CommentsDTO } from '../models/comments-dto';
 import { CommentDTO } from '../models/comment-dto';
+import { getApiUrl } from 'src/app/core/functions/get-api-url';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommentsService {
-  private readonly commentWebAPIUrl = `${environment.webApiUrl}/comment`;
-  private readonly commentResponseWebAPIUrl = `${this.commentWebAPIUrl}/response`;
-
   constructor(private httpClient: HttpClient) { }
 
   getAllComments(videoId: string): Observable<CommentsDTO> {
@@ -21,7 +18,7 @@ export class CommentsService {
       headers: getHttpOptionsWithAuthenticationHeader().headers,
     };
 
-    return this.httpClient.get<CommentsDTO>(`${this.commentWebAPIUrl}`, httpOptions);
+    return this.httpClient.get<CommentsDTO>(`${getApiUrl()}/comment`, httpOptions);
   }
 
   addComment(content: string, videoId: string): Observable<void> {
@@ -30,7 +27,7 @@ export class CommentsService {
       headers: getHttpOptionsWithAuthenticationHeader().headers,
     };
 
-    return this.httpClient.post<void>(`${this.commentWebAPIUrl}`, content, httpOptions);
+    return this.httpClient.post<void>(`${getApiUrl()}/comment`, content, httpOptions);
   }
 
   deleteComment(id: string): Observable<void> {
@@ -39,7 +36,7 @@ export class CommentsService {
       headers: getHttpOptionsWithAuthenticationHeader().headers,
     };
 
-    return this.httpClient.delete<void>(`${this.commentWebAPIUrl}`, httpOptions);
+    return this.httpClient.delete<void>(`${getApiUrl()}/comment`, httpOptions);
   }
 
   getAllCommentResponses(commentId: string): Observable<CommentsDTO> {
@@ -48,7 +45,7 @@ export class CommentsService {
       headers: getHttpOptionsWithAuthenticationHeader().headers,
     };
 
-    return this.httpClient.get<CommentsDTO>(`${this.commentResponseWebAPIUrl}`, httpOptions);
+    return this.httpClient.get<CommentsDTO>(`${getApiUrl()}/comment/response`, httpOptions);
   }
 
   addCommentResponse(content: string, commentId: string): Observable<void> {
@@ -57,7 +54,7 @@ export class CommentsService {
       headers: getHttpOptionsWithAuthenticationHeader().headers,
     };
 
-    return this.httpClient.post<void>(`${this.commentResponseWebAPIUrl}`, content, httpOptions);
+    return this.httpClient.post<void>(`${getApiUrl()}/comment/response`, content, httpOptions);
   }
 
   deleteCommentResponse(id: string): Observable<void> {
@@ -66,7 +63,7 @@ export class CommentsService {
       headers: getHttpOptionsWithAuthenticationHeader().headers,
     };
 
-    return this.httpClient.delete<void>(`${this.commentResponseWebAPIUrl}`, httpOptions);
+    return this.httpClient.delete<void>(`${getApiUrl()}/comment/response`, httpOptions);
   }
 
   getCommentByIdAsync(commentId: string): Observable<CommentDTO> {
@@ -75,7 +72,7 @@ export class CommentsService {
       headers: getHttpOptionsWithAuthenticationHeader().headers,
     };
 
-    return this.httpClient.get<CommentDTO>(`${this.commentWebAPIUrl}/commentById`, httpOptions);
+    return this.httpClient.get<CommentDTO>(`${getApiUrl()}/comment/commentById`, httpOptions);
   }
 
   getCommentResponseByIdAsync(commentId: string): Observable<CommentDTO> {
@@ -84,6 +81,6 @@ export class CommentsService {
       headers: getHttpOptionsWithAuthenticationHeader().headers,
     };
 
-    return this.httpClient.get<CommentDTO>(`${this.commentResponseWebAPIUrl}/commentById`, httpOptions);
+    return this.httpClient.get<CommentDTO>(`${getApiUrl()}/comment/response/commentById`, httpOptions);
   }
 }
