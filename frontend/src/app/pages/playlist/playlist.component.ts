@@ -4,7 +4,7 @@ import { MenuItem, MessageService } from 'primeng/api';
 import { Observable, Subscription, finalize, of, switchMap, tap } from 'rxjs';
 import { getTimeAgo } from 'src/app/core/functions/get-time-ago';
 import { PlaylistVideosDto } from 'src/app/core/models/playlist-videos-dto';
-import { VideoFromPlaylistDto } from 'src/app/core/models/video-from-playlist-dto';
+import { VideoMetadataDto } from 'src/app/core/models/video-metadata-dto';
 import { PlaylistService } from 'src/app/core/services/playlist.service';
 
 @Component({
@@ -80,11 +80,11 @@ export class PlaylistComponent {
     );
   }
 
-  public getTimeAgo(video: VideoFromPlaylistDto): string {
+  public getTimeAgo(video: VideoMetadataDto): string {
     return getTimeAgo(video.uploadDate);
   }
 
-  getVideoMenuModel(video: VideoFromPlaylistDto): MenuItem[] {
+  getVideoMenuModel(video: VideoMetadataDto): MenuItem[] {
     return [
       {
         label: 'Remove',
@@ -97,7 +97,7 @@ export class PlaylistComponent {
     ];
   }
 
-  removeVideo(video: VideoFromPlaylistDto): void {
+  removeVideo(video: VideoMetadataDto): void {
     const removeVideo$ = this.playlistService.deleteVideoFromPlaylist(this.id, video.id).pipe(
       finalize(() => {
         const index = this.playlist.videos.findIndex(v => v.id === video.id);

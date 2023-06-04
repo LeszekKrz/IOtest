@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { getTimeAgo } from 'src/app/core/functions/get-time-ago';
 import { getToken } from 'src/app/core/functions/get-token';
 import { SubscriptionDto } from 'src/app/core/models/subscribtion-dto';
-import { VideoFromPlaylistDto } from 'src/app/core/models/video-from-playlist-dto';
+import { VideoMetadataDto } from 'src/app/core/models/video-metadata-dto';
 import { PlaylistService } from 'src/app/core/services/playlist.service';
 import { SubscriptionService } from 'src/app/core/services/subscription.service';
 
@@ -15,7 +15,7 @@ import { SubscriptionService } from 'src/app/core/services/subscription.service'
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-  videos!: VideoFromPlaylistDto[];
+  videos!: VideoMetadataDto[];
   userSubscriptions!: SubscriptionDto[];
   subscriptions: Subscription[] = [];
 
@@ -58,7 +58,7 @@ export class HomeComponent {
     this.router.navigate(['creator/' + id]);
   }
 
-  public getTimeAgo(video: VideoFromPlaylistDto): string {
+  public getTimeAgo(video: VideoMetadataDto): string {
     return getTimeAgo(video.uploadDate);
   }
 }

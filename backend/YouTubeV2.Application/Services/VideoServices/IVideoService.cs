@@ -16,7 +16,6 @@ namespace YouTubeV2.Application.Services.VideoServices
 
         Task<VideoMetadataDto> GetVideoMetadataAsync(Guid id, CancellationToken cancellationToken = default);
 
-
         Task AuthorizeVideoAccessAsync(Guid videoId, string userId, CancellationToken cancellationToken = default);
 
         Task SetVideoLengthAsync(Video video, double length, CancellationToken cancellationToken = default);
