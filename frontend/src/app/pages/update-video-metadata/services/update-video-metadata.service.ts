@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { VideoMedatadataDTO } from '../../add-video/models/video-metadata-dto';
+import { VideoMetadataUpdateDTO } from '../../add-video/models/video-metadata-dto';
 import { environment } from 'src/environments/environment';
 import { getHttpOptionsWithAuthenticationHeader } from 'src/app/core/functions/get-http-options-with-authorization-header';
 
@@ -17,7 +17,7 @@ export class UpdateVideoMetadataService {
     return this.httpClient.get(url, {responseType: 'blob'});
   }
 
-  updateVideoMetadata(videoMetadataDTO: VideoMedatadataDTO, videoId: string): Observable<void> {
+  updateVideoMetadata(videoMetadataDTO: VideoMetadataUpdateDTO, videoId: string): Observable<void> {
     const putVideoMetadataWebAPIUrl: string = this.updateVideoMetadataPageWebAPIUrl;
     const httpOptions = {
       params: new HttpParams().set('id', videoId),

@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using YouTubeV2.Api.Enums;
 using YouTubeV2.Application.DTO.PlaylistDTOS;
 using YouTubeV2.Application.DTO.UserDTOS;
-using YouTubeV2.Application.DTO.VideoDTOS;
+using YouTubeV2.Application.Enums;
 using YouTubeV2.Application.Exceptions;
 using YouTubeV2.Application.Model;
+using YouTubeV2.Application.Providers;
 using YouTubeV2.Application.Services.BlobServices;
+using YouTubeV2.Application.Services.VideoServices;
 
 namespace YouTubeV2.Application.Services
 {
@@ -15,11 +17,19 @@ namespace YouTubeV2.Application.Services
         private readonly YTContext _context;
         private readonly UserManager<User> _userManager;
         private readonly IBlobImageService _blobImageService;
-        public PlaylistService(YTContext context, UserManager<User> userManager, IBlobImageService blobImageService)
+        private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IVideoService _videoService;
+        public PlaylistService(YTContext context,
+                               UserManager<User> userManager,
+                               IBlobImageService blobImageService,
+                               IDateTimeProvider dateTimeProvider,
+                               IVideoService videoService)
         {
             _context = context;
             _userManager = userManager;
             _blobImageService = blobImageService;
+            _dateTimeProvider = dateTimeProvider;
+            _videoService = videoService;
         }
 
         public async Task<CreatePlaylistResponseDto> CreatePlaylist(string requesterUserId, CreatePlaylistRequestDto request, CancellationToken cancellationToken)
@@ -32,7 +42,8 @@ namespace YouTubeV2.Application.Services
             {
                 Visibility = request.visibility,
                 Name = request.name,
-                Creator = creator
+                Creator = creator,
+                CreationDate = _dateTimeProvider.UtcNow
             };
             var entity = await _context.Playlists.AddAsync(playlist, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
@@ -73,47 +84,38 @@ namespace YouTubeV2.Application.Services
                 throw new ForbiddenException();
             }
 
+            var videos = playlist.Videos
+                .Select(async video => await _videoService.GetVideoMetadataAsync(video.Id, cancellationToken))
+                .Select(task => task.Result);
+
             return new PlaylistDto(
                 playlist.Name,
                 playlist.Visibility,
-                playlist.Videos.Select(
-                    v => new VideoBaseDto(
-                        v.Id.ToString(),
-                        v.Title,
-                        v.Duration,
-                        _blobImageService.GetVideoThumbnailUrl(v.Id.ToString()).ToString(),
-                        v.Description,
-                        v.UploadDate.ToString(),
-                        v.ViewCount)
-                    )
-                );
+                videos,
+                playlist.Creator.Id,
+                playlist.Creator.Name);
         }
 
         public async Task<PlaylistDto> GetRecommendedPlaylist(string userId, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId)
+                ?? throw new UnauthorizedException();
 
             var videos = _context.Videos
-                .Where(v => v.Visibility == Visibility.Public)
+                .Where(v => 
+                    v.Visibility == Visibility.Public
+                    && v.ProcessingProgress == ProcessingProgress.Ready)
                 .OrderBy(v => Guid.NewGuid())
                 .Take(8)
                 .ToList();
 
-            var result = new PlaylistDto(
+            return new PlaylistDto(
                 user.UserName + "'s Playlist",
                 Visibility.Private,
-                videos.Select(
-                    v => new VideoBaseDto(
-                        v.Id.ToString(),
-                        v.Title,
-                        v.Duration,
-                        _blobImageService.GetVideoThumbnailUrl(v.Id.ToString()).ToString(),
-                        v.Description,
-                        v.UploadDate.ToString(),
-                        v.ViewCount)
-                    )
-                );
-            return result;
+                videos.Select(async video => await _videoService.GetVideoMetadataAsync(video.Id, cancellationToken))
+                      .Select(task => task.Result),
+                user.Id,
+                user.UserName!);
         }
 
         public async Task<IEnumerable<PlaylistBaseDto>> GetUserPlaylists(string requesterUserId, string userId, CancellationToken cancellationToken)
@@ -124,16 +126,16 @@ namespace YouTubeV2.Application.Services
                 .SingleOrDefaultAsync(p => p.Id == userId, cancellationToken)
                 ?? throw new BadRequestException();
 
-            if(string.Equals(requesterUserId, userId, StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(requesterUserId, userId, StringComparison.InvariantCultureIgnoreCase))
             {
                 return userWithPlaylists.Playlists
-                    .Select(p => new PlaylistBaseDto(p.Name, p.Videos.Count, p.Id.ToString())).ToList();
+                    .Select(p => new PlaylistBaseDto(p.Name, p.Id.ToString(), p.Visibility)).ToList();
             }
             else
             {
                 return userWithPlaylists.Playlists
                     .Where(p => p.Visibility == Visibility.Public)
-                    .Select(p => new PlaylistBaseDto(p.Name, p.Videos.Count, p.Id.ToString())).ToList();
+                    .Select(p => new PlaylistBaseDto(p.Name, p.Id.ToString(), p.Visibility)).ToList();
             }
         }
 
@@ -207,13 +209,15 @@ namespace YouTubeV2.Application.Services
             playlist.Visibility = request.visibility;
             await _context.SaveChangesAsync(cancellationToken);
 
-            var creator = await _userManager.FindByIdAsync(playlist.Creator.Id);
+            var creator = await _userManager.FindByIdAsync(playlist.Creator.Id) 
+                ?? throw new BadRequestException();
+
             var roles = await _userManager.GetRolesAsync(creator);
 
             var result = new UserDto(
                 new Guid(playlist.Creator.Id),
-                playlist.Creator.Email,
-                playlist.Creator.UserName,
+                playlist.Creator.Email!,
+                playlist.Creator.UserName!,
                 playlist.Creator.Name,
                 playlist.Creator.Surname,
                 decimal.Zero,

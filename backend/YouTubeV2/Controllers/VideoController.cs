@@ -83,6 +83,7 @@ namespace YouTubeV2.Api.Controllers
             return Ok();
         }
 
+        [RequestSizeLimit(1_000_000_000)]
         [HttpPost("video/{id:guid}")]
         [Roles(Role.Creator)]
         public async Task<ActionResult> UploadVideoAsync(Guid id, [FromForm] IFormFile videoFile, CancellationToken cancellationToken)

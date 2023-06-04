@@ -64,7 +64,12 @@
       </div>
     </div>
   </div>
-
+  <h2 *ngIf="searchResults.playlists.length != 0">Playlists:</h2>
+    <div style="width: 15%;" class="m-2" *ngFor="let playlist of searchResults.playlists">
+      <p-card class="playlist" styleClass="shadow-4 hover:shadow-7" (click)="goToPlaylist(playlist.id)">
+        <strong class="playlist-title">{{ playlist.name }}</strong>
+      </p-card>
+    </div>
 </ul>
 
 </p-panel>

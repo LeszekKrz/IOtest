@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { Observable, Subscription, finalize, of, switchMap, tap } from 'rxjs';
+import { getTimeAgo } from 'src/app/core/functions/get-time-ago';
 import { PlaylistVideosDto } from 'src/app/core/models/playlist-videos-dto';
+import { VideoMetadataDto } from 'src/app/core/models/video-metadata-dto';
 import { PlaylistService } from 'src/app/core/services/playlist.service';
 
 @Component({
@@ -22,7 +23,6 @@ export class PlaylistComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private httpClient: HttpClient,
     private playlistService: PlaylistService,
     private messageService: MessageService,
     private router: Router) {
@@ -39,11 +39,6 @@ export class PlaylistComponent {
 
   public goToVideo(id: string): void {
     this.router.navigate(['videos/' + id]);
-  }
-
-  public updatePlaylist() {
-    console.log('Update Playlist button clicked');
-    // Add your logic for updating the playlist here
   }
 
   openDialog() {
@@ -83,5 +78,35 @@ export class PlaylistComponent {
       switchMap(() => observable$),
       finalize(() => this.isProgressSpinnerVisible = false)
     );
+  }
+
+  public getTimeAgo(video: VideoMetadataDto): string {
+    return getTimeAgo(video.uploadDate);
+  }
+
+  getVideoMenuModel(video: VideoMetadataDto): MenuItem[] {
+    return [
+      {
+        label: 'Remove',
+        icon: 'pi pi-trash',
+        command: (event) => {
+          this.removeVideo(video);
+          event.originalEvent.stopPropagation();
+        },
+      },
+    ];
+  }
+
+  removeVideo(video: VideoMetadataDto): void {
+    const removeVideo$ = this.playlistService.deleteVideoFromPlaylist(this.id, video.id).pipe(
+      finalize(() => {
+        const index = this.playlist.videos.findIndex(v => v.id === video.id);
+        if (index > -1) {
+          this.playlist.videos.splice(index, 1);
+        }
+      }),
+    );
+
+    this.subscriptions.push(this.doWithLoading(removeVideo$).subscribe());
   }
 }
