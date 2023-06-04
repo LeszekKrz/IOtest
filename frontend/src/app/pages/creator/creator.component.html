@@ -12,7 +12,7 @@
       </ng-container>
       <ng-template #isNotSubscribed>
         <p-button class="ml-2" icon="pi pi-check" label="Subscribe" (click)="handleSubscribtionOnClick()"></p-button>
-      </ng-template>  
+      </ng-template>
       <app-report-button [targetId]="user.id"></app-report-button>
     </div>
   </div>
@@ -47,7 +47,7 @@
           <div class="grid">
             <div class="m-2" *ngFor="let playlist of playlists">
               <p-card class="playlist" styleClass="shadow-4 hover:shadow-7" (click)="goToPlaylist(playlist.id)">
-                <strong class="playlist-title">{{ playlist.name }}</strong>
+                <strong>{{ playlist.name }}</strong>
                 <p>Videos: {{ playlist.count }}</p>
               </p-card>
             </div>

@@ -6,6 +6,7 @@ using YouTubeV2.Application.DTO;
 using YouTubeV2.Application.DTO.UserDTOS;
 using YouTubeV2.Application.Exceptions;
 using YouTubeV2.Application.Model;
+using YouTubeV2.Application.Providers;
 using YouTubeV2.Application.Services.BlobServices;
 using YouTubeV2.Application.Services.JwtFeatures;
 using YouTubeV2.Application.Services.VideoServices;
@@ -23,6 +24,7 @@ namespace YouTubeV2.Application.Services
         private readonly JwtHandler _jwtHandler;
         private readonly ISubscriptionService _subscriptionService;
         private readonly IVideoService _videoService;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public UserService(
             UserManager<User> userManager,
@@ -32,7 +34,8 @@ namespace YouTubeV2.Application.Services
             JwtHandler jwtHandler,
             ISubscriptionService subscriptionService,
             UpdateUserDTOValidator updateUserDTOValidator,
-            IVideoService videoService)
+            IVideoService videoService,
+            IDateTimeProvider dateTimeProvider)
         {
             _userManager = userManager;
             _blobImageService = blobImageService;
@@ -42,6 +45,7 @@ namespace YouTubeV2.Application.Services
             _subscriptionService = subscriptionService;
             _updateUserDTOValidator = updateUserDTOValidator;
             _videoService = videoService;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<LoginResponseDto> LoginAsync(LoginDto loginDto, CancellationToken cancellationToken)
@@ -60,7 +64,7 @@ namespace YouTubeV2.Application.Services
         public async Task<string> RegisterAsync(RegisterDto registerDto, CancellationToken cancellationToken)
         {
             await _registerDtoValidator.ValidateAndThrowAsync(registerDto, cancellationToken);
-            var user = new User(registerDto);
+            var user = new User(registerDto, _dateTimeProvider.UtcNow);
 
             var result = await _userManager.CreateAsync(user, registerDto.password);
             if (!result.Succeeded)

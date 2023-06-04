@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { RegistrationModule } from './pages/registration/registration.module';
 import { ToastModule } from 'primeng/toast';
 import { MenuModule } from './menu/menu.module';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './core/interceptors/http-error-interceptor';
@@ -35,6 +35,7 @@ import { ReportButtonModule } from './core/components/report-button/report-butto
             useClass: HttpErrorInterceptor,
             multi: true,
         },
+        ConfirmationService,
     ],
     bootstrap: [AppComponent],
     imports: [

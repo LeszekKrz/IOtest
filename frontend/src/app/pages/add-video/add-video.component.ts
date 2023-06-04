@@ -2,7 +2,7 @@ import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FileUpload } from 'primeng/fileupload';
 import { Observable, Subscription, finalize, of, switchMap, tap } from 'rxjs';
-import { VideoMedatadataDTO } from './models/video-metadata-dto';
+import { VideoMetadataUpdateDTO } from './models/video-metadata-dto';
 import { AddVideoService } from './services/add-video.service';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
@@ -57,7 +57,7 @@ export class AddVideoComponent implements OnDestroy {
       return;
     }
 
-    const videoMedatadaDTO: VideoMedatadataDTO = {
+    const videoMedatadaDTO: VideoMetadataUpdateDTO = {
       title: this.addVideoForm.get('title')!.value!,
       description: this.addVideoForm.get('description')!.value!,
       thumbnail: this.addVideoForm.get('thumbnail')!.value!,

@@ -2,8 +2,8 @@
     <div class="left-column">
       <div class="content-container">
         <div class="label-container">
-            <h1>{{ playlist.name }}</h1> <!-- Bind the name -->
-            <p>{{ playlist.visibility }} playlist</p> <!-- Bind the visibility -->
+            <h1>{{ playlist.name }}</h1>
+            <p>{{ playlist.visibility }} playlist</p>
         </div>
         <div class="button-container">
           <p-button label="Update Playlist" (onClick)="openDialog()" class="p-mr-2"></p-button>
@@ -12,18 +12,41 @@
       </div>
     </div>
     <div class="right-column">
-        <ul *ngIf="playlist.videos">
-            <div class="grid">
-              <div class="videoCol" *ngFor="let video of playlist.videos">
-                <div class="image-container">
-                  <img [src] = "video.thumbnail" class="video" (click)="goToVideo(video.id)">
-                  <span class="image-label">{{ video.duration }}</span>
+      <div *ngIf="playlist.videos !== null && playlist.videos.length !== 0; else noVideos">
+        <div class="grid m-2">
+          <div class="m-2 video-in-playlist" *ngFor="let video of playlist.videos" (click)="goToVideo(video.id)">
+            <div class="thumbnail-container">
+              <img [src] = "video.thumbnail" class="thumbnail">
+              <span class="video-length">{{ video.duration }}</span>
+            </div>
+            <div class="flex justify-content-between">
+              <div class="flex flex-column">
+                <strong class="video-title">{{ video.title }}</strong>
+                <div>
+                  {{ video.viewCount }} views, {{ getTimeAgo(video) }} ago
                 </div>
-                <h3 class="noPadding">{{ video.title }}</h3>
-                <p class="noPadding">{{ video.viewCount }} views</p>
+              </div>
+              <div>
+                <p-menu
+                  #videoMenu
+                  [model]="getVideoMenuModel(video)"
+                  [popup]="true">
+                </p-menu>
+                <p-button
+                  icon="pi pi-ellipsis-v"
+                  styleClass="p-button-rounded p-button-text p-button-secondary"
+                  (click)="videoMenu.toggle($event); $event.stopPropagation()">
+                </p-button>
               </div>
             </div>
-          </ul>
+          </div>
+        </div>
+      </div>
+      <ng-template #noVideos>
+        <div class="mt-4" style="text-align: center;">
+          This playlist does not have videos
+        </div>
+      </ng-template>
     </div>
   </div>
 
@@ -49,4 +72,3 @@
       <p-button label="Close" (onClick)="closeDialog()"></p-button>
     </p-footer>
   </p-dialog>
-  
