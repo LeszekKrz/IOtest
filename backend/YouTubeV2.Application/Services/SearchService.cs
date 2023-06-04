@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using YouTubeV2.Api.Enums;
+using YouTubeV2.Application.DTO.PlaylistDTOS;
 using YouTubeV2.Application.DTO.SearchDTOS;
 using YouTubeV2.Application.DTO.UserDTOS;
 using YouTubeV2.Application.DTO.VideoMetadataDTOS;
@@ -36,8 +37,9 @@ namespace YouTubeV2.Application.Services
         {
             var videos = await SearchForVideosAsync(query, sortingDirection, sortingType, dateBegin, dateEnd, cancellationToken);
             var users = await SearchForUsersAsync(query, sortingDirection, sortingType, dateBegin, dateEnd, cancellationToken);
+            var playlists = await SearchForPlaylistsAsync(query, sortingDirection, sortingType, dateBegin, dateEnd, cancellationToken);
 
-            return new SearchResultsDto(videos, users);
+            return new SearchResultsDto(videos, users, playlists);
         }
 
         private async Task<IReadOnlyList<UserDto>> SearchForUsersAsync(string query, SortingDirections sortingDirection,
@@ -184,6 +186,77 @@ namespace YouTubeV2.Application.Services
                 videos = videos.OrderBy(x => x.ViewCount);
             else
                 videos = videos.OrderByDescending(x => x.ViewCount);
+        }
+
+        private async Task<IReadOnlyList<PlaylistBaseDto>> SearchForPlaylistsAsync(string query, SortingDirections sortingDirection,
+           SortingTypes sortingType, DateTimeOffset? dateBegin, DateTimeOffset? dateEnd, CancellationToken cancellationToken)
+        {
+            // for some reason Contains() with StringComparison doesn't work here
+            var matchingPlaylists = _context.Playlists
+                .Where(playlist => playlist.Name.ToLower().Contains(query.ToLower())
+                && playlist.Visibility == Visibility.Public);
+
+            ClipPlaylistsBasedOnDate(ref matchingPlaylists, dateBegin, dateEnd);
+            SortPlaylists(ref matchingPlaylists, sortingDirection, sortingType);
+
+
+            return await GetPlaylistDtosFromQueryableAsync(matchingPlaylists);
+        }
+
+        private void ClipPlaylistsBasedOnDate(ref IQueryable<Playlist> playlists, DateTimeOffset? dateBegin, DateTimeOffset? dateEnd)
+        {
+            if (dateBegin > dateEnd)
+                throw new BadRequestException("Begin date cannot be bigger than end date");
+
+            if (dateBegin != null)
+                playlists = playlists.Where(playlist => playlist.CreationDate >= dateBegin);
+            if (dateBegin != null)
+                playlists = playlists.Where(playlist => playlist.CreationDate <= dateEnd);
+        }
+
+        private void SortPlaylists(ref IQueryable<Playlist> playlists, SortingDirections sortingDirection, SortingTypes sortingType)
+        {
+            switch (sortingType)
+            {
+                case SortingTypes.Alphabetical:
+                    SortPlaylistsAlphabetical(ref playlists, sortingDirection);
+                    break;
+                case SortingTypes.PublishDate:
+                    SortPlaylistsPublish(ref playlists, sortingDirection);
+                    break;
+                case SortingTypes.Popularity:
+                    SortPlaylistsPopularity(ref playlists, sortingDirection);
+                    break;
+            }
+        }
+
+        private void SortPlaylistsAlphabetical(ref IQueryable<Playlist> playlists, SortingDirections sortingDirection)
+        {
+            if (sortingDirection == SortingDirections.Ascending)
+                playlists = playlists.OrderBy(x => x.Name);
+            else
+                playlists = playlists.OrderByDescending(x => x.Name);
+        }
+
+        private void SortPlaylistsPublish(ref IQueryable<Playlist> playlists, SortingDirections sortingDirection)
+        {
+            if (sortingDirection == SortingDirections.Ascending)
+                playlists = playlists.OrderBy(x => x.CreationDate);
+            else
+                playlists = playlists.OrderByDescending(x => x.CreationDate);
+        }
+
+        private void SortPlaylistsPopularity(ref IQueryable<Playlist> playlists, SortingDirections sortingDirection)
+        {
+            // how would one do that? empty for now, maybe one day...
+            return;
+        }
+
+        private async Task<IReadOnlyList<PlaylistBaseDto>> GetPlaylistDtosFromQueryableAsync(IQueryable<Playlist> playlists) 
+        {
+            return await playlists.Select(playlist =>
+                new PlaylistBaseDto(playlist.Name, playlist.Id.ToString(), playlist.Visibility))
+                .ToListAsync();
         }
     }
 }

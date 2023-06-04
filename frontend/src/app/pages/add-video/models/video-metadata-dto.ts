@@ -1,4 +1,4 @@
-export interface VideoMedatadataDTO {
+export interface VideoMetadataUpdateDTO {
   title: string;
   description: string;
   thumbnail: string;

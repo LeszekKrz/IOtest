@@ -127,3 +127,10 @@
     </p-button>
   </div>
 </div>
+
+<p-dialog header="Report Reason" [(visible)]="showReportDialog" [modal]="true" [style]="{width: '50vw'}">
+  <input [(ngModel)]="reportReason" type="text" placeholder="Enter your reason here" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+  <p-footer>
+    <button pButton type="text" label="Submit" (click)="report()"></button>
+  </p-footer>
+</p-dialog>

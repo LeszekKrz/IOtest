@@ -9,12 +9,12 @@ using YouTubeV2.Application.Jobs;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services;
 using YouTubeV2.Application.Services.BlobServices;
-using YouTubeV2.Application.Services.JwtFeatures;
 using YouTubeV2.Application.Services.VideoServices;
 
 namespace YouTubeV2.Api.Controllers
 {
     [ApiController]
+    [Route("api")]
     public class VideoController : IdentityControllerBase
     {
         private readonly IBlobVideoService _blobVideoService;
@@ -83,6 +83,7 @@ namespace YouTubeV2.Api.Controllers
             return Ok();
         }
 
+        [RequestSizeLimit(1_000_000_000)]
         [HttpPost("video/{id:guid}")]
         [Roles(Role.Creator)]
         public async Task<ActionResult> UploadVideoAsync(Guid id, [FromForm] IFormFile videoFile, CancellationToken cancellationToken)

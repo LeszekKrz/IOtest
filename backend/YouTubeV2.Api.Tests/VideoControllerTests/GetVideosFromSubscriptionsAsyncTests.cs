@@ -192,7 +192,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Simple, _userId)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.GetAsync($"user/videos/subscribed");
+            var httpResponseMessage = await httpClient.GetAsync($"api/user/videos/subscribed");
 
             // ARRANGE
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);

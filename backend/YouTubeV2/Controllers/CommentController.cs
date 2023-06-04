@@ -9,7 +9,7 @@ using YouTubeV2.Application.Services.VideoServices;
 namespace YouTubeV2.Api.Controllers
 {
     [ApiController]
-    [Route("comment")]
+    [Route("api/comment")]
     public class CommentController : IdentityControllerBase
     {
         private readonly IVideoService _videoService;
@@ -114,5 +114,15 @@ namespace YouTubeV2.Api.Controllers
 
             return Ok();
         }
+
+        [HttpGet("commentById")]
+        [Roles(Role.Administrator)]
+        public async Task<ActionResult<CommentsDTO>> GetCommentByIdAsync([FromQuery] Guid id, CancellationToken cancellationToken) =>
+            Ok(await _commentService.GetCommentDTOByIdAsync(id, cancellationToken));
+
+        [HttpGet("responseById")]
+        [Roles(Role.Administrator)]
+        public async Task<ActionResult<CommentsDTO>> GetCommentResponseByIdAsync([FromQuery] Guid id, CancellationToken cancellationToken) =>
+            Ok(await _commentService.GetCommentResponseByIdAsync(id, cancellationToken));
     }
 }

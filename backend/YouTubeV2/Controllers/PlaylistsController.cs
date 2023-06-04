@@ -10,7 +10,7 @@ namespace YouTubeV2.Api.Controllers
 {
     [Roles(Role.Simple, Role.Creator, Role.Administrator)]
     [ApiController]
-    [Route("playlist")]
+    [Route("api/playlist")]
     public class PlaylistsController : IdentityControllerBase
     {
         private readonly IPlaylistService _playlistsService;
@@ -39,12 +39,12 @@ namespace YouTubeV2.Api.Controllers
         }
 
         [HttpDelete("details")]
-        public async Task<IActionResult> DeletePlaylist([FromQuery][Required] Guid playlistId, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeletePlaylist([FromQuery][Required] Guid id, CancellationToken cancellationToken)
         {
             string? userId = GetUserId();
             if (userId is null) return Forbid();
 
-            await _playlistsService.DeletePlaylist(userId, playlistId, cancellationToken);
+            await _playlistsService.DeletePlaylist(userId, id, cancellationToken);
 
             return Ok();
         }
@@ -69,7 +69,7 @@ namespace YouTubeV2.Api.Controllers
             string? userId = GetUserId();
             if (userId is null) return Forbid();
 
-            return Ok(await _playlistsService.GetPlaylistVideos(GetUserId(), id, cancellationToken));
+            return Ok(await _playlistsService.GetPlaylistVideos(userId, id, cancellationToken));
         }
 
         [HttpPost("{id}/{videoId}")]

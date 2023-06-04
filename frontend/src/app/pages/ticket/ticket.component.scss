@@ -1,0 +1,34 @@
+// @import '../../../../../core/styles/progress-spinner.scss';
+
+.comment-container .comment-menu-button {
+  visibility: hidden;
+}
+
+.comment-container:hover .comment-menu-button {
+  visibility: visible;
+}
+
+.comment-container:has(.comment-responses:hover) .comment-menu-button {
+  visibility: hidden;
+}
+
+:host ::ng-deep .p-button.response-button {
+  padding: 7px;
+}
+
+.comment-response-container .comment-response-menu-button {
+  visibility: hidden;
+}
+
+.comment-response-container:hover .comment-response-menu-button {
+  visibility: visible;
+}
+
+:host ::ng-deep .p-menu {
+  width: 7em;
+}
+
+:host {
+    margin: 0;
+}
+  

@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { RegistrationModule } from './pages/registration/registration.module';
 import { ToastModule } from 'primeng/toast';
 import { MenuModule } from './menu/menu.module';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './core/interceptors/http-error-interceptor';
@@ -21,7 +21,8 @@ import { UserPlaylistsModule } from './pages/user-playlists/user-playlists.modul
 import { CommentsModule } from './pages/video/components/comments/comments.module';
 import { SubscriptionsVideosModule } from './pages/subscriptions-videos/subscriptions-videos.module';
 import { UpdateVideoMetadataModule } from './pages/update-video-metadata/update-video-metadata.module';
-import { ChoosePlaylistModule } from './pages/choose-playlist/choose-playlist.module';
+import { TicketModule } from './pages/ticket/ticket.module';
+import { ReportButtonModule } from './core/components/report-button/report-button.module';
 
 @NgModule({
     declarations: [
@@ -34,6 +35,7 @@ import { ChoosePlaylistModule } from './pages/choose-playlist/choose-playlist.mo
             useClass: HttpErrorInterceptor,
             multi: true,
         },
+        ConfirmationService,
     ],
     bootstrap: [AppComponent],
     imports: [
@@ -56,7 +58,8 @@ import { ChoosePlaylistModule } from './pages/choose-playlist/choose-playlist.mo
         CommentsModule,
         SubscriptionsVideosModule,
         UpdateVideoMetadataModule,
-        ChoosePlaylistModule
+        TicketModule,
+        ReportButtonModule
     ]
 })
 export class AppModule { }

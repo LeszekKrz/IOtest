@@ -26,12 +26,15 @@ interface SortDirectionOption {
 export class SearchComponent {
   isProgressSpinnerVisible: boolean = false;
   subscriptions: Subscription[] = [];
+
   query: string = '';
   beginDate?: Date;
   endDate?: Date;
   searchResults!: SearchResultsDTO;
+
   sortingTypes: SortTypeOption[];
   sortingDirections: SortDirectionOption[];
+
   sortingType!: SortTypeOption;
   sortingDirection!: SortDirectionOption;
 
@@ -80,12 +83,17 @@ export class SearchComponent {
   performSearch() {
     const search$ = this.searchService.getSearchResults(this.query, this.sortingType.value, this.sortingDirection.value,
       this.beginDate, this.endDate);
-    this.subscriptions.push(this.doWithLoading(search$).subscribe(result => this.searchResults = result));
+    this.subscriptions.push(this.doWithLoading(search$).subscribe(result => {
+      this.searchResults = result;
+    }));
 
-    }
+  }
 
   searchResultsNone() {
-    return this.searchResults !== undefined && this.searchResults.users.length === 0 && this.searchResults.videos.length === 0; 
+    return this.searchResults !== undefined 
+    && this.searchResults.users.length === 0 
+    && this.searchResults.videos.length === 0
+    && this.searchResults.playlists.length === 0; 
   }
 
   doWithLoading(observable$: Observable<any>): Observable<any> {
@@ -100,7 +108,11 @@ export class SearchComponent {
   }
 
   goToVideo(id: string): void {
-    this.router.navigate(['videos/' +id]);
+    this.router.navigate(['videos/' + id]);
+  }
+
+  goToPlaylist(id: string): void {
+    this.router.navigate(['playlist/' + id]);
   }
 
   public getTimeAgo(video: VideoMetadataDto): string {

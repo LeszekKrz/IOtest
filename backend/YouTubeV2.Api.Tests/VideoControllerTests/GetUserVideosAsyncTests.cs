@@ -139,7 +139,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, _userId)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.GetAsync($"user/videos?id={_userId}");
+            var httpResponseMessage = await httpClient.GetAsync($"api/user/videos?id={_userId}");
 
             // ARRANGE
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -201,7 +201,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, _userId)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.GetAsync($"user/videos");
+            var httpResponseMessage = await httpClient.GetAsync($"api/user/videos");
 
             // ARRANGE
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -263,7 +263,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, _otherUserId)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.GetAsync($"user/videos?id={_userId}");
+            var httpResponseMessage = await httpClient.GetAsync($"api/user/videos?id={_userId}");
 
             // ARRANGE
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);

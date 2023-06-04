@@ -68,7 +68,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccess(Role.Creator)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.PostAsync($"video/{It.IsAny<Guid>()}", multipartFormDataContent);
+            var httpResponseMessage = await httpClient.PostAsync($"api/video/{It.IsAny<Guid>()}", multipartFormDataContent);
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -94,7 +94,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccess(Role.Creator)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.PostAsync($"video/{It.IsAny<Guid>()}", multipartFormDataContent);
+            var httpResponseMessage = await httpClient.PostAsync($"api/video/{It.IsAny<Guid>()}", multipartFormDataContent);
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -129,7 +129,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, Guid.NewGuid().ToString())).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.PostAsync($"video/{videoId}", multipartFormDataContent);
+            var httpResponseMessage = await httpClient.PostAsync($"api/video/{videoId}", multipartFormDataContent);
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.Forbidden);
@@ -175,7 +175,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, userId)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.PostAsync($"video/{videoId}", multipartFormDataContent);
+            var httpResponseMessage = await httpClient.PostAsync($"api/video/{videoId}", multipartFormDataContent);
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -212,7 +212,7 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, userId)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.PostAsync($"video/{videoId}", multipartFormDataContent);
+            var httpResponseMessage = await httpClient.PostAsync($"api/video/{videoId}", multipartFormDataContent);
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.Accepted);

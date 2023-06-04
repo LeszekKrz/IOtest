@@ -77,7 +77,7 @@ namespace YouTubeV2.Api.Tests.ReactionControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, _userId)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.PostAsync($"video-reaction?id={_videoId}", new StringContent(JsonConvert.SerializeObject(addReactionDto), Encoding.UTF8, "application/json"));
+            var httpResponseMessage = await httpClient.PostAsync($"api/video-reaction?id={_videoId}", new StringContent(JsonConvert.SerializeObject(addReactionDto), Encoding.UTF8, "application/json"));
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -106,7 +106,7 @@ namespace YouTubeV2.Api.Tests.ReactionControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, _userId)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.PostAsync($"video-reaction?id={_videoId}", new StringContent(JsonConvert.SerializeObject(addReactionDto), Encoding.UTF8, "application/json"));
+            var httpResponseMessage = await httpClient.PostAsync($"api/video-reaction?id={_videoId}", new StringContent(JsonConvert.SerializeObject(addReactionDto), Encoding.UTF8, "application/json"));
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -137,7 +137,7 @@ namespace YouTubeV2.Api.Tests.ReactionControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, _userId)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.PostAsync($"video-reaction?id={_videoId}", new StringContent(JsonConvert.SerializeObject(addReactionDto), Encoding.UTF8, "application/json"));
+            var httpResponseMessage = await httpClient.PostAsync($"api/video-reaction?id={_videoId}", new StringContent(JsonConvert.SerializeObject(addReactionDto), Encoding.UTF8, "application/json"));
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -175,7 +175,7 @@ namespace YouTubeV2.Api.Tests.ReactionControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Creator, _userId)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.PostAsync($"video-reaction?id={_videoId}", new StringContent(JsonConvert.SerializeObject(addReactionDto), Encoding.UTF8, "application/json"));
+            var httpResponseMessage = await httpClient.PostAsync($"api/video-reaction?id={_videoId}", new StringContent(JsonConvert.SerializeObject(addReactionDto), Encoding.UTF8, "application/json"));
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);

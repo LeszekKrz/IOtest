@@ -38,7 +38,7 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
             var stringContent = new StringContent(JsonConvert.SerializeObject(registerDto), Encoding.UTF8, "application/json");
 
             // Act
-            HttpResponseMessage response = await httpClient.PostAsync("register", stringContent);
+            HttpResponseMessage response = await httpClient.PostAsync("api/register", stringContent);
 
             // Assert
             await _webApplicationFactory.DoWithinScope<UserManager<User>>(
@@ -80,7 +80,7 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
             var loginDto = new LoginDto("mail@mail.com", "asdf1243@#$GJH");
 
             // Act
-            var response = await httpClient.PostAsync("login", new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, "application/json"));
+            var response = await httpClient.PostAsync("api/login", new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, "application/json"));
 
             var content = await response.Content.ReadAsStringAsync();
             LoginResponseDto loginResponseDto = JsonConvert.DeserializeObject<LoginResponseDto>(content);
@@ -100,7 +100,7 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
             var loginDto = new LoginDto("not@registered.com", "asdf1243@#$GJH");
 
             // Act
-            var response = await httpClient.PostAsync("login", new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, "application/json"));
+            var response = await httpClient.PostAsync("api/login", new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, "application/json"));
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -124,7 +124,7 @@ namespace YouTubeV2.Api.Tests.UserControllerTests
             var loginDto = new LoginDto("log@log.com", "willNotWork");
 
             // Act
-            var response = await httpClient.PostAsync("login", new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, "application/json"));
+            var response = await httpClient.PostAsync("api/login", new StringContent(JsonConvert.SerializeObject(loginDto), Encoding.UTF8, "application/json"));
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);

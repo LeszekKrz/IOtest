@@ -89,7 +89,7 @@ namespace YouTubeV2.Api.Tests.SearchTests
                 { "sortingCriterion", SortingTypes.Alphabetical.ToString() },
                 { "sortingType", SortingDirections.Descending.ToString() }
             };
-            var path = QueryHelpers.AddQueryString("search", querys);
+            var path = QueryHelpers.AddQueryString("api/search", querys);
             HttpResponseMessage response = await httpClient.GetAsync(path);
 
             // ASSERT
@@ -206,7 +206,7 @@ namespace YouTubeV2.Api.Tests.SearchTests
                 { "beginDate", DateTimeOffset.UtcNow.AddDays(2).ToString(CultureInfo.InvariantCulture) },
                 { "endDate", DateTimeOffset.UtcNow.AddDays(7).ToString(CultureInfo.InvariantCulture) }
             };
-            var path = QueryHelpers.AddQueryString("search", querys);
+            var path = QueryHelpers.AddQueryString("api/search", querys);
             HttpResponseMessage response = await httpClient.GetAsync(path);
 
             // ASSERT
@@ -227,6 +227,98 @@ namespace YouTubeV2.Api.Tests.SearchTests
             int videoIDBigger = foundVideos.FindIndex(x => x.title.Equals("TitleE"));
 
             videoIDBigger.Should().BeGreaterThan(videoIDSmaller);
+        }
+
+        [TestMethod]
+        public async Task SearchAsync_Alphabetical_ShouldReturnPlaylists()
+        {
+            //ARRANGE
+            User creator = new()
+            {
+                Name = "Player",
+                Surname = "Player",
+                UserName = "play",
+                Email = "play@play.com"
+            };
+
+            string userId = null!;
+            await _webApplicationFactory.DoWithinScope<UserManager<User>>(
+              async userManager =>
+              {
+                  await userManager.CreateAsync(_user);
+                  await userManager.CreateAsync(creator);
+                  userId = await userManager.GetUserIdAsync(_user);
+              });
+
+            var httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccessAndUserId(Role.Simple, userId)).CreateClient();
+
+            var playlists = new Playlist[]
+            {
+                new ()
+                {
+                    Name = "playlistaA",
+                    Creator = creator,
+                    CreationDate = DateTimeOffset.UtcNow,
+                    Visibility = Visibility.Public
+                },
+                new ()
+                {
+                    Name = "playlistaB",
+                    Creator = creator,
+                    CreationDate = DateTimeOffset.UtcNow,
+                    Visibility = Visibility.Private
+                },
+                 new ()
+                {
+                    Name = "playlistaC",
+                    Creator = creator,
+                    CreationDate = DateTimeOffset.UtcNow,
+                    Visibility = Visibility.Public
+                },
+                new ()
+                {
+                    Name = "koala",
+                    Creator = creator,
+                    CreationDate = DateTimeOffset.UtcNow,
+                    Visibility = Visibility.Public
+                },
+            };
+
+            await _webApplicationFactory.DoWithinScope<YTContext>(
+                async context =>
+                {
+                    context.Users.Attach(creator);
+                    await context.Playlists.AddRangeAsync(playlists);
+                    await context.SaveChangesAsync();
+                });
+
+            // ACT
+            var querys = new Dictionary<string, string?>()
+            {
+                { "query", "playlista" },
+                { "sortingCriterion", SortingTypes.PublishDate.ToString() },
+                { "sortingType", SortingDirections.Ascending.ToString() }
+            };
+            var path = QueryHelpers.AddQueryString("api/search", querys);
+            HttpResponseMessage response = await httpClient.GetAsync(path);
+
+            // ASSERT
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.Content.Should().NotBeNull();
+
+            string responseString = await response.Content.ReadAsStringAsync();
+            responseString.Should().NotBeNull().Should().NotBe(string.Empty);
+            var searchDTO = JsonConvert.DeserializeObject<SearchResultsDto>(responseString);
+            var foundPlaylists = searchDTO!.playlists.ToList();
+
+            foundPlaylists.Count.Should().BeGreaterThanOrEqualTo(2);
+            foundPlaylists.FindIndex(x => x.name.Equals("playlistaB")).Should().Be(-1);
+            foundPlaylists.FindIndex(x => x.name.Equals("koala")).Should().Be(-1);
+
+            int playlistIDSmaller = foundPlaylists.FindIndex(x => x.name.Equals("playlistaA"));
+            int playlistIDBigger = foundPlaylists.FindIndex(x => x.name.Equals("playlistaC"));
+
+            playlistIDBigger.Should().BeGreaterThan(playlistIDSmaller);
         }
     }
 }

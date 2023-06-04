@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChoosePlaylistComponent } from './choose-playlist.component';
+import { ReportButtonComponent } from './report-button.component';
 
-describe('ChoosePlaylistComponent', () => {
-  let component: ChoosePlaylistComponent;
-  let fixture: ComponentFixture<ChoosePlaylistComponent>;
+describe('ReportButtonComponent', () => {
+  let component: ReportButtonComponent;
+  let fixture: ComponentFixture<ReportButtonComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ChoosePlaylistComponent ]
+      declarations: [ ReportButtonComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ChoosePlaylistComponent);
+    fixture = TestBed.createComponent(ReportButtonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

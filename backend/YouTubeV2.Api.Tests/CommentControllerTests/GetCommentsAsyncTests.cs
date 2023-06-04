@@ -177,7 +177,7 @@ namespace YouTubeV2.Api.Tests.CommentControllerTests
             using HttpClient httpClient = _webApplicationFactory.WithAuthentication(ClaimsProvider.WithRoleAccess(Role.Creator)).CreateClient();
 
             // ACT
-            var httpResponseMessage = await httpClient.GetAsync($"comment?id={_videoId}");
+            var httpResponseMessage = await httpClient.GetAsync($"api/comment?id={_videoId}");
 
             // ASSERT
             httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);

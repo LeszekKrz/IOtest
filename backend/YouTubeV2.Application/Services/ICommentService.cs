@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using YouTubeV2.Application.DTO.CommentsDTO;
 using YouTubeV2.Application.Model;
+using static YouTubeV2.Application.DTO.CommentsDTO.CommentsDTO;
 
 namespace YouTubeV2.Application.Services
 {
@@ -21,5 +22,9 @@ namespace YouTubeV2.Application.Services
         Task<CommentResponse?> GetCommentResponseByIdAsync(Guid id, CancellationToken cancellationToken = default, params Expression<Func<CommentResponse, object>>[] includes);
 
         Task RemoveCommentResponseAsync(CommentResponse commentResponse, CancellationToken cancellationToken = default);
+
+        Task<CommentDTO> GetCommentDTOByIdAsync(Guid id, CancellationToken cancellationToken = default);
+
+        Task<CommentDTO> GetCommentResponseDTOByIdAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }

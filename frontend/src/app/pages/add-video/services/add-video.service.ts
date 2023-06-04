@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { VideoMedatadataDTO } from '../models/video-metadata-dto';
+import { VideoMetadataUpdateDTO } from '../models/video-metadata-dto';
 import { Observable } from 'rxjs';
 import { getHttpOptionsWithAuthenticationHeader } from 'src/app/core/functions/get-http-options-with-authorization-header';
 import { VideoMetadataPostResponseDTO } from '../models/video-metadata-post-response-dto';
@@ -14,7 +14,7 @@ export class AddVideoService {
 
   constructor(private httpClient: HttpClient) { }
 
-  postVideoMetadata(videoMetadataDTO: VideoMedatadataDTO): Observable<VideoMetadataPostResponseDTO> {
+  postVideoMetadata(videoMetadataDTO: VideoMetadataUpdateDTO): Observable<VideoMetadataPostResponseDTO> {
     const postVideoMetadataWebAPIUrl: string = `${this.addVideoPageWebAPIUrl}/video-metadata`;
     return this.httpClient.post<VideoMetadataPostResponseDTO>(postVideoMetadataWebAPIUrl, videoMetadataDTO, getHttpOptionsWithAuthenticationHeader());
   }

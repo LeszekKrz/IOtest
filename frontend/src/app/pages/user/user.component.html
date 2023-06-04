@@ -1,92 +1,154 @@
-
-
 <div class="progress-spinner" *ngIf="isProgressSpinnerVisible">
     <p-progressSpinner></p-progressSpinner>
 </div>
-  <p-card
-    header="Account info"
-    styleClass="p-card-style shadow-7">
-    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-      <div class="p-fluid">
-        <label for="name-input" class="field-label">
-          <p class="required">Name</p>
-        </label>
-        <input
-          autofocus="true"
-          id="name-input"
-          type="text"
-          formControlName="name"
-          pInputText
-          [ngClass]="{
-            'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('name')
-          }"
-          placeholder="Name" />
-        <small class="p-error" *ngIf="isInputInvalidAndTouchedOrDirty('name')">
-          This field is required
-        </small>
-      </div>
-      <div class="p-fluid">
-        <label for="surname-input" class="field-label">
-          <p class="required">Surname</p>
-        </label>
-        <input
-          id="surname-input"
-          type="text"
-          formControlName="surname"
-          pInputText
-          [ngClass]="{
-            'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('surname')
-          }"
-          placeholder="Surname" />
-        <small class="p-error" *ngIf="isInputInvalidAndTouchedOrDirty('surname')">
-          This field is required
-        </small>
-      </div>
-      <div class="p-fluid">
-        <label for="nickname-input" class="field-label">
-          <p class="required">Nickname</p>
-        </label>
-        <input
-          id="nickname-input"
-          type="text"
-          formControlName="nickname"
-          pInputText
-          [ngClass]="{
-            'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('nickname')
-          }"
-          placeholder="Nickname" />
-        <small class="p-error" *ngIf="isInputInvalidAndTouchedOrDirty('nickname')">
-          This field is required
-        </small>
-      </div>
-      <div class="p-fluid">
-        <label for="userType-input" class="field-label">
-          <p>Creator</p>
-        </label>
-        <p-inputSwitch id="userType-input" formControlName="userType"/>
-      </div>
-      <div class="p-fluid">
-        <label for="email-input" class="field-label">
-          <p class="required">Email</p>
-        </label>
-        <input
-          id="email-input"
-          type="text"
-          formControlName="email"
-          pInputText
-          placeholder="Email" />
-      </div>
-      <div class="p-fluid">
-        <label for="ballance-input" class="field-label">
-          <p class="required">Ballance</p>
-        </label>
-        <input
-          id="ballance-display"
-          type="number"
-          formControlName="accountBallance"
-          pInputText
-          placeholder="Ballance" />
-      </div>
-      <p-button type="submit" styleClass="p-button-style" label="Edit"></p-button>
-    </form>
-  </p-card>
+
+<p-card
+  header="Account info"
+  styleClass="p-card-style shadow-7">
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <div class="p-fluid">
+      <label for="name-input" class="field-label">
+        <p class="required">Name</p>
+      </label>
+      <input
+        autofocus="true"
+        id="name-input"
+        type="text"
+        formControlName="name"
+        pInputText
+        [ngClass]="{
+          'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('name')
+        }"
+        placeholder="Name" />
+      <small class="p-error" *ngIf="isInputInvalidAndTouchedOrDirty('name')">
+        This field is required
+      </small>
+    </div>
+    <div class="p-fluid">
+      <label for="surname-input" class="field-label">
+        <p class="required">Surname</p>
+      </label>
+      <input
+        id="surname-input"
+        type="text"
+        formControlName="surname"
+        pInputText
+        [ngClass]="{
+          'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('surname')
+        }"
+        placeholder="Surname" />
+      <small class="p-error" *ngIf="isInputInvalidAndTouchedOrDirty('surname')">
+        This field is required
+      </small>
+    </div>
+    <div class="p-fluid">
+      <label for="nickname-input" class="field-label">
+        <p class="required">Nickname</p>
+      </label>
+      <input
+        id="nickname-input"
+        type="text"
+        formControlName="nickname"
+        pInputText
+        [ngClass]="{
+          'ng-invalid ng-dirty': isInputInvalidAndTouchedOrDirty('nickname')
+        }"
+        placeholder="Nickname" />
+      <small class="p-error" *ngIf="isInputInvalidAndTouchedOrDirty('nickname')">
+        This field is required
+      </small>
+    </div>
+    <div class="p-fluid">
+      <label for="userType-input" class="field-label">
+        <p>Creator</p>
+      </label>
+      <p-inputSwitch id="userType-input" formControlName="userType"/>
+    </div>
+    <div class="p-fluid">
+      <label for="email-input" class="field-label">
+        <p class="required">Email</p>
+      </label>
+      <input
+        id="email-input"
+        type="text"
+        formControlName="email"
+        pInputText
+        placeholder="Email" />
+    </div>
+    <div class="p-fluid">
+      <label for="ballance-input" class="field-label">
+        <p class="required">Ballance</p>
+      </label>
+      <input
+        id="ballance-display"
+        type="number"
+        formControlName="accountBallance"
+        pInputText
+        placeholder="Ballance" />
+    </div>
+    <div class="withdrawContainer">
+      <p-button *ngIf="ableToWithdraw" (click)="startWithdraw()" styleClass="p-button-style p-button-secondary" label="Withdraw"></p-button>
+    </div>
+    <div>
+      <label for="avatarImage-input" class="field-label">
+        <p>Avatar Image</p>
+      </label>
+      <p-fileUpload
+        #avatarImageUpload
+        name="avatarImage[]"
+        accept="image/png, image/jpeg"
+        [fileLimit]="1"
+        invalidFileTypeMessageSummary="Allowed file type is .png/.jpeg"
+        invalidFileTypeMessageDetail=""
+        [showUploadButton]="false"
+        [showCancelButton]="false"
+        (onSelect)="handleOnAvatarImageSelect($event)"
+        styleClass="p-fileupload-style">
+
+        <ng-template pTemplate="content" let-files>
+          <div *ngIf="userForm.get('avatarImage')!.value == ''">
+            <div class="flex flex-column justify-content-center">
+              <i class="flex justify-content-center pi pi-download download-icon"></i>
+              <div class="flex justify-content-center">
+                Drop or&nbsp;
+                <span class="browse-button" (click)="avatarImageUpload.choose()">
+                  browse
+                </span>
+                &nbsp;uploaded image
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="file" let-file>
+          <div class="flex justify-content-evenly flex align-items-center flex-wrap">
+            <img [src]="file.objectURL" [width]=100>
+            {{file.name}}
+            <button
+              pButton
+              pRipple
+              type="button"
+              icon="pi pi-times"
+              class="p-button-rounded p-button-danger p-button-remove"
+              (click)="handleOnAvatarImageRemove()">
+            </button>
+          </div>
+        </ng-template>
+      </p-fileUpload>
+    </div>
+    <p-button type="submit" styleClass="p-button-style" label="Submit"></p-button>
+  </form>
+</p-card>
+
+<p-dialog header="Withdraw" [(visible)]="showWithdrawDialog" [modal]="true" [style]="{width: '50vw'}">
+  <div class="p-fluid">
+    <input [(ngModel)]="withdrawAmount" pInputText type="number" placeholder="Enter amount" 
+    [ngClass]="{
+      'ng-invalid ng-dirty': isWithdrawalImpossible()
+    }">
+    <small class="p-error" *ngIf="isWithdrawalImpossible()">Cannot withdraw more than account balance</small>
+  </div>
+  <p-footer>
+    <button pButton type="text" label="Submit" (click)="withdraw()"></button>
+  </p-footer>
+</p-dialog>

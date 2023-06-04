@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserPlaylistsComponent } from './user-playlists.component';
-import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { DialogModule } from 'primeng/dialog';
-
+import { CardModule } from 'primeng/card';
+import {ConfirmPopupModule} from 'primeng/confirmpopup';
 
 
 @NgModule({
@@ -23,7 +23,9 @@ import { DialogModule } from 'primeng/dialog';
     ButtonModule,
     DialogModule,
     InputTextModule,
-    InputSwitchModule
+    InputSwitchModule,
+    CardModule,
+    ConfirmPopupModule,
   ]
 })
 export class UserPlaylistsModule { }

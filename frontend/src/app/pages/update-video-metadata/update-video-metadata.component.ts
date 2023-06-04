@@ -7,7 +7,7 @@ import { UpdateVideoMetadataService } from './services/update-video-metadata.ser
 import { VideoService } from 'src/app/core/services/video.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VideoMetadataDto } from 'src/app/core/models/video-metadata-dto';
-import { VideoMedatadataDTO } from '../add-video/models/video-metadata-dto';
+import { VideoMetadataUpdateDTO } from '../add-video/models/video-metadata-dto';
 
 @Component({
   selector: 'app-update-video-metadata',
@@ -83,7 +83,7 @@ export class UpdateVideoMetadataComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const videoMedatadaDTO: VideoMedatadataDTO = {
+    const videoMedatadaDTO: VideoMetadataUpdateDTO = {
       title: this.updateVideoMetadataForm.get('title')!.value!,
       description: this.updateVideoMetadataForm.get('description')!.value!,
       thumbnail: this.updateVideoMetadataForm.get('thumbnail')!.value!,

@@ -49,6 +49,10 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.router.navigate(['add-video']);
   }
 
+  ticketsButtonOnClick(): void {
+    this.router.navigate(['tickets']);
+  }
+
   registerButtonOnClick(): void {
     this.router.navigate(['register']);
   }

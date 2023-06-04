@@ -224,6 +224,9 @@ namespace YouTubeV2.Application.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTimeOffset>("CreationDate")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<string>("CreatorId")
                         .HasColumnType("nvarchar(450)");
 
@@ -348,6 +351,41 @@ namespace YouTubeV2.Application.Migrations
                     b.ToTable("Tags");
                 });
 
+            modelBuilder.Entity("YouTubeV2.Application.Model.Ticket", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreateDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Response")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SubmitterId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("TargetId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("TargetType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubmitterId");
+
+                    b.ToTable("Tickets");
+                });
+
             modelBuilder.Entity("YouTubeV2.Application.Model.User", b =>
                 {
                     b.Property<string>("Id")
@@ -434,7 +472,7 @@ namespace YouTubeV2.Application.Migrations
                             Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
                             AccessFailedCount = 0,
                             AccountBalance = 0m,
-                            ConcurrencyStamp = "d0a68b9e-243b-49cf-b33b-7b946eca71db",
+                            ConcurrencyStamp = "f028aa56-788e-4d1d-8d40-bb4a8bba4506",
                             CreationDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Email = "simple@test.com",
                             EmailConfirmed = false,
@@ -442,9 +480,9 @@ namespace YouTubeV2.Application.Migrations
                             Name = "Simple",
                             NormalizedEmail = "SIMPLE@TEST.COM",
                             NormalizedUserName = "TESTSIMPLE",
-                            PasswordHash = "AQAAAAIAAYagAAAAEN8lpLfxrRkY3X3x+OAjkbsEN7hfQR1X0v5t2fuQNSaIslnfgu980CyYa0pHDsuPTw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEM88tJGp+5UvSvFkPVedTVQiZwR5rvqV2+1bmVRYgMWDnGminWx8k1eZhClxpGiE8Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "973ab52b-55fc-45c2-80fa-e54107d588af",
+                            SecurityStamp = "74c30ccd-2a89-4c22-b360-571832d88583",
                             Surname = "Test",
                             TwoFactorEnabled = false,
                             UserName = "TestSimple"
@@ -454,7 +492,7 @@ namespace YouTubeV2.Application.Migrations
                             Id = "6EBD31DD-0321-4FDA-92FA-CD22A1190DC8",
                             AccessFailedCount = 0,
                             AccountBalance = 0m,
-                            ConcurrencyStamp = "68b288dd-58aa-4c4a-8f9f-27110e97451c",
+                            ConcurrencyStamp = "846e67d7-355d-4762-b965-fb14352a34a5",
                             CreationDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Email = "creator@test.com",
                             EmailConfirmed = false,
@@ -462,9 +500,9 @@ namespace YouTubeV2.Application.Migrations
                             Name = "Creator",
                             NormalizedEmail = "CREATOR@TEST.COM",
                             NormalizedUserName = "TESTCREATOR",
-                            PasswordHash = "AQAAAAIAAYagAAAAECAPE+K/CoSs7Jf0SUrg359awex4pVLKw4oun9itkSJwrcJ5uHdx6IHZtujxlZ1F5g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDR17yhGGdGBDXPhDxKTesmwNtLjF71MLUPsvYRxfH5TA6hRkOlSg7fDctlmFnv8dw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5fd85a84-97c7-434c-806b-9c22f5e3e4cb",
+                            SecurityStamp = "4e5bd490-54f2-475d-9e57-37a5961e3a12",
                             Surname = "Test",
                             TwoFactorEnabled = false,
                             UserName = "TestCreator"
@@ -474,7 +512,7 @@ namespace YouTubeV2.Application.Migrations
                             Id = "CB6A6951-E91A-4A13-B6AC-8634883F5B93",
                             AccessFailedCount = 0,
                             AccountBalance = 0m,
-                            ConcurrencyStamp = "d85119b4-a417-46f5-950d-6cea1873f9c6",
+                            ConcurrencyStamp = "172efd08-b6aa-498f-bd43-443769aa20b6",
                             CreationDate = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Email = "admin@test.com",
                             EmailConfirmed = false,
@@ -482,9 +520,9 @@ namespace YouTubeV2.Application.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@TEST.COM",
                             NormalizedUserName = "TESTADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJpRJOUuUIpKr4RTXQ/KF8LvfLMP1o6yv32pTdmKK4mta5sgv+05pFcoJEKa2d2wLw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEC0YMo1cNxdXcm2LyuUi1mNayjGH0eIwfydodQNfwQFPEYiAHyAbtLmYidA0We0XzQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9e83c101-7a02-47a9-8918-a5638bc1ee4a",
+                            SecurityStamp = "a1cc58b3-d5f8-47ee-ab24-68fef43f7531",
                             Surname = "Test",
                             TwoFactorEnabled = false,
                             UserName = "TestAdmin"
@@ -691,6 +729,15 @@ namespace YouTubeV2.Application.Migrations
                         .IsRequired();
 
                     b.Navigation("Video");
+                });
+
+            modelBuilder.Entity("YouTubeV2.Application.Model.Ticket", b =>
+                {
+                    b.HasOne("YouTubeV2.Application.Model.User", "Submitter")
+                        .WithMany()
+                        .HasForeignKey("SubmitterId");
+
+                    b.Navigation("Submitter");
                 });
 
             modelBuilder.Entity("YouTubeV2.Application.Model.Video", b =>

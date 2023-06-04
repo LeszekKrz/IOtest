@@ -9,6 +9,7 @@ using YouTubeV2.Application.Services;
 namespace YouTubeV2.Api.Controllers
 {
     [ApiController]
+    [Route("api")]
     public class UserController : IdentityControllerBase
     {
         private readonly IUserService _userService;
