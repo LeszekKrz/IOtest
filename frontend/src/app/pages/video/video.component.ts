@@ -20,6 +20,7 @@ import { DonationService } from 'src/app/core/services/donation.service';
 import { UserPlaylistsDto } from 'src/app/core/models/user-playlists-dto';
 import { PlaylistService } from 'src/app/core/services/playlist.service';
 import { getApiUrl } from 'src/app/core/functions/get-api-url';
+import { getTimeAgo } from 'src/app/core/functions/get-time-ago';
 
 @Component({
   selector: 'app-video',
@@ -258,24 +259,7 @@ export class VideoComponent implements OnInit, OnDestroy {
   }
 
   public getTimeAgo(value: Date): string {
-    value = new Date(value);
-    const now = new Date();
-    const timeDiffInSeconds = Math.floor((now.getTime() - value.getTime()) / 1000);
-    const minutes = Math.floor(timeDiffInSeconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-    const weeks = Math.floor(days / 7);
-
-    if (weeks > 0) {
-      return weeks + (weeks === 1 ? ' week' : ' weeks');
-    } else if (days > 0) {
-      return days + (days === 1 ? ' day' : ' days');
-    } else if (hours > 0) {
-      return hours + (hours === 1 ? ' hour' : ' hours');
-    } else {
-      const roundedMinutes = Math.max(1, minutes);
-      return roundedMinutes + (roundedMinutes === 1 ? ' minute' : ' minutes');
-    }
+    return getTimeAgo(value);
   }
 
   report() {

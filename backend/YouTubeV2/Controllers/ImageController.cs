@@ -14,7 +14,7 @@ namespace YouTubeV2.Api.Controllers
             _blobImageService = blobImageService;
         }
 
-        [HttpGet("api/images/{blobContainerName}/{fileName}")]
+        [HttpGet("api/images/{blobContainerName}/{fileName}", Name = "GetImageAsyncRoute")]
         public async Task<ActionResult> GetImageAsync(string blobContainerName, string fileName, CancellationToken cancellationToken)
         {
             if (blobContainerName.IsNullOrEmpty() || fileName.IsNullOrEmpty()) return BadRequest();

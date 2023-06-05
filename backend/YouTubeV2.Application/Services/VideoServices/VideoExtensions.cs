@@ -18,8 +18,8 @@ namespace YouTubeV2.Application.Services.VideoServices
                 video.Tags.Select(tag => tag.Value).ToList(),
                 video.Visibility,
                 video.ProcessingProgress,
-                video.UploadDate.ToUniversalTime().Date,
-                video.EditDate.ToUniversalTime().Date,
+                video.UploadDate,
+                video.EditDate,
                 video.Duration));
     }
 }

@@ -10,6 +10,7 @@ using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services.BlobServices;
 using YouTubeV2.Application.Services.VideoServices;
 using FluentAssertions;
+using YouTubeV2.Application.FileInspector;
 
 namespace YouTubeV2.Application.Tests.VideoProcessingServiceTests
 {
@@ -20,6 +21,7 @@ namespace YouTubeV2.Application.Tests.VideoProcessingServiceTests
         private MethodInfo _convertToMP4AndUploadVideoAsyncMethod = null!;
         private readonly Mock<IVideoService> _videoServiceMock = new();
         private readonly Mock<IBlobVideoService> _blobVideoServiceMock = new();
+        private readonly Mock<IFileInspector> _fileInspectorMock = new();
 
         [TestInitialize]
         public async Task Initialize()
@@ -31,6 +33,9 @@ namespace YouTubeV2.Application.Tests.VideoProcessingServiceTests
             serviceProviderMock
                 .Setup(sp => sp.GetService(typeof(IBlobVideoService)))
                 .Returns(_blobVideoServiceMock.Object);
+            serviceProviderMock
+                .Setup(sp => sp.GetService(typeof(IFileInspector)))
+                .Returns(_fileInspectorMock.Object);
 
             Mock<IServiceScope> serviceScopeMock = new();
             serviceScopeMock.SetupGet(scope => scope.ServiceProvider).Returns(serviceProviderMock.Object);
@@ -48,6 +53,10 @@ namespace YouTubeV2.Application.Tests.VideoProcessingServiceTests
 
             await FFmpegDownloader.GetLatestVersion(FFmpegVersion.Official, Directory.GetCurrentDirectory());
             FFmpeg.SetExecutablesPath(Directory.GetCurrentDirectory());
+
+            _fileInspectorMock
+                .Setup(service => service.OpenRead(It.IsAny<string>()))
+                .Returns((string filePath) => File.OpenRead(filePath));
         }
 
         [TestMethod]
@@ -64,6 +73,9 @@ namespace YouTubeV2.Application.Tests.VideoProcessingServiceTests
             _videoServiceMock
                 .Setup(service => service.SetVideoProcessingProgressAsync(video, It.IsAny<ProcessingProgress>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
+            _videoServiceMock
+                .Setup(service => service.SetVideoLengthAsync(video, It.IsAny<double>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
 
             _blobVideoServiceMock
                 .Setup(service => service.UploadVideoAsync(videoId.ToString(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
@@ -80,25 +92,30 @@ namespace YouTubeV2.Application.Tests.VideoProcessingServiceTests
                 "Videos",
                 $"video{fileExtension}"));
 
-            await using var mp4FileStream = new FileStream(videoFilePath, FileMode.Open, FileAccess.Read);
-            var videoProcessJob = new VideoProcessJob(videoId, mp4FileStream, fileExtension);
+            //await using var mp4FileStream = new FileStream(videoFilePath, FileMode.Open, FileAccess.Read);
+            var videoProcessJob = new VideoProcessJob(videoId, videoFilePath, fileExtension);
 
             // ACT
             await (Task)_convertToMP4AndUploadVideoAsyncMethod.Invoke(_videoProcessingService, new object[] { videoProcessJob, CancellationToken.None })!;
 
             // ASSERT
             _videoServiceMock.Verify(service => service.GetVideoByIdAsync(videoId, It.IsAny<CancellationToken>()), Times.Once);
-            _videoServiceMock.Verify(service => service.SetVideoProcessingProgressAsync(video, ProcessingProgress.Ready, It.IsAny<CancellationToken>()), Times.Once);
+            _videoServiceMock.Verify(service => service.SetVideoLengthAsync(video, It.IsAny<double>(), It.IsAny<CancellationToken>()), Times.Once);
+            _fileInspectorMock.Verify(service => service.OpenRead(videoFilePath), Times.Once);
             _blobVideoServiceMock.Verify(service => service.UploadVideoAsync(videoId.ToString(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Once);
+            _videoServiceMock.Verify(service => service.SetVideoProcessingProgressAsync(video, ProcessingProgress.Ready, It.IsAny<CancellationToken>()), Times.Once);
+            _fileInspectorMock.Verify(service => service.Delete(videoFilePath), Times.Once);
         }
 
         [TestMethod]
-        public async Task ForAVIFileShouldConvertAndUploadVideo()
+        [DataRow(".avi")]
+        [DataRow(".mkv")]
+        [DataRow(".webm")]
+        public async Task ForNotMp4FileShouldConvertAndUploadVideo(string videoFileExtension)
         {
             // ARRANGE
             var videoId = Guid.NewGuid();
             var video = new Video { Id = videoId, ProcessingProgress = ProcessingProgress.Uploading };
-            const string fileExtension = ".avi";
 
             _videoServiceMock
                 .Setup(service => service.GetVideoByIdAsync(videoId, It.IsAny<CancellationToken>()))
@@ -120,169 +137,32 @@ namespace YouTubeV2.Application.Tests.VideoProcessingServiceTests
                 "YouTubeV2.Application.Tests",
                 "VideoProcessingServiceTests",
                 "Videos",
-                $"video{fileExtension}"));
+                $"video{videoFileExtension}"));
 
-            await using var aviFileStream = new FileStream(videoFilePath, FileMode.Open, FileAccess.Read);
-            var videoProcessJob = new VideoProcessJob(videoId, aviFileStream, fileExtension);
+            _fileInspectorMock
+                .Setup(service => service.Delete(It.IsAny<string>()))
+                .Callback((string path) =>
+                {
+                    if (path != videoFilePath)
+                        File.Delete(path);
+                });
+
+            var videoProcessJob = new VideoProcessJob(videoId, videoFilePath, videoFileExtension);
+            var outputFilePath = Path.Combine(Directory.GetCurrentDirectory(), $"{videoId}.mp4");
 
             // ACT
             await (Task)_convertToMP4AndUploadVideoAsyncMethod.Invoke(_videoProcessingService, new object[] { videoProcessJob, CancellationToken.None })!;
 
             // ASSERT
             _videoServiceMock.Verify(service => service.GetVideoByIdAsync(videoId, It.IsAny<CancellationToken>()), Times.Once);
+            _videoServiceMock.Verify(service => service.SetVideoLengthAsync(video, It.IsAny<double>(), It.IsAny<CancellationToken>()), Times.Once);
             _videoServiceMock.Verify(service => service.SetVideoProcessingProgressAsync(video, ProcessingProgress.Processing, It.IsAny<CancellationToken>()), Times.Once);
-            _videoServiceMock.Verify(service => service.SetVideoProcessingProgressAsync(video, ProcessingProgress.Ready, It.IsAny<CancellationToken>()), Times.Once);
+            _fileInspectorMock.Verify(service => service.Delete(videoFilePath), Times.Once);
+            _fileInspectorMock.Verify(service => service.OpenRead(outputFilePath), Times.Once);
             _blobVideoServiceMock.Verify(service => service.UploadVideoAsync(videoId.ToString(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Once);
-            File.Exists(Path.Combine(Directory.GetCurrentDirectory(), $"{videoId}{fileExtension}")).Should().BeFalse();
-            File.Exists(Path.Combine(Directory.GetCurrentDirectory(), $"{videoId}.mp4")).Should().BeFalse();
-        }
-
-        [TestMethod]
-        public async Task ForMKVFileShouldConvertAndUploadVideo()
-        {
-            // ARRANGE
-            var videoId = Guid.NewGuid();
-            var video = new Video { Id = videoId, ProcessingProgress = ProcessingProgress.Uploading };
-            const string fileExtension = ".mkv";
-
-            _videoServiceMock
-                .Setup(service => service.GetVideoByIdAsync(videoId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(video);
-            _videoServiceMock
-                .Setup(service => service.SetVideoProcessingProgressAsync(video, It.IsAny<ProcessingProgress>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            _blobVideoServiceMock
-                .Setup(service => service.UploadVideoAsync(videoId.ToString(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            string videoFilePath = Path.GetFullPath(Path.Combine(
-                Directory.GetCurrentDirectory(),
-                "..",
-                "..",
-                "..",
-                "..",
-                "YouTubeV2.Application.Tests",
-                "VideoProcessingServiceTests",
-                "Videos",
-                $"video{fileExtension}"));
-
-            await using var aviFileStream = new FileStream(videoFilePath, FileMode.Open, FileAccess.Read);
-            var videoProcessJob = new VideoProcessJob(videoId, aviFileStream, fileExtension);
-
-            // ACT
-            await (Task)_convertToMP4AndUploadVideoAsyncMethod.Invoke(_videoProcessingService, new object[] { videoProcessJob, CancellationToken.None })!;
-
-            // ASSERT
-            _videoServiceMock.Verify(service => service.GetVideoByIdAsync(videoId, It.IsAny<CancellationToken>()), Times.Once);
-            _videoServiceMock.Verify(service => service.SetVideoProcessingProgressAsync(video, ProcessingProgress.Processing, It.IsAny<CancellationToken>()), Times.Once);
+            _fileInspectorMock.Verify(service => service.Delete(outputFilePath), Times.Once);
             _videoServiceMock.Verify(service => service.SetVideoProcessingProgressAsync(video, ProcessingProgress.Ready, It.IsAny<CancellationToken>()), Times.Once);
-            _blobVideoServiceMock.Verify(service => service.UploadVideoAsync(videoId.ToString(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Once);
-            File.Exists(Path.Combine(Directory.GetCurrentDirectory(), $"{videoId}{fileExtension}")).Should().BeFalse();
             File.Exists(Path.Combine(Directory.GetCurrentDirectory(), $"{videoId}.mp4")).Should().BeFalse();
-        }
-
-        [TestMethod]
-        public async Task ForWEBMFileShouldConvertAndUploadVideo()
-        {
-            // ARRANGE
-            var videoId = Guid.NewGuid();
-            var video = new Video { Id = videoId, ProcessingProgress = ProcessingProgress.Uploading };
-            const string fileExtension = ".webm";
-
-            _videoServiceMock
-                .Setup(service => service.GetVideoByIdAsync(videoId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(video);
-            _videoServiceMock
-                .Setup(service => service.SetVideoProcessingProgressAsync(video, It.IsAny<ProcessingProgress>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            _blobVideoServiceMock
-                .Setup(service => service.UploadVideoAsync(videoId.ToString(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            string videoFilePath = Path.GetFullPath(Path.Combine(
-                Directory.GetCurrentDirectory(),
-                "..",
-                "..",
-                "..",
-                "..",
-                "YouTubeV2.Application.Tests",
-                "VideoProcessingServiceTests",
-                "Videos",
-                $"video{fileExtension}"));
-
-            await using var aviFileStream = new FileStream(videoFilePath, FileMode.Open, FileAccess.Read);
-            var videoProcessJob = new VideoProcessJob(videoId, aviFileStream, fileExtension);
-
-            // ACT
-            await (Task)_convertToMP4AndUploadVideoAsyncMethod.Invoke(_videoProcessingService, new object[] { videoProcessJob, CancellationToken.None })!;
-
-            // ASSERT
-            _videoServiceMock.Verify(service => service.GetVideoByIdAsync(videoId, It.IsAny<CancellationToken>()), Times.Once);
-            _videoServiceMock.Verify(service => service.SetVideoProcessingProgressAsync(video, ProcessingProgress.Processing, It.IsAny<CancellationToken>()), Times.Once);
-            _videoServiceMock.Verify(service => service.SetVideoProcessingProgressAsync(video, ProcessingProgress.Ready, It.IsAny<CancellationToken>()), Times.Once);
-            _blobVideoServiceMock.Verify(service => service.UploadVideoAsync(videoId.ToString(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Once);
-            File.Exists(Path.Combine(Directory.GetCurrentDirectory(), $"{videoId}{fileExtension}")).Should().BeFalse();
-            File.Exists(Path.Combine(Directory.GetCurrentDirectory(), $"{videoId}.mp4")).Should().BeFalse();
-        }
-
-        [TestMethod]
-        public async Task ForNonExistingVideoFileShouldReturnEarly()
-        {
-            // ARRANGE
-            var videoId = Guid.NewGuid();
-            var video = new Video { Id = videoId, ProcessingProgress = ProcessingProgress.Uploading };
-
-            _videoServiceMock
-                .Setup(service => service.GetVideoByIdAsync(videoId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync((Video)null!);
-            _videoServiceMock
-                .Setup(service => service.SetVideoProcessingProgressAsync(video, It.IsAny<ProcessingProgress>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            _blobVideoServiceMock
-                .Setup(service => service.UploadVideoAsync(videoId.ToString(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            var videoProcessJob = new VideoProcessJob(videoId, Stream.Null, string.Empty);
-
-            // ACT
-            await (Task)_convertToMP4AndUploadVideoAsyncMethod.Invoke(_videoProcessingService, new object[] { videoProcessJob, CancellationToken.None })!;
-
-            // ASSERT
-            _videoServiceMock.Verify(service => service.GetVideoByIdAsync(videoId, It.IsAny<CancellationToken>()), Times.Once);
-            _videoServiceMock.Verify(service => service.SetVideoProcessingProgressAsync(video, It.IsAny<ProcessingProgress>(), It.IsAny<CancellationToken>()), Times.Never);
-            _blobVideoServiceMock.Verify(service => service.UploadVideoAsync(videoId.ToString(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Never);
-        }
-
-        [TestMethod]
-        public async Task ForVideoWithWrongExtensionShouldReturnEarly()
-        {
-            // ARRANGE
-            var videoId = Guid.NewGuid();
-            var video = new Video { Id = videoId, ProcessingProgress = ProcessingProgress.Uploaded };
-
-            _videoServiceMock
-                .Setup(service => service.GetVideoByIdAsync(videoId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(video);
-            _videoServiceMock
-                .Setup(service => service.SetVideoProcessingProgressAsync(video, It.IsAny<ProcessingProgress>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            _blobVideoServiceMock
-                .Setup(service => service.UploadVideoAsync(videoId.ToString(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            var videoProcessJob = new VideoProcessJob(videoId, Stream.Null, string.Empty);
-
-            // ACT
-            await (Task)_convertToMP4AndUploadVideoAsyncMethod.Invoke(_videoProcessingService, new object[] { videoProcessJob, CancellationToken.None })!;
-
-            // ASSERT
-            _videoServiceMock.Verify(service => service.GetVideoByIdAsync(videoId, It.IsAny<CancellationToken>()), Times.Once);
-            _videoServiceMock.Verify(service => service.SetVideoProcessingProgressAsync(video, It.IsAny<ProcessingProgress>(), It.IsAny<CancellationToken>()), Times.Never);
-            _blobVideoServiceMock.Verify(service => service.UploadVideoAsync(videoId.ToString(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Never);
         }
     }
 }

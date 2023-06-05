@@ -1,6 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
 using YouTubeV2.Application.Configurations.BlobStorage;
 using YouTubeV2.Application.Utils;
@@ -12,15 +13,19 @@ namespace YouTubeV2.Application.Services.BlobServices
         private const string _defaultImage = "default.png";
         private readonly BlobServiceClient _blobServiceClient;
         private readonly BlobStorageImagesConfig _blobStorageConfig;
-        private string _hostUrl;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly LinkGenerator _linkGenerator;
 
-        public BlobImageService(BlobServiceClient blobServiceClient, IOptions<BlobStorageImagesConfig> blobStorageConfig, IHttpContextAccessor httpContextAccessor)
+        public BlobImageService(
+            BlobServiceClient blobServiceClient,
+            IOptions<BlobStorageImagesConfig> blobStorageConfig,
+            IHttpContextAccessor httpContextAccessor,
+            LinkGenerator linkGenerator)
         {
             _blobServiceClient = blobServiceClient;
             _blobStorageConfig = blobStorageConfig.Value;
-
-            var request = httpContextAccessor.HttpContext!.Request;
-            _hostUrl = $"{request.Scheme}://{request.Host}";
+            _httpContextAccessor = httpContextAccessor;
+            _linkGenerator = linkGenerator;
         }
 
         public Uri GetProfilePictureUrl(string fileName) => GetImageUrl(fileName, _blobStorageConfig.UserAvatarsContainerName);
@@ -45,7 +50,13 @@ namespace YouTubeV2.Application.Services.BlobServices
             if (blobContainerClient.GetBlobClient(fileName.ToLower()).Exists().Value is false)
                 fileName = _defaultImage;
 
-            return new Uri($"{_hostUrl}/api/images/{blobContainerName}/{fileName}");
+            string? uri = _linkGenerator.GetUriByRouteValues(
+                httpContext: _httpContextAccessor.HttpContext!,
+                routeName: "GetImageAsyncRoute",
+                values: new { blobContainerName = blobContainerName, fileName = fileName }
+            );
+
+            return new Uri(uri!);
         }
 
         private async Task UploadImageAsync(string base64Content, string fileName, string blobContainerName, CancellationToken cancellationToken = default)

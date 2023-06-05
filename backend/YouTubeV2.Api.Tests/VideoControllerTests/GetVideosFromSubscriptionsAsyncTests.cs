@@ -213,8 +213,8 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                     Array.Empty<string>(),
                     _creator1PublicReadyVideo2.Visibility,
                     _creator1PublicReadyVideo2.ProcessingProgress,
-                    _creator1PublicReadyVideo2.UploadDate.ToUniversalTime().Date,
-                    _creator1PublicReadyVideo2.UploadDate.ToUniversalTime().Date,
+                    _creator1PublicReadyVideo2.UploadDate,
+                    _creator1PublicReadyVideo2.UploadDate,
                     _creator1PublicReadyVideo2.Duration),
                 new VideoMetadataDto(
                     _creator2PublicReadyVideoId,
@@ -227,8 +227,8 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                     Array.Empty<string>(),
                     _creator2PublicReadyVideo.Visibility,
                     _creator2PublicReadyVideo.ProcessingProgress,
-                    _creator2PublicReadyVideo.UploadDate.ToUniversalTime().Date,
-                    _creator2PublicReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _creator2PublicReadyVideo.UploadDate,
+                    _creator2PublicReadyVideo.UploadDate,
                     _creator2PublicReadyVideo.Duration),
                 new VideoMetadataDto(
                     _creator1PublicReadyVideo1Id,
@@ -241,8 +241,8 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                     Array.Empty<string>(),
                     _creator1PublicReadyVideo1.Visibility,
                     _creator1PublicReadyVideo1.ProcessingProgress,
-                    _creator1PublicReadyVideo1.UploadDate.ToUniversalTime().Date,
-                    _creator1PublicReadyVideo1.UploadDate.ToUniversalTime().Date,
+                    _creator1PublicReadyVideo1.UploadDate,
+                    _creator1PublicReadyVideo1.UploadDate,
                     _creator1PublicReadyVideo1.Duration),
             }, options => options.WithStrictOrdering());
         }

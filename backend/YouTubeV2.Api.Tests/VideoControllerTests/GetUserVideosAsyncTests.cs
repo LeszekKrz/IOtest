@@ -160,8 +160,8 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                     Array.Empty<string>(),
                     _userPublicNotReadyVideo.Visibility,
                     _userPublicNotReadyVideo.ProcessingProgress,
-                    _userPublicNotReadyVideo.UploadDate.ToUniversalTime().Date,
-                    _userPublicNotReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPublicNotReadyVideo.UploadDate,
+                    _userPublicNotReadyVideo.UploadDate,
                     _userPublicNotReadyVideo.Duration),
                 new VideoMetadataDto(
                     _userPrivateReadyVideoId,
@@ -174,8 +174,8 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                     Array.Empty<string>(),
                     _userPrivateReadyVideo.Visibility,
                     _userPrivateReadyVideo.ProcessingProgress,
-                    _userPrivateReadyVideo.UploadDate.ToUniversalTime().Date,
-                    _userPrivateReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPrivateReadyVideo.UploadDate,
+                    _userPrivateReadyVideo.UploadDate,
                     _userPrivateReadyVideo.Duration),
                 new VideoMetadataDto(
                     _userPublicReadyVideoId,
@@ -188,8 +188,8 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                     Array.Empty<string>(),
                     _userPublicReadyVideo.Visibility,
                     _userPublicReadyVideo.ProcessingProgress,
-                    _userPublicReadyVideo.UploadDate.ToUniversalTime().Date,
-                    _userPublicReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPublicReadyVideo.UploadDate,
+                    _userPublicReadyVideo.UploadDate,
                     _userPublicReadyVideo.Duration),
             }, options => options.WithStrictOrdering());
         }
@@ -222,8 +222,8 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                     Array.Empty<string>(),
                     _userPublicNotReadyVideo.Visibility,
                     _userPublicNotReadyVideo.ProcessingProgress,
-                    _userPublicNotReadyVideo.UploadDate.ToUniversalTime().Date,
-                    _userPublicNotReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPublicNotReadyVideo.UploadDate,
+                    _userPublicNotReadyVideo.UploadDate,
                     _userPublicNotReadyVideo.Duration),
                 new VideoMetadataDto(
                     _userPrivateReadyVideoId,
@@ -236,8 +236,8 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                     Array.Empty<string>(),
                     _userPrivateReadyVideo.Visibility,
                     _userPrivateReadyVideo.ProcessingProgress,
-                    _userPrivateReadyVideo.UploadDate.ToUniversalTime().Date,
-                    _userPrivateReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPrivateReadyVideo.UploadDate,
+                    _userPrivateReadyVideo.UploadDate,
                     _userPrivateReadyVideo.Duration),
                 new VideoMetadataDto(
                     _userPublicReadyVideoId,
@@ -250,8 +250,8 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                     Array.Empty<string>(),
                     _userPublicReadyVideo.Visibility,
                     _userPublicReadyVideo.ProcessingProgress,
-                    _userPublicReadyVideo.UploadDate.ToUniversalTime().Date,
-                    _userPublicReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPublicReadyVideo.UploadDate,
+                    _userPublicReadyVideo.UploadDate,
                     _userPublicReadyVideo.Duration),
             }, options => options.WithStrictOrdering());
         }
@@ -284,8 +284,8 @@ namespace YouTubeV2.Api.Tests.VideoControllerTests
                     Array.Empty<string>(),
                     _userPublicReadyVideo.Visibility,
                     _userPublicReadyVideo.ProcessingProgress,
-                    _userPublicReadyVideo.UploadDate.ToUniversalTime().Date,
-                    _userPublicReadyVideo.UploadDate.ToUniversalTime().Date,
+                    _userPublicReadyVideo.UploadDate,
+                    _userPublicReadyVideo.UploadDate,
                     _userPublicReadyVideo.Duration),
             });
         }

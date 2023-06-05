@@ -4,6 +4,7 @@ using System.Threading.Channels;
 using Xabe.FFmpeg;
 using Xabe.FFmpeg.Downloader;
 using YouTubeV2.Application.Enums;
+using YouTubeV2.Application.FileInspector;
 using YouTubeV2.Application.Jobs;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Services.BlobServices;
@@ -40,6 +41,7 @@ namespace YouTubeV2.Application.Services.VideoServices
             using var serviceScope = _serviceScopeFactory.CreateScope();
             var videoService = serviceScope.ServiceProvider.GetRequiredService<IVideoService>();
             var blobVideoService = serviceScope.ServiceProvider.GetRequiredService<IBlobVideoService>();
+            var fileInspector = serviceScope.ServiceProvider.GetRequiredService<IFileInspector>();
 
             try
             {
@@ -49,42 +51,41 @@ namespace YouTubeV2.Application.Services.VideoServices
 
                 if (video.ProcessingProgress != ProcessingProgress.Uploading) return;
 
+                var mediaInfo = await FFmpeg.GetMediaInfo(videoProcessJob.Path, cancellationToken);
+                await videoService.SetVideoLengthAsync(video, mediaInfo.Duration.TotalSeconds, cancellationToken);
+
                 if (videoProcessJob.Extension == _mp4Extension)
                 {
-
-                    await blobVideoService.UploadVideoAsync(videoProcessJob.VideoId.ToString(), videoProcessJob.VideoStream, cancellationToken);
+                    await using (FileStream videoStream = fileInspector.OpenRead(videoProcessJob.Path))
+                    {
+                        await blobVideoService.UploadVideoAsync(videoProcessJob.VideoId.ToString(), videoStream, cancellationToken);
+                    }
+                    
                     await videoService.SetVideoProcessingProgressAsync(video, ProcessingProgress.Ready, cancellationToken);
-                    videoProcessJob.VideoStream.Dispose();
+                    fileInspector.Delete(videoProcessJob.Path);
                     return;
                 }
 
                 await videoService.SetVideoProcessingProgressAsync(video, ProcessingProgress.Processing, cancellationToken);
 
-                var inputFilePath = Path.Combine(Directory.GetCurrentDirectory(), $"{videoProcessJob.VideoId}{videoProcessJob.Extension}");
                 var outputFilePath = Path.Combine(Directory.GetCurrentDirectory(), $"{videoProcessJob.VideoId}{_mp4Extension}");
 
-                await using var inputFileStream = File.Create(inputFilePath);
-                await videoProcessJob.VideoStream.CopyToAsync(inputFileStream, cancellationToken);
-                await inputFileStream.FlushAsync(cancellationToken);
-                inputFileStream.Close();
-                videoProcessJob.VideoStream.Dispose();
-
                 var conversion = FFmpeg.Conversions.New()
-                    .AddParameter($"-i \"{inputFilePath}\"")
+                    .AddParameter($"-i \"{videoProcessJob.Path}\"")
                     .SetOutput(outputFilePath)
                     .SetOverwriteOutput(true);
 
                 await conversion.Start(cancellationToken);
 
-                File.Delete(inputFilePath);
+                fileInspector.Delete(videoProcessJob.Path);
 
-                var mediaInfo = await FFmpeg.GetMediaInfo(outputFilePath, cancellationToken);
-                await videoService.SetVideoLengthAsync(video, mediaInfo.Duration.TotalSeconds, cancellationToken);
+                await using (FileStream outputFileStream = fileInspector.OpenRead(outputFilePath))
+                {
+                    await blobVideoService.UploadVideoAsync(videoProcessJob.VideoId.ToString(), outputFileStream, cancellationToken);
+                }
+                
+                fileInspector.Delete(outputFilePath);
 
-                await using var outputFileStream = File.OpenRead(outputFilePath);
-                await blobVideoService.UploadVideoAsync(videoProcessJob.VideoId.ToString(), outputFileStream, cancellationToken);
-                outputFileStream.Close();
-                File.Delete(outputFilePath);
                 await videoService.SetVideoProcessingProgressAsync(video, ProcessingProgress.Ready, cancellationToken);
             }
             catch

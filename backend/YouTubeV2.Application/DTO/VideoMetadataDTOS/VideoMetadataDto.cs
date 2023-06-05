@@ -14,7 +14,7 @@ namespace YouTubeV2.Application.DTO.VideoMetadataDTOS
         IReadOnlyCollection<string> tags,
         Visibility visibility,
         ProcessingProgress processingProgress,
-        DateTime uploadDate,
-        DateTime editDate,
+        DateTimeOffset uploadDate,
+        DateTimeOffset editDate,
         string duration);
 }

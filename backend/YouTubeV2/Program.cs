@@ -12,6 +12,7 @@ using YouTubeV2.Api.InputFormaters;
 using YouTubeV2.Api.Middleware;
 using YouTubeV2.Application;
 using YouTubeV2.Application.Configurations.BlobStorage;
+using YouTubeV2.Application.FileInspector;
 using YouTubeV2.Application.Model;
 using YouTubeV2.Application.Providers;
 using YouTubeV2.Application.Services;
@@ -71,8 +72,6 @@ string connectionString = builder.Configuration.GetConnectionString("Db")!;
 builder.Services.AddDbContext<YTContext>(
     options => options.UseSqlServer(connectionString));
 
-builder.Services.AddHttpContextAccessor();
-
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddSingleton(x => new BlobServiceClient(Environment.GetEnvironmentVariable("AZURE_BLOB_STORAGE_CONNECTION_STRING")));
 builder.Services.AddTransient<ISubscriptionService, SubscriptionService>();
@@ -86,6 +85,7 @@ builder.Services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 builder.Services.AddTransient<ISearchService, SearchService>();
 builder.Services.AddTransient<IDonationService, DonationService>();
 builder.Services.AddTransient<ITicketService, TicketService>();
+builder.Services.AddTransient<IFileInspector, FileInspector>();
 
 builder.Services.AddSingleton<IVideoProcessingService, VideoProcessingService>();
 builder.Services.AddHostedService(serviceProvider => (VideoProcessingService)serviceProvider.GetRequiredService<IVideoProcessingService>());
